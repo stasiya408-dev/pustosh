@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+body{margin:0;padding:16px;background:#1b1a17;color:#d9c9a3;font-family:sans-serif}
+h1{font-size:22px;margin:0 0 12px}
+.card{background:#2a2823;border:1px solid #4a4536;border-radius:10px;padding:12px;margin-bottom:12px;line-height:1.7}
+button{width:100%;padding:14px;background:#5a4a1f;color:#fff;border:0;border-radius:10px;font-size:16px}
+</style>
+</head>
+<body>
+<h1>☢️ Пустошь</h1>
+<div class="card">
+  <div>Выживший: <b id="name"></b></div>
+  <div>⚡ Энергия: <span id="energy"></span></div>
+  <div>🔩 Крышки: <span id="caps"></span></div>
+</div>
+<button onclick="raid()">🏜 Вылазка (−2 энергии)</button>
+<script>
+const tg = window.Telegram.WebApp;
+tg.ready(); tg.expand();
+document.getElementById("name").textContent =
+  (tg.initDataUnsafe.user && tg.initDataUnsafe.user.first_name) || "Странник";
+let energy = 10, caps = 0;
+function render(){
+  document.getElementById("energy").textContent = energy;
+  document.getElementById("caps").textContent = caps;
+}
+function raid(){
+  if (energy < 2) { alert("Нет сил, отдохни"); return; }
+  energy -= 2;
+  caps += Math.floor(Math.random() * 10) + 1;
+  render();
+}
+render();
+</script>
+</body>
+</html>

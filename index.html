@@ -5,20 +5,89 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
-body{margin:0;padding:16px;background:#1b1a17;color:#d9c9a3;font-family:sans-serif}
-h1{font-size:22px;margin:0 0 12px}
-.card{background:#2a2823;border:1px solid #4a4536;border-radius:10px;padding:12px;margin-bottom:12px;line-height:1.7}
-button{width:100%;padding:14px;background:#5a4a1f;color:#fff;border:0;border-radius:10px;font-size:16px}
+html,body{margin:0;height:100%;background:#1b1209}
+body{font-family:sans-serif;color:#ecd9b0}
+#bg{position:fixed;inset:0;width:100%;height:100%;z-index:0}
+.wrap{position:relative;z-index:1;padding:16px}
+h1{font-size:24px;margin:4px 0 14px;text-shadow:0 2px 6px #000}
+.card{background:rgba(20,13,7,.72);border:1px solid rgba(200,150,70,.35);border-radius:12px;padding:12px;margin-bottom:12px;line-height:1.8;backdrop-filter:blur(4px)}
+.bar{height:8px;background:#000;border-radius:4px;overflow:hidden;margin-top:4px}
+.bar>div{height:100%;background:#d9a441;width:100%;transition:width .3s}
+button{width:100%;padding:14px;background:#7a4a14;color:#fff;border:1px solid #d9a441;border-radius:10px;font-size:16px}
+button:active{background:#5a3610}
 </style>
 </head>
 <body>
-<h1>☢️ Пустошь</h1>
-<div class="card">
-  <div>Выживший: <b id="name"></b></div>
-  <div>⚡ Энергия: <span id="energy"></span></div>
-  <div>🔩 Крышки: <span id="caps"></span></div>
+
+<svg id="bg" viewBox="0 0 400 800" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1e1410"/>
+      <stop offset="0.45" stop-color="#6b3f22"/>
+      <stop offset="0.72" stop-color="#d08a3c"/>
+    </linearGradient>
+    <radialGradient id="sun">
+      <stop offset="0" stop-color="#ffd489" stop-opacity="0.95"/>
+      <stop offset="0.35" stop-color="#f2a94f" stop-opacity="0.6"/>
+      <stop offset="1" stop-color="#f2a94f" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="ground" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4a3320"/>
+      <stop offset="1" stop-color="#150d07"/>
+    </linearGradient>
+    <linearGradient id="haze" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#d08a3c" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#d9a05a" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#d08a3c" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="400" height="800" fill="url(#sky)"/>
+  <circle cx="290" cy="470" r="150" fill="url(#sun)"/>
+  <circle cx="290" cy="470" r="34" fill="#ffd9a0" opacity="0.9"/>
+
+  <!-- дальние руины -->
+  <path fill="#5a3b25" opacity="0.85" d="M0,580 L0,480 L20,480 L20,455 L34,462 L34,430 L52,440 L52,500 L70,500 L70,470 L90,478 L90,520 L110,520 L110,490 L128,496 L128,440 L142,432 L150,450 L150,510 L175,510 L175,535 L200,535 L200,505 L215,500 L215,460 L232,466 L232,420 L250,428 L250,500 L275,500 L275,530 L300,530 L300,485 L318,490 L318,445 L335,452 L335,505 L360,505 L360,470 L380,476 L380,500 L400,500 L400,580 Z"/>
+  <rect x="0" y="500" width="400" height="120" fill="url(#haze)"/>
+
+  <!-- ближние руины -->
+  <path fill="#2a1a10" d="M0,660 L0,560 L28,560 L28,520 L40,528 L40,490 L62,500 L62,585 L95,585 L95,610 L130,610 L130,540 L150,530 L158,552 L158,600 L200,600 L200,625 L240,625 L240,570 L262,560 L262,510 L282,518 L282,470 L300,478 L300,590 L330,590 L330,548 L355,556 L355,600 L400,600 L400,660 Z"/>
+  <g fill="#c98a45" opacity="0.35">
+    <rect x="46" y="500" width="8" height="12"/>
+    <rect x="46" y="524" width="8" height="12"/>
+    <rect x="268" y="520" width="9" height="12"/>
+    <rect x="288" y="490" width="7" height="12"/>
+    <rect x="136" y="552" width="8" height="12"/>
+  </g>
+
+  <!-- земля -->
+  <rect x="0" y="640" width="400" height="160" fill="url(#ground)"/>
+
+  <!-- мёртвое дерево -->
+  <g stroke="#0f0a06" stroke-width="5" stroke-linecap="round" fill="none">
+    <path d="M60,750 L64,660"/>
+    <path d="M64,692 L40,664"/>
+    <path d="M64,676 L88,650"/>
+    <path d="M40,664 L30,648"/>
+    <path d="M88,650 L100,638"/>
+  </g>
+
+  <!-- обломки -->
+  <path fill="#0f0a06" d="M0,800 L0,762 L40,752 L80,772 L130,756 L180,774 L240,760 L300,776 L360,758 L400,770 L400,800 Z"/>
+  <path fill="#0f0a06" d="M250,780 L262,745 L278,762 L290,738 L306,782 Z"/>
+</svg>
+
+<div class="wrap">
+  <h1>☢️ Пустошь</h1>
+  <div class="card">
+    <div>Выживший: <b id="name"></b></div>
+    <div>⚡ Энергия: <span id="energy"></span> / 10</div>
+    <div class="bar"><div id="ebar"></div></div>
+    <div style="margin-top:8px">🔩 Крышки: <span id="caps"></span></div>
+  </div>
+  <button onclick="raid()">🏜 Вылазка (−2 энергии)</button>
 </div>
-<button onclick="raid()">🏜 Вылазка (−2 энергии)</button>
+
 <script>
 const tg = window.Telegram.WebApp;
 tg.ready(); tg.expand();
@@ -28,6 +97,7 @@ let energy = 10, caps = 0;
 function render(){
   document.getElementById("energy").textContent = energy;
   document.getElementById("caps").textContent = caps;
+  document.getElementById("ebar").style.width = (energy * 10) + "%";
 }
 function raid(){
   if (energy < 2) { alert("Нет сил, отдохни"); return; }

@@ -1290,7 +1290,7 @@ window.heroDemo=function(w,s){({stomp:stomp,swat:swat,clench:clench,glance:glanc
 /* ===== v51: садовый фон из слоёв + лёгкая панорама ===== */
 (function(){
 var BW=1024,BH=1536,M=16,SEAT=840;
-var SX=[1.2,2.5,4.5,7,10],SYK=.55;
+var SX=[0,0,0,0,0],SYK=.55;
 var tx=0,ty=0,cx=0,cy=0,gx=0,gy=0,gOn=0,last=0,T0=performance.now();
 function el(i){return document.getElementById(i)}
 window.bgGeom=function(W,H){var Wb=W+2*M,Hb=H+2*M,k=Math.max(Wb/BW,Hb/BH);var ox=-M+(Wb-BW*k)*.5,oy=-M+(Hb-BH*k);return{k:k,ox:ox,oy:oy,seatY:oy+SEAT*k}};
@@ -1307,7 +1307,7 @@ sc.addEventListener("touchstart",function(){try{if(!gOn&&window.DeviceOrientatio
 }
 window.addEventListener("deviceorientation",function(e){if(e.gamma==null||e.beta==null)return;gOn=1;var g=Math.max(-18,Math.min(18,e.gamma))/18,b=Math.max(-14,Math.min(14,(e.beta-50)))/14;setT(g,b)});
 var L=[];["pA","pB","pC","pD","pE"].forEach(function(i){var e=el(i);if(e)L.push(e)});
-function frame(now){requestAnimationFrame(frame);if(now-last<22||document.hidden)return;last=now;if(!sc||!sc.offsetParent)return;
+function frame(now){return;requestAnimationFrame(frame);if(now-last<22||document.hidden)return;last=now;if(!sc||!sc.offsetParent)return;
 var t=(now-T0)/1000;
 cx+=(tx-cx)*.07;cy+=(ty-cy)*.07;
 var ax=cx+.22*Math.sin(t*.31),ay=cy+.14*Math.sin(t*.23+1);
@@ -1361,7 +1361,7 @@ function rot(px,py,cx,cy,a){var c=Math.cos(a),s=Math.sin(a),dx=px-cx,dy=py-cy;tm
 var wCache=[];
 function prep(){for(var n=0;n<NV;n++){var x=rest[n][0],y=rest[n][1];var tn=polyNear(x,y);var wt=sstep(1,0,(tn[0]-34)/34)*sstep(0.02,.3,tn[1]);
 /* туловище рядом с основанием хвоста не трогаем */
-var head=1-sstep(80,175,Math.hypot(x-HC[0],y-HC[1]));if(y>340)head=0;
+var head=1-sstep(150,230,Math.hypot(x-HC[0],y-HC[1]));if(y>340)head=0;
 var wl=sstep(425,570,y)*(1-sstep(34,78,Math.abs(x-551)));
 /* ноги: группы по x */
 var leg=sstep(430,590,y);

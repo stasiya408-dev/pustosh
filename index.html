@@ -1329,7 +1329,7 @@ var SX=[0,0,0,0,0],SYK=.55;
 var tx=0,ty=0,cx=0,cy=0,gx=0,gy=0,gOn=0,last=0,T0=performance.now();
 function el(i){return document.getElementById(i)}
 window.bgGeom=function(W,H){var Wb=W+2*M,Hb=H+2*M,k=Math.max(Wb/BW,Hb/BH);var ox=-M+(Wb-BW*k)*.5,oy=-M+(Hb-BH*k);return{k:k,ox:ox,oy:oy,seatY:oy+SEAT*k}};
-window.heroPlace=function(W,H,s0){var g=bgGeom(W,H),s=g.k*.95;return{x:(W-832*s)/2,y:Math.max(g.seatY-720*s,6-175*s),s:s}};
+window.heroPlace=function(W,H,s0){var g=bgGeom(W,H),s=Math.min(W/720,(H-276)/895);return{x:(W-832*s)/2,y:Math.max(g.seatY-720*s,6-175*s),s:s}};
 function put(e){var i;if(typeof fit=="function")fit()}
 function setT(px,py){tx=Math.max(-1,Math.min(1,px));ty=Math.max(-1,Math.min(1,py))}
 var sc=el("scene");

@@ -23,5 +23,5 @@ with sync_playwright() as p:
         if i==0: print('Поход открывается:',pg.is_visible('#hike')); pg.click('#hike .tbar button')
         else: print(nm,'энергия',e0,'→',pg.evaluate('S.en'))
     pg.click('.nb[data-a=tav]'); pg.wait_for_timeout(300); print('кости:',pg.is_visible('#dice')); pg.click('#dice .hit:nth-of-type(2)')
-    pg.click('.nb[data-a=boss]'); pg.wait_for_timeout(400); print('босс:',pg.is_visible('#bmenu'))
+    pg.click('.nb[data-a=boss]'); pg.wait_for_timeout(400); print('босс:',pg.is_visible('#nbx'))
     print('ошибки',errs or 'нет'); b.close()

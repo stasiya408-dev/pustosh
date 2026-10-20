@@ -289,7 +289,14 @@ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",
 def enable_ostap_one_boss(s):
     marker='id="ostap-boss-selection-v174"'
     if marker in s:
-        return s
+        begin='<style id="ostap-boss-selection-v174">'
+        finish='</script>'
+        if s.count(begin)!=1:
+            raise SystemExit("Ostap selector style marker is ambiguous")
+        a=s.index(begin)
+        b=s.index(finish,a)+len(finish)
+        desired=OSTAP_CSS+"\n"+OSTAP_JS
+        return s[:a]+desired+s[b:] if s[a:b]!=desired else s
     end='</body></html>'
     if s.count(end)!=1:
         raise SystemExit("Unexpected HTML closing tag for Ostap selector")

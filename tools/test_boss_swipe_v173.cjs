@@ -82,7 +82,7 @@ const assert=require("node:assert/strict");
   await page.locator("#nbwn.on").waitFor({state:"visible",timeout:5000});
   await page.locator("#nbwn [data-a=wclose]").click();
   await page.waitForFunction(()=>document.getElementById("nbL").style.display==="block"&&!S.ostapBattle);
-  await page.evaluate(()=>{PG().bossFightKeys.ostap=0;save()});
+  await page.evaluate(()=>{PG().bossFightKeys.ostap=0;localStorage.setItem("kozak3",JSON.stringify(S))});
   await page.locator("#nbLo .nbBossRow[data-pk='1']").click();
   await page.locator("#nbmp [data-a=confirmboss]").click();
   assert.equal(await page.locator("#ostapChoice").count(),0,"Selection should not open without keys");

@@ -1,0 +1,44 @@
+name: Build v173 quality branch
+
+on:
+  push:
+    branches:
+      - codex/v173-ux-boss-forge
+    paths:
+      - .github/workflows/build-v173.yml
+      - tools/patch_v173.py
+      - tools/test_patch_v173.py
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Prepare v173 without touching main
+        run: python3 tools/patch_v173.py index.html _v173/index.html
+      - name: Verify source, WebP assets and JavaScript
+        run: python3 tools/test_patch_v173.py index.html _v173/index.html
+      - name: Copy built game and original boss art
+        run: |
+          cp _v173/index.html index.html
+          mkdir -p assets/boss
+          cp _v173/assets/boss/*.webp assets/boss/
+      - name: Commit generated game on this feature branch
+        run: |
+          git config user.name "Codex"
+          git config user.email "codex@openai.com"
+          git add index.html assets/boss
+          if ! git diff --cached --quiet; then
+            git commit -m "Build v173 quality improvements [skip ci]"
+            git push origin HEAD:codex/v173-ux-boss-forge
+          fi

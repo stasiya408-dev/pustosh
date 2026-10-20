@@ -74,6 +74,22 @@ const assert=require("node:assert/strict");
   assert.equal(inBattle.runs,before.runs+1,"One boss entry must use exactly one daily attempt");
   assert.equal(inBattle.keys,before.keys-3,"Merciless tier costs exactly 3 Ostap keys");
   assert.equal(inBattle.pe,inBattle.end,"Entering fight should mark daily attempt before first shot");
+  // Regression: a pre-existing nav2 capture listener used to close the boss overlay
+  // before the later fight-lock handler could cancel the bottom-menu click.
+  const tavernNav=page.locator("#nav2 [data-a='tav']");
+  assert.equal(await tavernNav.count(),1,"Bottom Tavern navigation button missing");
+  await tavernNav.evaluate(x=>x.click());
+  const stayed=await page.evaluate(()=>({
+    open:document.getElementById("nbx").classList.contains("on"),
+    fight:document.getElementById("nbF").style.display,
+    mode:S.mode,locked:!!S.ostapBattle
+  }));
+  assert.deepEqual(stayed,{open:true,fight:"block",mode:"grp",locked:true},
+    "A bottom tab must not hide an active fight or leave navigation stuck");
+  // Recover users already stuck with an active fight and an invisible boss screen.
+  await page.evaluate(()=>document.getElementById("nbx").classList.remove("on"));
+  await page.waitForFunction(()=>document.getElementById("nbx").classList.contains("on"),
+    null,{timeout:3500});
   await page.locator("#nbF [data-a='mode']").evaluate(x=>x.click());
   assert.equal(await page.evaluate(()=>S.mode),"grp","Mode changed after battle began");
   await page.evaluate(()=>window._nb.show("list"));
@@ -87,7 +103,12 @@ const assert=require("node:assert/strict");
   await page.locator("#nbmp [data-a=confirmboss]").click();
   assert.equal(await page.locator("#ostapChoice").count(),0,"Selection should not open without keys");
   assert.equal(await page.locator("#nbmd").evaluate(x=>x.classList.contains("on")),true,"Detail modal should stay available without keys");
-  console.log("PASS: Ostap pre-fight selector, 3-key rage, daily charge, locked group mode, claim-to-list, no-key gate");
+  await page.locator("#nbmp [data-a=mclose]").click();
+  await tavernNav.evaluate(x=>x.click());
+  await page.waitForFunction(()=>!document.getElementById("nbx").classList.contains("on"),
+    null,{timeout:3500});
+  assert.equal(await page.evaluate(()=>!!S.ostapBattle),false,"Fight lock must release after reward claim");
+  console.log("PASS: Ostap pre-fight selector, bottom-tab lock and recovery, post-claim navigation, 3-key rage, no-key gate");
   if(errors.length)throw Error("Page errors: "+errors.join(" | "));
   console.log("PASS: 9 larger illustrated boss cards, vertical swipe, last card modal, first boss fight");
   await browser.close();

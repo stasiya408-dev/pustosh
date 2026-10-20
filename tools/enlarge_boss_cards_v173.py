@@ -71,7 +71,7 @@ function ready(){
 }
 function user(){var p=window.PG();p.bossFightKeys=p.bossFightKeys||{};return p}
 function count(){return Math.max(0,Number(user().bossFightKeys[BID]||0))}
-function persist(){try{save()}catch(e){}}
+function persist(){try{localStorage.setItem("kozak3",JSON.stringify(S))}catch(e){}}
 function give(n){var p=user();p.bossFightKeys[BID]=Math.max(0,Number(p.bossFightKeys[BID]||0)+n);persist()}
 function lock(){return S.ostapBattle&&S.ostapBattle.bid===BID?S.ostapBattle:null}
 function locked(){var b=lock();return !!(b&&(b.phase==="fight"||b.phase==="reward"))}

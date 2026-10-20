@@ -36,7 +36,7 @@ const assert = require("node:assert/strict");
   }));
   console.log("After boss confirmation:",JSON.stringify(after));
   if(after.herb==="flex")await page.locator("#hdg [data-h='']").click();
-  await page.locator("#nbF").waitFor({state:"visible"});
+  await page.waitForFunction(()=>getComputedStyle(document.querySelector("#nbF")).display==="block");
   assert.equal(await page.locator("#nbbg").evaluate(x=>x.naturalWidth>0),true);
   await page.screenshot({path:"smoke-mobile-boss-fight.png"});
   await page.evaluate(()=>{

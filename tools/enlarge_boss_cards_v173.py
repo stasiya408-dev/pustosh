@@ -237,12 +237,27 @@ function init(){
      if(!claim())alertText("Сначала одержи победу и забери награду.");
    }
  },true);
- var nav=document.getElementById("nav2");
- if(nav)nav.addEventListener("click",function(ev){
+ // Capture on document before the old nav2 capture listener can close the boss.
+ // A locked fight is a modal screen: background navigation must never receive this click.
+ document.addEventListener("click",function(ev){
    if(!locked())return;
-   ev.preventDefault();ev.stopImmediatePropagation();
+   var target=ev.target;
+   if(!target||!target.closest||target.closest("#nbx, #nbwn, #osDefeat"))return;
+   ev.preventDefault();
+   ev.stopImmediatePropagation();
+   recoverBossScreen();
    alertText("Бой начался: выход после победы и получения награды.");
  },true);
+ function recoverBossScreen(){
+   var battle=lock(),host=document.getElementById("nbx");
+   if(!locked()||!host||host.classList.contains("on"))return;
+   // open() repairs both the visible class and its private 'on' navigation flag.
+   if(typeof window.bossOpen==="function")window.bossOpen();
+   if(battle.phase==="reward"){
+     var reward=document.getElementById("nbwn");
+     if(reward)reward.classList.add("on");
+   }
+ }
  ["nbClose","bossClose"].forEach(function(name){
    var old=window[name];
    if(typeof old==="function")window[name]=function(){
@@ -269,6 +284,8 @@ function init(){
  setInterval(function(){
    var b=lock();
    if(!b)return;
+   // Repair a previous build's stuck saved fight after refresh or hidden overlay.
+   if(locked())recoverBossScreen();
    if(b.phase==="fight"){
      if(S.mode!==b.mode)S.mode=b.mode;
      if(b.endAt&&Date.now()>=b.endAt){

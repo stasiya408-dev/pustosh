@@ -26,6 +26,16 @@ const assert = require("node:assert/strict");
   assert.match(await page.locator("#nbmp").innerText(),/Спроби з цим босом/);
   await page.screenshot({path:"smoke-mobile-boss-preview.png"});
   await page.locator("#nbmp [data-a=confirmboss]").click();
+  await page.waitForTimeout(600);
+  const after=await page.evaluate(()=>({
+    fight:document.querySelector("#nbF").style.display,
+    list:document.querySelector("#nbL").style.display,
+    modal:document.querySelector("#nbmd").className,
+    herb:document.querySelector("#hdg")?.style.display||"none",
+    toast:document.querySelector("#nbtoast").textContent
+  }));
+  console.log("After boss confirmation:",JSON.stringify(after));
+  if(after.herb==="flex")await page.locator("#hdg [data-h='']").click();
   await page.locator("#nbF").waitFor({state:"visible"});
   assert.equal(await page.locator("#nbbg").evaluate(x=>x.naturalWidth>0),true);
   await page.screenshot({path:"smoke-mobile-boss-fight.png"});

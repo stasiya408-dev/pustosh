@@ -13,6 +13,7 @@ const assert=require("node:assert/strict");
  await page.goto("file://"+resolve(__dirname,"../index.html"),{waitUntil:"domcontentloaded"});
  await page.waitForFunction(()=>typeof marketOpen==="function" && typeof S!=="undefined");
  await page.evaluate(()=>{S.tl=10000;S.fz=0;S.mb=0;marketOpen()});
+ await page.locator("#mkhot [data-n='Оружие']").evaluate(x=>x.click());
  await page.locator("#mkqty").fill("5");
  assert.match(await page.locator("#mkTotal").innerText(),/5 × 8 = 40/);
  await page.locator("#mkbuy").click();

@@ -1,4 +1,4 @@
-name: Build and smoke-test v173 quality branch
+name: Build and smoke-test v173 without moustache-hand motion
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
       - tools/test_patch_v173.py
       - tools/mobile_smoke_v173.cjs
       - tools/build_standalone_v173.py
-      - tools/inspect_hero_anim_v173.py
+      - tools/disable_moustache_hand_v173.py
   workflow_dispatch:
 
 permissions:
@@ -39,15 +39,15 @@ jobs:
             grep -q 'name="ver" content="173"' index.html
             echo "Already built v173; checking mobile runtime."
           fi
-      - name: Inspect hand animation hooks
-        run: python3 tools/inspect_hero_anim_v173.py
+      - name: Remove hero moustache-hand animation
+        run: python3 tools/disable_moustache_hand_v173.py
       - name: Commit only generated game files on this feature branch
         run: |
           git config user.name "Codex"
           git config user.email "codex@openai.com"
           git add index.html assets/boss
           if ! git diff --cached --quiet; then
-            git commit -m "Build v173 quality improvements [skip ci]"
+            git commit -m "Disable kazak moustache-hand motion [skip ci]"
             git push origin HEAD:codex/v173-ux-boss-forge
           fi
       - uses: actions/setup-node@v4
@@ -66,10 +66,10 @@ jobs:
           if-no-files-found: ignore
       - name: Build one-file offline HTML preview
         run: python3 tools/build_standalone_v173.py
-      - name: Downloadable standalone HTML game
+      - name: Downloadable standalone HTML with static hand
         uses: actions/upload-artifact@v4
         with:
-          name: game-v173-single-html
+          name: game-v173-no-moustache-html
           path: game_v173_standalone.html
           if-no-files-found: error
           retention-days: 90

@@ -5,8 +5,25 @@ from pathlib import Path
 p=Path("index.html")
 html=p.read_text(encoding="utf-8")
 marker="/* v173: swipeable enlarged boss-list cards */"
+
+def prune_old_click_zones(s):
+    """Remove fixed invisible hitboxes: new larger cards own all list taps."""
+    needle="var LB=[255,380,507,637,768,898,1029,1153,1287];"
+    if needle not in s:
+        return s
+    if s.count(needle)!=1:
+        raise SystemExit("Ambiguous old boss-list click zones")
+    start=s.index(needle)
+    end=s.index("/* бой */",start)
+    return s[:start]+"h+='</div>';\\n".replace("\\n","\n")+s[end:]
+
 if marker in html:
-    print("Enlarged boss cards already installed")
+    newer=prune_old_click_zones(html)
+    if newer!=html:
+        p.write_text(newer,encoding="utf-8")
+        print("Pruned duplicate invisible boss-list hotspots")
+    else:
+        print("Enlarged boss cards already installed")
     raise SystemExit(0)
 
 def once(old,new):
@@ -94,5 +111,6 @@ style=r'''<style id="boss-swipe-v173">
 </style>'''
 once('</body></html>',style+'\n</body></html>')
 
+html=prune_old_click_zones(html)
 p.write_text(html,encoding="utf-8")
 print("Installed large vertical-swipe boss cards (9 bosses), original art preserved")

@@ -45,6 +45,7 @@ jobs:
           PY
       - name: Build standalone offline preview
         run: |
+          sed -i 's/Expected game v173/Expected game v174/g; s/name="ver" content="173"/name="ver" content="174"/g' tools/build_standalone_v173.py
           python3 tools/build_standalone_v173.py
           mv game_v173_standalone.html game_v174_talent_tree.html
       - name: Publish HTML preview

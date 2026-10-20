@@ -1,4 +1,4 @@
-name: Build v173 quality branch
+name: Build and smoke-test v173 quality branch
 
 on:
   push:
@@ -8,6 +8,7 @@ on:
       - .github/workflows/build-v173.yml
       - tools/patch_v173.py
       - tools/test_patch_v173.py
+      - tools/mobile_smoke_v173.cjs
   workflow_dispatch:
 
 permissions:
@@ -16,7 +17,7 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
         with:
@@ -24,16 +25,19 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Prepare v173 without touching main
-        run: python3 tools/patch_v173.py index.html _v173/index.html
-      - name: Verify source, WebP assets and JavaScript
-        run: python3 tools/test_patch_v173.py index.html _v173/index.html
-      - name: Copy built game and original boss art
+      - name: Build v173 only if input is still v172
         run: |
-          cp _v173/index.html index.html
-          mkdir -p assets/boss
-          cp _v173/assets/boss/*.webp assets/boss/
-      - name: Commit generated game on this feature branch
+          if grep -q 'name="ver" content="172"' index.html; then
+            python3 tools/patch_v173.py index.html _v173/index.html
+            python3 tools/test_patch_v173.py index.html _v173/index.html
+            cp _v173/index.html index.html
+            mkdir -p assets/boss
+            cp _v173/assets/boss/*.webp assets/boss/
+          else
+            grep -q 'name="ver" content="173"' index.html
+            echo "Already built v173; checking mobile runtime."
+          fi
+      - name: Commit only generated game files on this feature branch
         run: |
           git config user.name "Codex"
           git config user.email "codex@openai.com"
@@ -42,3 +46,17 @@ jobs:
             git commit -m "Build v173 quality improvements [skip ci]"
             git push origin HEAD:codex/v173-ux-boss-forge
           fi
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install Playwright JavaScript driver
+        run: npm install --no-save --no-audit --no-fund playwright@1.58.2
+      - name: Run actual Chrome 390x780 alpha smoke test
+        run: node tools/mobile_smoke_v173.cjs
+      - name: Attach mobile screen captures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v173-mobile-smoke-captures
+          path: smoke-mobile-*.png
+          if-no-files-found: ignore

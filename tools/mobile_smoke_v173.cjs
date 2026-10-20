@@ -20,7 +20,7 @@ const assert = require("node:assert/strict");
   await page.locator("#nav2 [data-a=boss]").click();
   await page.locator("#nbx.on").waitFor({state:"visible"});
   await page.waitForFunction(()=>{const x=document.getElementById("nbbg");return x&&x.complete&&x.naturalWidth>0});
-  assert.equal(await page.locator("#nbL").isVisible(),true);
+  assert.equal(await page.locator("#nbL").evaluate(x=>getComputedStyle(x).display),"block");
   await page.locator("#nbx [data-pk='0']").click();
   await page.locator("#nbmd.on").waitFor({state:"visible"});
   assert.match(await page.locator("#nbmp").innerText(),/Спроби з цим босом/);

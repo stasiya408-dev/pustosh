@@ -1549,12 +1549,12 @@ if(k>.98){ctx.clearRect(335,0,220,12+204+dyS);ctx.clearRect(392,12+204+dyS,112,4
 ctx.save();if(mir){ctx.translate(886,0);ctx.scale(-1,1)}
 function spf(n,al){if(al<=.002)return;ctx.globalAlpha=al;ctx.drawImage(n>31?HATB:HAT,(n%4)*260,Math.floor((n&31)/4)*300,260,300,307.3,-28.7+dyS+12,275.6,318)}
 spf(i0,k);spf(i1,k*fr);ctx.restore();ctx.globalAlpha=1}
-var mL=val("musL",now),mR=val("musR",now),mT=val("musT",now);if(window._musOv){mL=_musOv[0];mR=_musOv[1];mT=_musOv[2]}
+var mL=0,mR=0,mT=0;/* v173: no moustache/hand overlay even from overrides */
 if((mL||mR||mT)&&!spOn&&MU&&MU.complete&&MU.naturalWidth&&SKN&&SKN.complete&&SKN.naturalWidth){var ly=-3.4*b*(1-sm((190-120)/620))+jolt,oy=162+ly,dm=Math.max(Math.abs(mL),Math.abs(mR),Math.abs(mT));
 ctx.globalAlpha=Math.min(1,dm*6);ctx.drawImage(SKN,340,oy);ctx.globalAlpha=1;
 for(var sx2=0;sx2<208;sx2+=2){var dn=(sx2+1-104)/60,wl=dn<0?Math.pow(Math.min(1,-dn),1.7):0,wr=dn>0?Math.pow(Math.min(1,dn),1.7):0,lf=mL*wl+mR*wr,cr=mT*(1-Math.min(1,Math.abs(dn)))*.25;
 ctx.drawImage(MU,sx2,0,2,100,340+sx2+(dn<0?-1:1)*Math.abs(lf)*3,oy-lf*8-cr*2,2.5,100*(1+.08*Math.abs(lf)))}}
-var hf=val("hf",now);if(window._hpOv!=null)hf=1;else if(window._nsOn&&window._nsOn.ntop)hf=0;
+var hf=0;/* v173: arm sprite is always still, including overrides */
 if(hf>.002&&!spOn&&HA[0].complete&&HA[1].complete&&HA[2].complete&&HA[0].naturalWidth&&HA[1].naturalWidth&&HA[2].naturalWidth&&HM&&HM.complete&&HM.naturalWidth){var hp=Math.max(0,Math.min(HT-.0001,window._hpOv!=null?window._hpOv:val("hp",now))),si=0,acc=0;while(si<HW.length-1&&acc+HW[si]<=hp){acc+=HW[si];si++}
 var sf=(hp-acc)/HW[si];sf=sf<0?0:sf>1?1:sf;var big=HW[si]>1.5;if(big)sf=sm(sf);var ka=HP[si],kb=HP[si+1],dyH=-3.4*b*(1-sm(180/620))+jolt;
 hcx.globalCompositeOperation="source-over";hcx.globalAlpha=1;hcx.clearRect(0,0,560,1019);

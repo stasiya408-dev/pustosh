@@ -1591,23 +1591,15 @@ setTimeout(function(){var f=FX.fly;if(f){f.a=(side=="R"?0:Math.PI)+(Math.random(
 function clench(side){if(busy||window._zSel)return;done(2600);try{SND.heroRustle()}catch(e){}/* потягивается: глубокий вдох, плечи вверх */
 add("deep",2500,function(u){return 2.4*Math.sin(Math.PI*u)});
 add("head",2500,function(u){return (side=="R"?1:-1)*.05*Math.sin(Math.PI*2*u)})}
-function hand(){if(busy||window._zSel)return;done(7300);try{SND.heroRustle()}catch(e){}
-/* рука поднимается к усам, поглаживает и подкручивает, потом опускается (кадры из листа пользователя) */
-add("hp",7000,function(u){return u*HT});
-add("hf",7000,function(u){return Math.min(1,u*10,(1-u)*10)});
-add("deep",7000,function(u){return .3*Math.sin(Math.PI*u)})}
-function mustache(){if(busy||window._zSel)return;done(5200);try{SND.heroRustle&&0}catch(e){}
-/* левая рука — левый ус вверх и подкрутка, затем правый; в конце лёгкая встряска */
-add("musL",5000,function(u){return Math.sin(Math.PI*Math.min(1,u*1.6))*(u<.625?1:0)});
-add("musR",5000,function(u){var v=(u-.35)/.65;if(v<0||v>1)return 0;return Math.sin(Math.PI*v)});
-add("musT",5000,function(u){return u<.12||u>.9?0:Math.sin((u-.12)/.78*Math.PI)});
-add("deep",5000,function(u){return .25*Math.sin(Math.PI*u)})}
+/* v173: idle moustache-hand animation removed at user request */
+function hand(){/* no movement: hand remains in its natural resting pose */}
+function mustache(){/* no movement: no moustache twirl */}
 function glance(){if(busy||window._zSel)return;done(2400);var sg=Math.random()<.5?1:-1;
 add("head",2300,function(u){return sg*.15*Math.sin(Math.PI*Math.min(1,u*1.1))*(u<.5?1:Math.cos((u-.5)*Math.PI*.9))})}
 function tick(){var now=Date.now();if(busy||window._zSel||document.hidden||(typeof fxBusy=="function"&&fxBusy()))return;var g=geo();if(!g.W||!g.H)return;
 var P=window._pet;if(P&&P.state=="sit"&&!P.act&&now>cd.s&&now-P.sitSince>P.stompAfter){cd.s=now+9000;P.sitSince=now;stomp("L");return}
 var f=FX.fly;if(f&&now>cd.f&&f.x>g.W*.2&&f.x<g.W*.8&&f.y>g.H*.12&&f.y<g.H*.62&&Math.random()<.3){cd.f=now+8000;swat(f.x>g.W/2?"R":"L");return}
-if(now>nextIdle){nextIdle=now+7500+Math.random()*8000;var rr=Math.random();if(rr<.42)hand();else if(rr<.52)mustache();else clench(Math.random()<.5?"L":"R")}}
+if(now>nextIdle){nextIdle=now+7500+Math.random()*8000;var rr=Math.random();if(rr<.3)glance();else clench(Math.random()<.5?"L":"R")}}
 setInterval(tick,350);
 window.heroDemo=function(w,s){({hand:hand,stomp:stomp,swat:swat,clench:clench,glance:glance,mustache:mustache})[w](s)};
 })();

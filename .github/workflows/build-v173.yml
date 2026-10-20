@@ -9,6 +9,7 @@ on:
       - tools/patch_v173.py
       - tools/test_patch_v173.py
       - tools/mobile_smoke_v173.cjs
+      - tools/build_standalone_v173.py
   workflow_dispatch:
 
 permissions:
@@ -60,3 +61,12 @@ jobs:
           name: v173-mobile-smoke-captures
           path: smoke-mobile-*.png
           if-no-files-found: ignore
+      - name: Build one-file offline HTML preview
+        run: python3 tools/build_standalone_v173.py
+      - name: Downloadable standalone HTML game
+        uses: actions/upload-artifact@v4
+        with:
+          name: game-v173-single-html
+          path: game_v173_standalone.html
+          if-no-files-found: error
+          retention-days: 90

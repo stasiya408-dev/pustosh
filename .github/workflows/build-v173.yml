@@ -10,6 +10,8 @@ on:
       - tools/test_patch_v173.py
       - tools/mobile_smoke_v173.cjs
       - tools/build_standalone_v173.py
+      - tools/grant_test_talers_v173.py
+      - tools/test_qa_taler_grant_v173.cjs
       - tools/disable_moustache_hand_v173.py
       - tools/enlarge_boss_cards_v173.py
       - tools/test_boss_swipe_v173.cjs
@@ -72,6 +74,10 @@ jobs:
           if-no-files-found: ignore
       - name: Build one-file offline HTML preview
         run: python3 tools/build_standalone_v173.py
+      - name: Create a separate one-time 10000 taler testing HTML
+        run: python3 tools/grant_test_talers_v173.py
+      - name: Verify one-time +10000 taler credit is saved and not repeated
+        run: node tools/test_qa_taler_grant_v173.cjs
       - name: Give the test build a distinct name to avoid opening an old HTML
         run: mv game_v173_standalone.html game_v173_hand_frames_removed.html
       - name: Downloadable HTML without any hand animation frame assets
@@ -79,5 +85,12 @@ jobs:
         with:
           name: game-v173-no-hand-frames
           path: game_v173_hand_frames_removed.html
+          if-no-files-found: error
+          retention-days: 90
+      - name: Downloadable test build with a one-time +10000 taler credit
+        uses: actions/upload-artifact@v4
+        with:
+          name: game-v173-test-10000-talers
+          path: game_v173_test_10000_talers.html
           if-no-files-found: error
           retention-days: 90

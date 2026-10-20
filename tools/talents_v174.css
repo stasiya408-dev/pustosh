@@ -1,0 +1,11 @@
+#talentOpen{position:fixed;right:10px;bottom:105px;z-index:30;background:#342015;border:2px solid #c9a052;border-radius:10px;color:#f5d39b;padding:9px;font:bold 13px Georgia;cursor:pointer}
+#talentModal{position:fixed;inset:0;z-index:999999;background:#080305df;align-items:center;justify-content:center;padding:10px;color:#f5daa9;font-family:Georgia,serif}
+#talentModal *{box-sizing:border-box}
+.tal-shell{width:min(100%,510px);max-height:95dvh;overflow-y:auto;overscroll-behavior:contain;padding:14px;background:linear-gradient(#3d2716,#190e09);border:3px solid #ba8943;border-radius:13px}
+.tal-head{display:flex;align-items:center;justify-content:space-between;gap:4px;font-size:17px}.tal-head button{font:22px Arial;color:#f3d5a1;background:#362012;border:1px solid #d4ac68;border-radius:6px;min-width:42px;min-height:42px;cursor:pointer}
+.tal-sub,.tal-note{text-align:center;font-size:12px;color:#d0b68e;line-height:1.35}.tal-meta{display:flex;justify-content:space-between;padding:11px;background:#190d08;border-radius:6px;font-size:13px}.tal-meta b{color:#ffd078}
+.tal-bar{height:11px;border:1px solid #936a32;border-radius:12px;background:#110805;overflow:hidden;margin-top:10px}.tal-bar span{display:block;height:100%;background:linear-gradient(90deg,#874319,#ecc16c)}
+.tal-ttl{margin:11px 0 7px;text-align:center;color:#ecc078;font-size:12px}.tal-tier:not(:last-child):after{content:'⌄';display:block;text-align:center;color:#d6a459;font-size:20px}.tal-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.tal-node{min-height:131px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:5px;background:linear-gradient(#56331b,#2a180e);border:1px solid #b48a49;border-radius:8px;color:#f3d8a9;padding:8px 4px;cursor:pointer;font-family:Georgia,serif}
+.tal-icon{font-size:24px}.tal-node b{font-size:12px;text-align:center;min-height:30px}.tal-node small{font-size:10px;text-align:center;color:#dbc396;min-height:37px}.tal-node em{font-size:13px;font-weight:bold;font-style:normal}.tal-node.locked{opacity:.4;filter:grayscale(1)}
+@media(max-width:360px){.tal-node b{font-size:11px}.tal-node small{font-size:9px}.tal-head{font-size:14px}}

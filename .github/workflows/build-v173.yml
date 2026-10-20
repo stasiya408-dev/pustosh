@@ -1,4 +1,4 @@
-name: Build and smoke-test v173 with enlarged swipeable boss cards
+name: Build v173 with still Cossack arm and swipeable bosses
 
 on:
   push:
@@ -41,7 +41,7 @@ jobs:
             grep -q 'name="ver" content="173"' index.html
             echo "Already built v173; checking mobile runtime."
           fi
-      - name: Keep Cossack moustache-hand still
+      - name: Freeze Cossack arm sprite in canvas, preserving head and breathing
         run: python3 tools/disable_moustache_hand_v173.py
       - name: Enlarge boss list for vertical swiping
         run: python3 tools/enlarge_boss_cards_v173.py
@@ -51,7 +51,7 @@ jobs:
           git config user.email "codex@openai.com"
           git add index.html assets/boss
           if ! git diff --cached --quiet; then
-            git commit -m "Enlarge boss cards and enable vertical swipe [skip ci]"
+            git commit -m "Freeze Cossack arm overlay and keep swipeable boss cards [skip ci]"
             git push origin HEAD:codex/v173-ux-boss-forge
           fi
       - uses: actions/setup-node@v4
@@ -72,10 +72,12 @@ jobs:
           if-no-files-found: ignore
       - name: Build one-file offline HTML preview
         run: python3 tools/build_standalone_v173.py
-      - name: Downloadable HTML with swipeable boss cards
+      - name: Give the test build a distinct name to avoid opening an old HTML
+        run: mv game_v173_standalone.html game_v173_arm_frozen.html
+      - name: Downloadable HTML with frozen arm and swipeable boss cards
         uses: actions/upload-artifact@v4
         with:
-          name: game-v173-large-boss-cards
-          path: game_v173_standalone.html
+          name: game-v173-arm-frozen
+          path: game_v173_arm_frozen.html
           if-no-files-found: error
           retention-days: 90

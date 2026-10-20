@@ -1,0 +1,64 @@
+name: v174 Talent Tree Alpha
+on:
+  push:
+    branches: [codex/v174-talent-tree]
+    paths:
+      - tools/talents_v174.js
+      - tools/talents_v174.css
+      - tools/install_talents_v174.py
+      - .github/workflows/talents-v174.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check talent module syntax
+        run: node --check tools/talents_v174.js
+      - name: Install talent tree on v173
+        run: |
+          if grep -q 'name="ver" content="173"' index.html; then
+            python3 tools/install_talents_v174.py
+          else
+            grep -q 'name="ver" content="174"' index.html
+            grep -q 'id="talents-v174"' index.html
+            echo "Already applied"
+          fi
+      - name: Validate feature and existing damage source
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          s=Path('index.html').read_text()
+          for k in ('id="talents-v174"','window.pgBossShot=function','window.TALENTS=','class="tal-shell"','pgBossShot(pd)','pd=Math.min(Math.max(0,b.hp),pd)','name="ver" content="174"'):
+            assert k in s,k
+          assert s.count('id="talents-v174"')==1
+          print("Talent integration checks passed")
+          PY
+      - name: Build standalone offline preview
+        run: |
+          python3 tools/build_standalone_v173.py
+          mv game_v173_standalone.html game_v174_talent_tree.html
+      - name: Publish HTML preview
+        uses: actions/upload-artifact@v4
+        with:
+          name: game-v174-talent-tree-html
+          path: game_v174_talent_tree.html
+          retention-days: 60
+      - name: Commit updated test version only
+        run: |
+          git config user.name "Codex"
+          git config user.email "codex@openai.com"
+          git add index.html
+          if ! git diff --cached --quiet; then
+            git commit -m "Apply unified boss talent tree to v174 alpha [skip ci]"
+            git push origin HEAD:codex/v174-talent-tree
+          fi

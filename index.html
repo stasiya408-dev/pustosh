@@ -4582,6 +4582,7 @@ function init(){
      var title=document.querySelector("#nbmp h2");
      if(title&&title.textContent.indexOf("Остап")>=0){
        ev.preventDefault();ev.stopImmediatePropagation();
+       if(attempts()>=maximum()||count()<1){alertText(count()<1?"Сначала найди ключ Остапа в походе.":"Лимит босса на сегодня исчерпан.");return}
        document.getElementById("nbmd").classList.remove("on");
        openChoose();return;
      }

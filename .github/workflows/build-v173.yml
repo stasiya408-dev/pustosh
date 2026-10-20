@@ -1,4 +1,4 @@
-name: Build v173 with removed Cossack hand frames and swipeable bosses
+name: Test Ostap pre-battle mode selector and locked battle on v174 alpha
 
 on:
   push:
@@ -43,7 +43,7 @@ jobs:
           fi
       - name: Remove all 27 hand sprite slots, mask, moustache overlays and renderer
         run: python3 tools/disable_moustache_hand_v173.py
-      - name: Enlarge boss list for vertical swiping
+      - name: Keep large swipeable boss list and install test selector for Ostap
         run: python3 tools/enlarge_boss_cards_v173.py
       - name: Commit generated game changes on the feature branch
         run: |
@@ -51,7 +51,7 @@ jobs:
           git config user.email "codex@openai.com"
           git add index.html assets/boss
           if ! git diff --cached --quiet; then
-            git commit -m "Remove animated hand frames, preserve hero pose and other animations [skip ci]"
+            git commit -m "Build Ostap pre-battle choice while preserving other bosses [skip ci]"
             git push origin HEAD:codex/v173-ux-boss-forge
           fi
       - uses: actions/setup-node@v4
@@ -61,7 +61,7 @@ jobs:
         run: npm install --no-save --no-audit --no-fund playwright@1.58.2
       - name: Run existing mobile alpha smoke test
         run: node tools/mobile_smoke_v173.cjs
-      - name: Verify large boss cards and vertical swipe on 390x780
+      - name: Verify boss swipe and Ostap selection, lock, reward claim on 390x780
         run: node tools/test_boss_swipe_v173.cjs
       - name: Attach mobile screen captures
         if: always()
@@ -73,11 +73,11 @@ jobs:
       - name: Build one-file offline HTML preview
         run: python3 tools/build_standalone_v173.py
       - name: Give the test build a distinct name to avoid opening an old HTML
-        run: mv game_v173_standalone.html game_v173_hand_frames_removed.html
-      - name: Downloadable HTML without any hand animation frame assets
+        run: mv game_v173_standalone.html game_v174_ostap_choice_test.html
+      - name: Downloadable Ostap mode-and-rage alpha prototype
         uses: actions/upload-artifact@v4
         with:
-          name: game-v173-no-hand-frames
-          path: game_v173_hand_frames_removed.html
+          name: game-v174-ostap-choice-test
+          path: game_v174_ostap_choice_test.html
           if-no-files-found: error
           retention-days: 90

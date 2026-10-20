@@ -1,0 +1,102 @@
+name: Add bulk samopal purchases with live taler total (v173 alpha)
+
+on:
+  push:
+    branches:
+      - codex/v173-ux-boss-forge
+    paths:
+      - .github/workflows/build-v173.yml
+      - tools/patch_v173.py
+      - tools/test_patch_v173.py
+      - tools/mobile_smoke_v173.cjs
+      - tools/build_standalone_v173.py
+      - tools/grant_test_talers_v173.py
+      - tools/test_qa_taler_grant_v173.cjs
+      - tools/market_bulk_buy_v173.py
+      - tools/test_bulk_samopals_v173.cjs
+      - tools/disable_moustache_hand_v173.py
+      - tools/enlarge_boss_cards_v173.py
+      - tools/test_boss_swipe_v173.cjs
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build v173 only if input is still v172
+        run: |
+          if grep -q 'name="ver" content="172"' index.html; then
+            python3 tools/patch_v173.py index.html _v173/index.html
+            python3 tools/test_patch_v173.py index.html _v173/index.html
+            cp _v173/index.html index.html
+            mkdir -p assets/boss
+            cp _v173/assets/boss/*.webp assets/boss/
+          else
+            grep -q 'name="ver" content="173"' index.html
+            echo "Already built v173; checking mobile runtime."
+          fi
+      - name: Remove all 27 hand sprite slots, mask, moustache overlays and renderer
+        run: python3 tools/disable_moustache_hand_v173.py
+      - name: Enlarge boss list for vertical swiping
+        run: python3 tools/enlarge_boss_cards_v173.py
+      - name: Enable bulk samopal purchases with a live total in the market
+        run: python3 tools/market_bulk_buy_v173.py
+      - name: Commit generated game changes on the feature branch
+        run: |
+          git config user.name "Codex"
+          git config user.email "codex@openai.com"
+          git add index.html assets/boss
+          if ! git diff --cached --quiet; then
+            git commit -m "Remove animated hand frames, preserve hero pose and other animations [skip ci]"
+            git push origin HEAD:codex/v173-ux-boss-forge
+          fi
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install Playwright JavaScript driver
+        run: npm install --no-save --no-audit --no-fund playwright@1.58.2
+      - name: Run existing mobile alpha smoke test
+        run: node tools/mobile_smoke_v173.cjs
+      - name: Verify large boss cards and vertical swipe on 390x780
+        run: node tools/test_boss_swipe_v173.cjs
+      - name: Verify quantity picker, live totals and bulk purchases on mobile
+        run: node tools/test_bulk_samopals_v173.cjs
+      - name: Attach mobile screen captures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v173-mobile-smoke-captures
+          path: smoke-mobile-*.png
+          if-no-files-found: ignore
+      - name: Build one-file offline HTML preview
+        run: python3 tools/build_standalone_v173.py
+      - name: Create a separate one-time 10000 taler testing HTML
+        run: python3 tools/grant_test_talers_v173.py
+      - name: Verify one-time +10000 taler credit is saved and not repeated
+        run: node tools/test_qa_taler_grant_v173.cjs
+      - name: Give the test build a distinct name to avoid opening an old HTML
+        run: mv game_v173_standalone.html game_v173_hand_frames_removed.html
+      - name: Downloadable HTML without any hand animation frame assets
+        uses: actions/upload-artifact@v4
+        with:
+          name: game-v173-bulk-samopals
+          path: game_v173_hand_frames_removed.html
+          if-no-files-found: error
+          retention-days: 90
+      - name: Downloadable test build with a one-time +10000 taler credit
+        uses: actions/upload-artifact@v4
+        with:
+          name: game-v173-bulk-samopals-plus-10000
+          path: game_v173_test_10000_talers.html
+          if-no-files-found: error
+          retention-days: 90

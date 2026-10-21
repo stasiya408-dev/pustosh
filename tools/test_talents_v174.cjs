@@ -7,9 +7,9 @@ vm.runInNewContext(fs.readFileSync("tools/talents_v174.js","utf8"),ctx);
 const T=window.TALENTS;
 const tests=[
 [0,0,0,1000],
-[999,0,0,1],
+[999,0,0,1000],
 [1000,1,1,1200],
-[2199,1,1,1],
+[2199,1,1,1200],
 [2200,2,2,1400],
 [3600,3,3,1600],
 [5200,4,4,1800],

@@ -2,7 +2,7 @@ const fs=require("node:fs"),vm=require("node:vm"),assert=require("node:assert/st
 const player={bossStats:{totalPersonalDamage:0}};
 let saves=0;
 const window={};
-const ctx={window, PG:()=>player, S:{mode:"solo"},save:()=>{saves++},document:{readyState:"loading",addEventListener(){}},console,Math};
+const ctx={window, PG:()=>player, S:{mode:"solo"},save:()=>{saves++},document:{readyState:"loading",addEventListener(){},getElementById(){return null}},console,Math};
 vm.runInNewContext(fs.readFileSync("tools/talents_v174.js","utf8"),ctx);
 const T=window.TALENTS;
 const tests=[

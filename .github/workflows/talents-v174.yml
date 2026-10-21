@@ -4,6 +4,7 @@ on:
     branches: [codex/v174-talent-tree]
     paths:
       - tools/talents_v174.js
+      - tools/test_talents_v174.cjs
       - tools/talents_v174.css
       - tools/install_talents_v174.py
       - .github/workflows/talents-v174.yml
@@ -22,8 +23,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Check talent module syntax
-        run: node --check tools/talents_v174.js
+      - name: Check talent module syntax and progressive XP balance
+        run: |
+          node --check tools/talents_v174.js
+          node tools/test_talents_v174.cjs
       - name: Install talent tree on v173
         run: |
           if grep -q 'name="ver" content="173"' index.html; then
@@ -33,6 +36,22 @@ jobs:
             grep -q 'id="talents-v174"' index.html
             echo "Already applied"
           fi
+      - name: Sync latest talent logic into the standalone game without touching unrelated code
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path("index.html")
+          s=p.read_text(encoding="utf-8")
+          begin='<script id="talents-v174">'
+          end='</script>'
+          assert s.count(begin)==1
+          a=s.index(begin)+len(begin)
+          b=s.index(end,a)
+          logic=Path("tools/talents_v174.js").read_text(encoding="utf-8")
+          s=s[:a]+logic+s[b:]
+          p.write_text(s,encoding="utf-8")
+          print("Synchronized v174 XP formula")
+          PY
       - name: Validate feature and existing damage source
         run: |
           python3 - <<'PY'
@@ -41,6 +60,8 @@ jobs:
           for k in ('id="talents-v174"','window.pgBossShot=function','window.TALENTS=','class="tal-shell"','pgBossShot(pd)','pd=Math.min(Math.max(0,b.hp),pd)','name="ver" content="174"'):
             assert k in s,k
           assert s.count('id="talents-v174"')==1
+          assert 'var BASE=1000,STEP=200;' in s
+          assert 'function levelFromDamage(d)' in s
           print("Talent integration checks passed")
           PY
       - name: Build standalone offline preview

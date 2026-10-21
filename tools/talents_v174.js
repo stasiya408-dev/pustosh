@@ -15,12 +15,24 @@ var N=[
 {id:"comrade",n:"Побратим",ic:"♙",d:"+1% шкоди у відряді",t:3},
 {id:"legend",n:"Легенда степу",ic:"★",d:"+0,5% урону будь-якої зброї",t:3}
 ];
-var TH=[50000,120000,300000,650000,1200000,2000000,3200000,5000000,7000000,10000000,14000000,19000000,25000000,33000000,44000000,58000000,75000000,96000000,122000000,155000000];
+/* Each talent point costs 1000, then 1200, 1400, ... PERSONAL boss damage. */
+var BASE=1000,STEP=200;
+function needForPoint(point){return BASE+STEP*(Math.max(1,Math.floor(point))-1)}
+function totalFor(points){return points<=0?0:points*(2*BASE+(points-1)*STEP)/2}
+function levelFromDamage(d){
+  /* cumulative totalFor(n) = 100*n*(n+9); use an inverse instead of a level cap */
+  var n=Math.max(0,Math.floor((Math.sqrt(81+d/25)-9)/2));
+  while(totalFor(n+1)<=d)n++;
+  while(n>0&&totalFor(n)>d)n--;
+  return n;
+}
+var TH=Array.from({length:60},function(_,i){return totalFor(i+1)});
+
 var REQ=[0,3,8,14];
 function root(){var p=PG();return p.talents||(p.talents={version:1,spent:{}})}
 function spent(){var t=root();if(!t.spent||typeof t.spent!=="object")t.spent={};return t.spent}
-function damage(){return Math.max(0,Math.floor(Number(PG().bossStats.totalPersonalDamage)||0))}
-function lvl(){var d=damage(),n=0;for(var i=0;i<TH.length;i++)if(d>=TH[i])n++;return n}
+function damage(){var stats=PG().bossStats||{};return Math.max(0,Math.floor(Number(stats.totalPersonalDamage)||0))}
+function lvl(){return levelFromDamage(damage())}
 function r(k){return Math.min(5,Math.max(0,Math.floor(Number(spent()[k])||0)))}
 function used(){return N.reduce(function(a,n){return a+r(n.id)},0)}
 function free(){return Math.max(0,lvl()-used())}
@@ -38,10 +50,10 @@ return {damage:Math.max(1,Math.round(base*(1+Math.min(add,.25))*(crit?1.5+r("mar
 function fmt(n){return Math.floor(n).toLocaleString("uk-UA")}
 function render(){
 var el=document.getElementById("talentModal");if(!el)return;
-var l=lvl(),d=damage(),prev=l?TH[l-1]:0,next=TH[l],pct=next===undefined?100:Math.max(0,Math.min(100,(d-prev)/(next-prev)*100));
+var l=lvl(),d=damage(),prev=totalFor(l),next=totalFor(l+1),pct=Math.max(0,Math.min(100,(d-prev)/(next-prev)*100));
 var h='<div class="tal-shell" role="dialog" aria-modal="true" aria-label="Козацька майстерність"><div class="tal-head"><b>⚔ КОЗАЦЬКА МАЙСТЕРНІСТЬ</b><button type="button" id="talClose">✕</button></div>'
-+'<p class="tal-sub">Одне дерево на весь акаунт · бонуси для всіх видів зброї проти босів</p><div class="tal-meta">Рівень <b>'+l+'/20</b> · Вільні очки <b>'+free()+'</b></div>'
-+'<div class="tal-bar"><span style="width:'+pct+'%"></span></div><div class="tal-note">Всього особистої шкоди: '+fmt(d)+' · '+(next===undefined?'всі очки зібрані':'до наступного очка: '+fmt(next-d))+'</div><div class="tal-tree">';
++'<p class="tal-sub">Одне дерево на весь акаунт · бонуси для всіх видів зброї проти босів</p><div class="tal-meta">Рівень <b>'+l+'</b> · Вільні очки <b>'+free()+'</b></div>'
++'<div class="tal-bar"><span style="width:'+pct+'%"></span></div><div class="tal-note">Досвід від особистої шкоди босам: '+fmt(d)+' · наступне очко за '+fmt(needForPoint(l+1))+' шкоди · залишилось '+fmt(next-d)+'</div><div class="tal-tree">';
 N.forEach(function(n,i){
 if(i%3===0){if(i)h+='</div>';h+='<div class="tal-tier"><div class="tal-ttl">'+["I · ОСНОВА","II · МАЙСТЕРНІСТЬ","III · ВЕТЕРАН","IV · ОТАМАН"][n.t]+(REQ[n.t]?' · від '+REQ[n.t]+' вкладених очок':'')+'</div><div class="tal-row">'}
 var a=r(n.id),locked=used()<REQ[n.t];
@@ -60,6 +72,6 @@ e.addEventListener("click",function(ev){if(ev.target===e)close()});
 var b=document.createElement("button");b.type="button";b.id="talentOpen";b.textContent="⚔ Таланти";b.onclick=open;document.body.appendChild(b);
 var my=document.getElementById("nbmy");if(my){my.style.cursor="pointer";my.title="Відкрити дерево талантів";my.addEventListener("click",open)}
 }
-window.TALENTS={open:open,close:close,shot:shot,upgrade:inc,rank:r,level:lvl,free:free,damage:damage,allocated:used,nodes:N,thresholds:TH};
+window.TALENTS={open:open,close:close,shot:shot,upgrade:inc,rank:r,level:lvl,free:free,damage:damage,allocated:used,nodes:N,thresholds:TH,needForPoint:needForPoint,totalFor:totalFor,levelFromDamage:levelFromDamage};
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",install);else install();
 })();

@@ -15,10 +15,10 @@ BLOCK_MIN = 5              # сколько секунд ждать, если t.
 GRACE = 4                  # если ещё один источник дорабатывает отдых меньше этого времени, подождём и его
 COOL = 25                  # секунд «отдыха» поисковика после отказа (умножается на число отказов подряд)
 
-# Источники: (id, название, адрес с {q} и {p}, как спрашиваем про слово w (None = TEMPLATES), сколько страниц ответа брать (None = 1))
+# Источники: (id, название, адрес с {q}, {p} (страница 1, 2, 3) и {f} (номер первого результата для Bing), как спрашиваем про слово w (None = TEMPLATES), сколько страниц ответа брать (None = 1))
 ENGINES = [
     ('ddg', 'DuckDuckGo', 'https://lite.duckduckgo.com/lite/?q={q}', None, None),
-    ('bing', 'Bing', 'https://www.bing.com/search?q={q}&count=50&setlang=ru', None, None),
+    ('bing', 'Bing', 'https://www.bing.com/search?q={q}&count=50&setlang=ru&first={f}', None, 3),
     ('lyzem', 'Lyzem', 'https://lyzem.com/search?q={q}&p={p}', ['{w}', '{w} чат'], 3),     # поисковик по Telegram, у него есть страницы
     ('mojeek', 'Mojeek', 'https://www.mojeek.com/search?q={q}', None, None),
     ('brave', 'Brave', 'https://search.brave.com/search?q={q}&source=web', None, None),
@@ -35,6 +35,7 @@ NAME = r'[A-Za-z][A-Za-z0-9_]{3,30}[A-Za-z0-9]'
 LINK_RE = re.compile(r'(?<![\w-])(?:t\.me|telegram\.me|telegram\.dog)/(?:s/)?(' + NAME + r')(?![A-Za-z0-9_])', re.I)
 TG_RE = re.compile(r'tg://resolve\?domain=(' + NAME + r')(?![A-Za-z0-9_])', re.I)
 CAT_RE = re.compile(r'tgstat\.[a-z]+/(?:chat|channel)/@(' + NAME + r')(?![A-Za-z0-9_])', re.I)
+LYZEM_RE = re.compile(r'search-result-type-img.{0,200}?<span>\s*([A-Za-z ]{3,14}?)\s*</span>.{0,400}?<a href="https?://t\.me/(' + NAME + r')(?![A-Za-z0-9_])', re.S | re.I)
 CK_RE = re.compile(r'[?&;]u=a1([A-Za-z0-9_\-]+)')           # Bing прячет адрес результата в base64
 
 
@@ -90,6 +91,10 @@ def extract(text):
         seen.add(k)
         out.append(n)
     t2 = html.unescape(text or '')
+    if 'search-result-type-img' in t2:                                  # Lyzem подписывает тип результата: каналы, боты и люди нам не нужны
+        for m in LYZEM_RE.finditer(t2):
+            if m.group(1).strip().lower() in ('channel', 'bot', 'user', 'people', 'person'):
+                seen.add(m.group(2).lower())
     chunks = [text or '', t2, urllib.parse.unquote(t2)]
     for m in CK_RE.finditer(t2):
         try:
@@ -183,7 +188,7 @@ def search_word(word, engines, pause, stop=lambda: False):
                     time.sleep(pause())
                 first = False
                 try:
-                    st, text, wait = fetch(e.url.format(q=urllib.parse.quote_plus(t.format(w=word)), p=pg))
+                    st, text, wait = fetch(e.url.format(q=urllib.parse.quote_plus(t.format(w=word)), p=pg, f=(pg - 1) * 10 + 1))
                 except net.NetError as ex:
                     e.fail(ex.msg)
                     break
@@ -408,7 +413,7 @@ def diagnose(write):
     for e in make_engines():
         for t in e.templates:
             q = t.format(w='рыбалка')
-            _probe_url(write, '%s [%s]' % (e.name, q), e.url.format(q=urllib.parse.quote_plus(q), p=1), deep=True)
+            _probe_url(write, '%s [%s]' % (e.name, q), e.url.format(q=urllib.parse.quote_plus(q), p=1, f=1), deep=True)
             time.sleep(2.5)
     write('== другие адреса (проба, слово «рыбалка») ==')
     for name, url, deep in PROBE_URLS:

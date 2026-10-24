@@ -217,6 +217,11 @@ bu = base64.urlsafe_b64encode(b'https://t.me/spinning_all').decode().rstrip('=')
 ok(ex('<a href="https://www.bing.com/ck/a?!&amp;&amp;p=1&amp;u=a1%s&amp;ntb=1">x</a>' % bu) == ['spinning_all'], 'из зашифрованной ссылки Bing достаётся имя t.me')
 ok(ex('https://t.me/joinchat/AAAA https://t.me/+AbCdEf t.me/addstickers/xx t.me/some_bot https://t.me/share/url?u=1') == [], 'приглашения, стикеры, боты и служебные адреса отбрасываются')
 ok(sorted(ex('tg://resolve?domain=hunt_chat и tgstat.ru/chat/@memes_games и telegram.me/Tanks_Chat')) == ['Tanks_Chat', 'hunt_chat', 'memes_games'], 'берутся и адреса tg://, tgstat и telegram.me')
+def _ly(kind, name):
+    return ('<li><div class="search-result-type-img"> <div class="search-%s"> <span>%s</span> </div> </div> </div> <div class="search-result-info"> '
+            '<p class="search-result-title"> <a href="https://t.me/%s"> T </a> </p></div></li>' % (kind, kind, name))
+ok(ex(_ly('channel', 'rybalka_dnm') + _ly('group', 'fish_chat_x') + _ly('bot', 'some_robot') + '<a href="https://t.me/rybalka_dnm/55">p</a>') == ['fish_chat_x'],
+   'у Lyzem каналы и боты отбрасываются по подписи типа ещё до проверки страницы, группа остаётся')
 pg = fake_web.tme_page('ryba_ua')
 p = websearch.parse_tme(pg, 'ryba_ua')
 ok(p['kind'] == 'group' and p['title'] == 'Рыбалка Украина' and p['members'] == 5400 and p['online'] == 321 and p['about'] == 'Чат рыбаков Украины' and not p['join_request'],
@@ -250,8 +255,8 @@ except Exception as e:
 
 f = new_run(['fishing', 'games'])
 ok(f['state'] == 'done' and f['done'] == 23 and f['total'] == 23, 'поиск прошёл все 23 слова', f)
-ok(len(fake_web.WORDS_SEEN) == 23 and len(fake_web.SEARCHES) == 23 * 11 and {e for e, _ in fake_web.SEARCHES} == {'ddg', 'bing', 'lyzem', 'mojeek', 'brave'},
-   'каждое слово искалось во всех пяти источниках (у Lyzem листается, пока на странице есть новые имена)', (len(fake_web.WORDS_SEEN), len(fake_web.SEARCHES)))
+ok(len(fake_web.WORDS_SEEN) == 23 and len(fake_web.SEARCHES) == 23 * 12 and {e for e, _ in fake_web.SEARCHES} == {'ddg', 'bing', 'lyzem', 'mojeek', 'brave'},
+   'каждое слово искалось во всех пяти источниках (у Lyzem и Bing листаются страницы, пока на них есть новые имена)', (len(fake_web.WORDS_SEEN), len(fake_web.SEARCHES)))
 ok(f['total_base'] == 7 and f['unsaved'] == 7 and f['new'] == 7 and f['kept'] == 7, 'в базе 7 новых групп (каналы, люди, пустые и мои чаты не попали)', f)
 ok(f['checked'] == 11 and len(fake_web.TME) == 11 and len(set(fake_web.TME)) == 11 and 'autoua' not in fake_web.TME,
    'страница t.me открыта по разу для каждого нового имени (11), мой чат не проверялся', (f['checked'], fake_web.TME))

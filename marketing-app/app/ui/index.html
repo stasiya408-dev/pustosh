@@ -463,7 +463,7 @@ function enginesLine(F){
 function findBoxHtml(){
   const F=S.find;
   if(F.state==='running'){const pct=F.total?Math.round(F.done*100/F.total):0;
-    const el=Math.max(0,Date.now()/1000-F.started),per=F.done?el/F.done:7,left=Math.max(0,F.total-F.done)*per;
+    const el=Math.max(0,Date.now()/1000-F.started),per=F.done?el/F.done:18,left=Math.max(0,F.total-F.done)*per;
     return `<div class="card"><h2><span class="spin">🔎</span> Ищу новые группы в интернете…</h2><div class="bar"><i style="width:${pct}%"></i></div>
       <div class="hint" style="margin-top:8px">Слов проверено: ${F.done} из ${F.total} · найдено новых групп: <b>${F.new}</b></div>
       <div class="hint">Ссылок найдено: ${F.raw||0} · страниц t.me проверено: ${F.checked||0} · подошло (группы): ${F.kept||0}</div>
@@ -657,7 +657,7 @@ document.addEventListener('click',async e=>{
       const ok=await askBox(`<h2>🔎 Искать новые чаты?</h2><ul style="padding-left:18px"><li style="margin:6px 0">Темы: <b>${ids.map(id=>esc(catName(id))).join(', ')}</b></li>
         <li style="margin:6px 0">Слов для поиска: <b>${nq}</b>${all>nq?` (за один запуск не больше ${mx}, остальное — в следующий раз)`:''}. Ищу <b>в интернете</b>: DuckDuckGo, Bing, Mojeek, Brave и в каталоге Telegram-чатов Lyzem. <b>Telegram и твой аккаунт для поиска не используются</b>: ничего не отправляется, аккаунту ничего не грозит.</li>
         <li style="margin:6px 0">Каждую найденную ссылку открываю на публичной странице t.me/…: оттуда беру название, сколько участников и сколько сейчас онлайн. Остаются только группы; каналы, люди и боты отбрасываются.</li>
-        <li style="margin:6px 0">Займёт примерно <b>${fmtWait(nq*7)}</b>. Окно можно свернуть или закрыть, поиск идёт в фоне (программа не даст Windows уснуть). Найденное сохраняется сразу, смотреть можно в любой момент.</li>
+        <li style="margin:6px 0">Займёт примерно <b>${fmtWait(nq*18)}</b>. Окно можно свернуть или закрыть, поиск идёт в фоне (программа не даст Windows уснуть). Найденное сохраняется сразу, смотреть можно в любой момент.</li>
         <li style="margin:6px 0">Вступать в группы программа не будет. Можно ли писать в группе, станет видно, когда зайдёшь в неё сам.</li></ul>
         ${S.chats.length?'':'<div class="warn">Сначала лучше нажать «Загрузить чаты»: тогда я точно знаю, в каких группах ты уже состоишь, и не покажу их заново.</div>'}`,'Начать поиск');
       if(!ok)return;

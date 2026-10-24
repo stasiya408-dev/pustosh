@@ -100,7 +100,17 @@ def run(out, live=False):
         q = functions.contacts.SearchRequest(q='рыбалка', limit=100)
         assert q.q == 'рыбалка' and q.limit == 100
         assert len(finder.plan(['fishing', 'games'])) == 23 and not finder.plan(['other'])
-        return 'telethon %s: глобальный поиск и разбор найденных групп' % telethon.__version__
+        # онлайн в группах: полный профиль канала по id и access_hash, который запомнили при поиске
+        hh = T.Channel(id=18, title='С ключом', photo=ph, date=now, megagroup=True, username='hh', access_hash=987654321)
+        c = tgu.classify_found(hh)
+        assert c['cid'] == 18 and c['hash'] == 987654321, c
+        fr = functions.channels.GetFullChannelRequest(T.InputChannel(channel_id=c['cid'], access_hash=c['hash']))
+        assert fr.channel.channel_id == 18 and fr.channel.access_hash == 987654321
+        import inspect
+        params = inspect.signature(T.ChannelFull.__init__).parameters
+        for k in ('online_count', 'participants_count', 'about'):
+            assert k in params, 'в ChannelFull нет поля ' + k
+        return 'telethon %s: глобальный поиск, разбор групп и запрос онлайна (GetFullChannel)' % telethon.__version__
     step('Telethon: поиск новых групп', search_)
 
     def errors():

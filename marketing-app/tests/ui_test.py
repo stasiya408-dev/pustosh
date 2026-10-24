@@ -12,6 +12,7 @@ HOME = tempfile.mkdtemp(prefix='mkt_ui_')
 os.environ.update({'MKT_HOME': HOME, 'MKT_TG_IMPL': 'fake_tgu:FakeTg', 'MKT_IDLE_EXIT': '0', 'MKT_ANTHROPIC_URL': BASE, 'MKT_OPENAI_URL': BASE,
                    'MKT_THREADS_BASE': BASE, 'MKT_THREADS_POLL': '0.02', 'MKT_GITHUB_API': BASE, 'MKT_UPDATE_URL': BASE + '/upd', 'MKT_BASE_DEPS': 'A'})
 import cfg, server, jobs, net, finder
+from fake_tgu import FakeTg
 from PIL import Image, ImageDraw
 httpd = server.bind(0)
 PORT = httpd.server_port
@@ -23,7 +24,7 @@ cfg.set_settings({'ANTHROPIC_API_KEY': 'good-key', 'GAME_BOT_LINK': 'https://t.m
                   'THREADS_APP_ID': 'A', 'THREADS_APP_SECRET': 'B', 'TG_API_ID': '1234567', 'TG_API_HASH': 'a' * 32})
 cfg.S['threads'] = {'token': 'T', 'user_id': '777', 'username': 'kozak_dev', 'expires': cfg.now() + 50 * 86400, 'saved': cfg.now()}
 cfg.save()
-ST.upd_json = {'version': '1.2.0', 'zip': 'a.zip', 'notes': 'новые категории чатов', 'deps_hash': 'A'}
+ST.upd_json = {'version': '1.3.0', 'zip': 'a.zip', 'notes': 'новые категории чатов', 'deps_hash': 'A'}
 
 im = Image.new('RGB', (1280, 720), (40, 30, 20)); d = ImageDraw.Draw(im)
 d.rectangle([0, 420, 1280, 720], fill=(90, 60, 30)); d.ellipse([500, 120, 780, 520], fill=(180, 90, 40)); d.text((40, 40), 'BOSS', fill=(255, 255, 255))
@@ -83,6 +84,11 @@ with sync_playwright() as p:
     check(pg.is_visible('[data-act=findstart]') and pg.is_visible('[data-act=basesave]') and pg.is_visible('[data-act=tgload]'),
           'видны кнопки: «Найти новые чаты», «Сохранить базу» и «Загрузить чаты»')
     pg.screenshot(path=SH + '/4a_find_ui.png')
+    bb = [pg.locator(x).bounding_box() for x in ('[data-act=basesave]', '[data-act=findstart]', '[data-act=tgload]')]
+    check(all(x['height'] < 46 for x in bb), 'три кнопки сверху компактные (высота %s px)' % [round(x['height']) for x in bb])
+    check(max(x['y'] for x in bb) - min(x['y'] for x in bb) < 6, 'три кнопки стоят в один ряд')
+    gl = pg.locator('#tgleft').bounding_box(); ch = pg.locator('#chats').bounding_box()
+    check(ch['x'] > gl['x'] + gl['width'] - 2 and ch['width'] > 500, 'справа отдельная панель, слева колонка с темами')
     pg.click('[data-act=fcatnone]'); pg.wait_for_timeout(200)
     pg.click('[data-act=findstart]'); pg.wait_for_timeout(300)
     check('галочки' in pg.inner_text('#toast') and pg.locator('#mo').count() == 0, 'без галочек поиск просит их поставить')
@@ -100,22 +106,49 @@ with sync_playwright() as p:
     pg.wait_for_function("document.querySelector('#findbox').innerText.includes('Следующий запрос через')", timeout=15000)
     check('Осталось примерно' in pg.inner_text('#findbox'), 'в окне видно, через сколько следующий запрос и сколько осталось')
     pg.screenshot(path=SH + '/4c2_find_wait.png')
-    pg.wait_for_selector('[data-act=basedrop]', timeout=40000); pg.wait_for_timeout(500)
+    pg.wait_for_selector('[data-act=basedrop]', timeout=40000)
+    check('Найденные группы' in pg.inner_text('#chats'), 'во время поиска найденные группы уже видны в правой панели')
+    pg.wait_for_function("document.querySelector('#findbox').innerText.includes('Поиск закончен')", timeout=60000); pg.wait_for_timeout(700)
     pg.screenshot(path=SH + '/4d_find_base.png')
-    check(pg.locator('.chrow').count() == 7, 'после поиска сразу открылась база: 7 групп')
+    check(pg.locator('.frow').count() == 7, 'после поиска в панели справа все найденные: 7 групп')
     check('https://t.me/ryba_ua' in pg.inner_html('#chats'), 'у групп из базы есть кнопка «Открыть» со ссылкой')
-    check('новых: 7' in pg.inner_text('[data-act=basesave]'), 'кнопка «Сохранить базу» показывает, сколько новых')
+    gl0 = pg.locator('a.gl').first
+    check((gl0.get_attribute('href') or '').startswith('https://t.me/') and gl0.get_attribute('target') == '_blank', 'название группы — ссылка t.me в новой вкладке')
+    check(pg.locator('.onl.on').count() >= 5 and 'онлайн' in pg.inner_text('.onl.on >> nth=0'), 'у групп видно, сколько человек онлайн')
+    nums = [int(x) for x in pg.locator('.onl.on b').all_inner_texts() and [t.replace('🟢', '').strip() for t in pg.locator('.onl.on b').all_inner_texts()]]
+    check(nums == sorted(nums, reverse=True), 'по умолчанию сверху те, где больше онлайн: %s' % nums)
+    check('Telegram вернул групп' in pg.inner_text('#findbox'), 'в итоге поиска написано, сколько вернул Telegram и сколько подошло')
+    check(pg.inner_text('[data-act=basesave] .cnt').strip() == '7', 'кнопка «Сохранить базу» показывает, сколько новых')
+    pg.select_option('#sortb', 'members'); pg.wait_for_timeout(500)
+    mem = [int(x.replace('👥', '').strip()) for x in pg.locator('.frow .tag[title="Участников в группе"]').all_inner_texts()]
+    check(mem == sorted(mem, reverse=True) and len(mem) == 7, 'сортировка «по участникам»: %s' % mem)
+    pg.select_option('#sortb', 'online'); pg.wait_for_timeout(400)
+    pg.context.grant_permissions(['clipboard-read', 'clipboard-write'])
+    pg.click('[data-act=copylinks]'); pg.wait_for_function("document.querySelector('#toast').innerText.includes('Скопировано')", timeout=5000)
+    try:
+        clip = pg.evaluate('navigator.clipboard.readText()')
+    except Exception:
+        clip = ''
+    check('Скопировано ссылок: 7' in pg.inner_text('#toast') and (not clip or (clip.count('https://t.me/') == 7 and 'ryba_ua' in clip)), 'кнопка «Скопировать ссылки» копирует названия и ссылки всех 7 групп')
+    nf0 = len(FakeTg.fulls)
+    pg.click('[data-act=onlrun]'); pg.wait_for_selector('#mo'); pg.click('#mo')
+    pg.wait_for_function("document.querySelector('#toast').innerText.includes('Онлайн обновлён')", timeout=60000)
+    check(len(FakeTg.fulls) - nf0 >= 6, 'кнопка «Обновить онлайн» спросила у Telegram про группы (%d запросов)' % (len(FakeTg.fulls) - nf0))
+    nf1 = len(FakeTg.fulls)
+    pg.click('[data-act=onlone] >> nth=0'); pg.wait_for_function("document.querySelector('#toast').innerText.includes('Онлайн обновлён')", timeout=30000)
+    check(len(FakeTg.fulls) - nf1 == 1, 'кнопка ↻ у строки проверяет одну группу')
+    pg.screenshot(path=SH + '/4d2_find_online.png')
     pg.click('[data-act=basesave]'); pg.wait_for_timeout(600)
     check(all(x['saved'] for x in cfg.S['base'].values()) and len(cfg.S['base']) == 7, 'база сохранена')
     check(pg.is_disabled('[data-act=basesave]'), 'после сохранения кнопка гаснет')
     pg.click('[data-cat=fishing]'); pg.wait_for_timeout(400)
-    check(pg.locator('.chrow').count() == 4, 'в базе можно смотреть по темам: «Рыбалка и охота» = 4')
+    check(pg.locator('.frow').count() == 4, 'в базе можно смотреть по темам: «Рыбалка и охота» = 4')
     pg.screenshot(path=SH + '/4e_find_cat.png')
     pg.select_option('[data-fcatsel="-100500003"]', 'humor'); pg.wait_for_timeout(500)
-    check(cfg.S['base']['-100500003']['cat'] == 'humor' and pg.locator('.chrow').count() == 3, 'тему группы в базе можно поменять')
+    check(cfg.S['base']['-100500003']['cat'] == 'humor' and pg.locator('.frow').count() == 3, 'тему группы в базе можно поменять')
     pg.click('[data-cat=all]'); pg.wait_for_timeout(300)
     pg.select_option('#minm', '1000'); pg.wait_for_timeout(500)
-    check(pg.locator('.chrow').count() == 5, 'фильтр «от 1000 участников»')
+    check(pg.locator('.frow').count() == 5, 'фильтр «от 1000 участников»')
     pg.select_option('#minm', '0'); pg.wait_for_timeout(400)
     pg.click('[data-act=basedrop][data-id="-100500006"]'); pg.wait_for_timeout(500)
     check('-100500006' not in cfg.S['base'], 'группу можно убрать из базы')

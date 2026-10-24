@@ -405,8 +405,8 @@ def api_publish(q, b):
     d = DRAFT
     if jobs.running():
         err('Публикация уже идёт, дождись окончания')
-    if finder.running():
-        err('Сейчас идёт поиск новых чатов. Дождись его окончания или останови поиск (вкладка Telegram).')
+    if finder.busy():
+        err('Сейчас идёт поиск новых чатов или проверка онлайна. Дождись окончания или останови (вкладка Telegram).')
     if b.get('texts'):
         api_draft({}, {'texts': b['texts']})
     if not d['texts']:
@@ -648,9 +648,26 @@ def api_find_list(q, b):
         minm = int(one('min', '0') or 0)
     except ValueError:
         minm = 0
-    r = finder.listing(one('cat'), one('q'), minm)
+    r = finder.listing(one('cat'), one('q'), minm, one('sort', 'online'))
     r['find'] = finder.view()
     return r
+
+
+def api_find_online(q, b):
+    if TG.status()['state'] != 'ready':
+        err('Сначала войди в Telegram (вкладка «Подключения» или «Telegram»)')
+    if jobs.running():
+        err('Сейчас идёт публикация. Обнови онлайн после неё.')
+    ids = [c for c in (b.get('ids') or []) if isinstance(c, str)]
+    try:
+        return {'find': finder.start_online(TG, ids)}
+    except ValueError as e:
+        err(str(e))
+
+
+def api_find_online_cancel(q, b):
+    finder.cancel_online()
+    return {'find': finder.view()}
 
 
 def api_find_save(q, b):
@@ -703,7 +720,7 @@ def api_update_check(q, b):
 
 
 def api_update_install(q, b):
-    if jobs.running() or finder.running():
+    if jobs.running() or finder.busy():
         err('Сейчас идёт публикация или поиск чатов. Обнови после них.')
     try:
         ver = update.install()
@@ -774,7 +791,7 @@ ROUTES = {
     ('POST', '/api/draft'): api_draft, ('POST', '/api/media/meta'): api_media_meta, ('POST', '/api/media/clear'): api_media_clear,
     ('POST', '/api/generate'): api_generate, ('POST', '/api/extra/start'): api_extra_start, ('POST', '/api/extra/use'): api_extra_use,
     ('POST', '/api/extra/drop'): api_extra_drop, ('POST', '/api/publish'): api_publish,
-    ('POST', '/api/find/start'): api_find_start, ('POST', '/api/find/cancel'): api_find_cancel, ('GET', '/api/find/list'): api_find_list,
+    ('POST', '/api/find/start'): api_find_start, ('POST', '/api/find/cancel'): api_find_cancel, ('GET', '/api/find/list'): api_find_list, ('POST', '/api/find/online'): api_find_online, ('POST', '/api/find/online/cancel'): api_find_online_cancel,
     ('POST', '/api/find/save'): api_find_save, ('POST', '/api/find/drop'): api_find_drop, ('POST', '/api/find/cat'): api_find_cat, ('POST', '/api/job/cancel'): api_job_cancel,
     ('POST', '/api/job/clear'): api_job_clear,
     ('POST', '/api/tg/phone'): api_tg_phone, ('POST', '/api/tg/code'): api_tg_code, ('POST', '/api/tg/password'): api_tg_password,
@@ -1008,7 +1025,7 @@ def open_window(url):
 def watchdog():
     while True:
         time.sleep(5)
-        if IDLE_EXIT and time.time() - LAST_PING[0] > IDLE_EXIT and not jobs.running() and not finder.running() and YT_LOGIN['state'] != 'wait':
+        if IDLE_EXIT and time.time() - LAST_PING[0] > IDLE_EXIT and not jobs.running() and not finder.busy() and YT_LOGIN['state'] != 'wait':
             log('нет окна — закрываюсь')
             _quit()
 

@@ -193,6 +193,8 @@ def new_run(ids):
     fake_tgu.FakeTg.searches = []
     fake_tgu.FakeTg.search_flood_at = 0
     fake_tgu.FakeTg.search_fail = ()
+    fake_tgu.FakeTg.fulls = []
+    fake_tgu.FakeTg.full_flood_at = 0
     r = api('/api/find/start', {'cats': ids})
     return r if not r.get('ok', True) else wait_find()
 
@@ -365,11 +367,73 @@ h = {'X-Token': server.TOKEN}
 st, hh, raw = net.request('GET', 'http://127.0.0.1:%d/api/find/export' % PORT, h, None, 30)
 txt = raw.decode('utf-8-sig')
 ok(st == 200 and raw[:3] == b'\xef\xbb\xbf' and 'attachment' in str(hh).lower(), 'таблица скачивается файлом (Excel откроет кириллицу)')
-ok(txt.splitlines()[0].startswith('Название;Ссылка;Участников;Тема') and 'https://t.me/tanks_chat' in txt and len(txt.splitlines()) == 7, 'в таблице заголовок и все группы', txt[:200])
+ok(txt.splitlines()[0].startswith('Название;Ссылка;Участников;Онлайн;Тема') and 'https://t.me/tanks_chat' in txt and len(txt.splitlines()) == 7, 'в таблице заголовок и все группы', txt[:200])
 st, _ = call('GET', '/api/find/export', token=False)
 ok(st == 401, 'без ключа окна таблица не отдаётся')
 st, _ = call('GET', '/api/find/list', token=False)
 ok(st == 401, 'без ключа окна база не отдаётся')
+
+# --- онлайн групп и описание ---
+def wait_online(timeout=30):
+    t0 = time.time()
+    while time.time() - t0 < timeout:
+        j = state()['find']['online_job']
+        if j['state'] != 'running':
+            return j
+        time.sleep(0.05)
+    return state()['find']['online_job']
+
+
+finder.base().clear()
+f = new_run(['fishing'])
+b = finder.base()
+ok(len(b) == 4 and len(fake_tgu.FakeTg.fulls) == 4, 'сразу после находки у каждой новой группы спрошен онлайн (4 запроса на 4 группы)', (len(b), fake_tgu.FakeTg.fulls))
+ok(all(x['online_at'] and x['online'] is not None and x['about'].startswith('Описание') for x in b.values()), 'у групп есть онлайн, время проверки и описание')
+ok(f['kept'] == 6 and f['raw'] == 36, 'окно знает, сколько чатов вернул Телеграм и сколько из них подошло', (f['raw'], f['kept']))
+ids = list(b)
+n0 = len(fake_tgu.FakeTg.fulls)
+r = api('/api/find/online', {'ids': ids})
+j = wait_online()
+ok(r['ok'] and j['state'] == 'done' and j['done'] == j['total'] == 4 and len(fake_tgu.FakeTg.fulls) == n0 + 4, 'кнопка «Обновить онлайн» заново спрашивает онлайн у всех выбранных групп', j)
+ok(api('/api/find/online', {'ids': ['нет']})['ok'] is False, 'без существующих групп обновлять нечего')
+
+f = new_run(['games'])
+b = finder.base()
+ok(b['-100500007']['gone'] and b['-100500007']['online'] is None, 'закрытая или удалённая группа помечается недоступной')
+lst = api('/api/find/list?cat=all&min=0&sort=online')['items']
+on = [x['online'] for x in lst if x['online'] is not None]
+ok(on == sorted(on, reverse=True) and lst[-1]['id'] == '-100500007', 'сортировка «по онлайну»: больше онлайна выше, недоступные в конце', [(x['title'], x['online']) for x in lst])
+lst = api('/api/find/list?cat=all&min=0&sort=members')['items']
+ok([x['members'] for x in lst] == sorted([x['members'] for x in lst], reverse=True), 'сортировка «по участникам»')
+ok(len(api('/api/find/list?cat=all&min=0&sort=new')['items']) == len(lst), 'сортировка «сначала новые» работает')
+
+fake_tgu.FakeTg.full_flood_at = len(fake_tgu.FakeTg.fulls) + 2
+api('/api/find/online', {'ids': list(finder.base())})
+j = wait_online()
+ok(j['state'] == 'done' and 'подождать' in j['warn'] and j['done'] < j['total'], 'если Телеграм просит подождать, обновление онлайна сразу останавливается', j)
+fake_tgu.FakeTg.full_flood_at = 0
+
+finder.random_pause = lambda a, b: 0.5
+api('/api/find/online', {'ids': list(finder.base())})
+r2 = api('/api/find/online', {'ids': list(finder.base())})
+ok(r2['ok'] is False and 'уже обновляется' in r2['error'], 'второе обновление онлайна параллельно не запускается')
+r3 = api('/api/publish', {})
+ok(r3['ok'] is False and 'онлайн' in r3['error'], 'пока идёт проверка онлайна, публикация не стартует')
+api('/api/find/online/cancel', {})
+j = wait_online()
+ok(j['state'] == 'cancelled' and j['done'] < j['total'], 'обновление онлайна можно остановить', j)
+finder.random_pause = lambda a, b: 0.02
+
+finder.base().clear()
+fake_tgu.FakeTg.searches = []
+fake_tgu.FakeTg.fulls = []
+fake_tgu.FakeTg.full_flood_at = 2
+api('/api/find/start', {'cats': ['fishing']})
+f = wait_find()
+ok(f['state'] == 'done' and f['done'] == 10 and len(fake_tgu.FakeTg.searches) == 10 and 'онлайн' in f['warn'] and len(fake_tgu.FakeTg.fulls) == 2,
+   'если Телеграм просит подождать при проверке онлайна, поиск продолжается, а онлайн больше не спрашивается', f)
+ok(len(finder.base()) == 4 and sum(1 for x in finder.base().values() if x['online_at']) == 1, 'найденные группы остаются в базе и без онлайна')
+fake_tgu.FakeTg.full_flood_at = 0
 
 print('\n[5] Файлы')
 png = jpg()
@@ -733,6 +797,8 @@ r = api('/api/tg/logout', {})
 ok(r['tg']['state'] == 'need_phone', 'выход из Telegram')
 r = api('/api/find/start', {'cats': ['fishing']})
 ok(r['ok'] is False and 'войди' in r['error'].lower(), 'без входа в Telegram поиск не запускается')
+r = api('/api/find/online', {'ids': ['-100500001']})
+ok(r['ok'] is False and 'войди' in r['error'].lower(), 'без входа в Telegram онлайн не обновляется')
 with open(os.path.join(HOME, 'data.json'), encoding='utf-8') as f:
     dj = json.load(f)
 ok('-1001' in dj['chats'] and dj['threads'].get('user_id') == '777', 'чаты и ключ Threads сохранены на диск')

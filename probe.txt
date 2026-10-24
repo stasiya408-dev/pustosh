@@ -1,0 +1,5 @@
+python: Python 3.12.10
+pip: pip 26.2.2 from C:\hostedtoolcache\windows\Python\3.12.10\x64\Lib\site-packages\pip (python 3.12) 
+iscc1: True
+choco: 2.7.4
+os: Microsoft Windows NT 10.0.26100.0

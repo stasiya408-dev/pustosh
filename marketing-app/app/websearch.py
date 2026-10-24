@@ -12,15 +12,16 @@ TME = 'https://t.me/'
 MIN_MEMBERS = 10           # совсем пустые группы не берём
 BLOCK_MIN = 5              # сколько секунд ждать, если t.me просит подождать (и не сказал сколько)
 
+GRACE = 4                  # если ещё один источник дорабатывает отдых меньше этого времени, подождём и его
 COOL = 25                  # секунд «отдыха» поисковика после отказа (умножается на число отказов подряд)
 
-# Источники: (id, название, адрес с {q}, как спрашиваем про слово w; None = TEMPLATES)
+# Источники: (id, название, адрес с {q} и {p}, как спрашиваем про слово w (None = TEMPLATES), сколько страниц ответа брать (None = 1))
 ENGINES = [
-    ('ddg', 'DuckDuckGo', 'https://html.duckduckgo.com/html/?q={q}', None),
-    ('bing', 'Bing', 'https://www.bing.com/search?q={q}&count=50&setlang=ru', None),
-    ('lyzem', 'Lyzem', 'https://lyzem.com/search?q={q}', ['{w}', '{w} чат']),     # поисковик по Telegram
-    ('mojeek', 'Mojeek', 'https://www.mojeek.com/search?q={q}', None),
-    ('brave', 'Brave', 'https://search.brave.com/search?q={q}&source=web', None),
+    ('ddg', 'DuckDuckGo', 'https://lite.duckduckgo.com/lite/?q={q}', None, None),
+    ('bing', 'Bing', 'https://www.bing.com/search?q={q}&count=50&setlang=ru', None, None),
+    ('lyzem', 'Lyzem', 'https://lyzem.com/search?q={q}&p={p}', ['{w}', '{w} чат'], 3),     # поисковик по Telegram, у него есть страницы
+    ('mojeek', 'Mojeek', 'https://www.mojeek.com/search?q={q}', None, None),
+    ('brave', 'Brave', 'https://search.brave.com/search?q={q}&source=web', None, None),
 ]
 # Как спрашиваем у обычного поисковика про слово w
 TEMPLATES = ['site:t.me {w} чат', '{w} чат telegram t.me']
@@ -28,7 +29,8 @@ TEMPLATES = ['site:t.me {w} чат', '{w} чат telegram t.me']
 # Служебные адреса t.me, которые не являются именами групп
 RESERVED = {'joinchat', 'addstickers', 'addemoji', 'share', 's', 'c', 'proxy', 'socks', 'iv', 'login', 'setlanguage', 'addtheme', 'boost', 'giftcode',
             'invoice', 'confirmphone', 'bg', 'msg', 'contact', 'addlist', 'm', 'web', 'apps', 'privacy', 'tos', 'blog', 'faq', 'dl', 'download',
-            'auth', 'username', 'telegram', 'support', 'botfather', 'durov', 'favicon', 'img', 'css', 'js', 'api', 'tgcatalog', 'stickers'}
+            'auth', 'username', 'telegram', 'support', 'botfather', 'durov', 'favicon', 'img', 'css', 'js', 'api', 'tgcatalog', 'stickers',
+            'lyzemcom', 'teletegch', 'teleteg_support', 'combotnews', 'combotchat', 'telemetr_chat', 'telemetr_me', 'telemetrsupport'}
 NAME = r'[A-Za-z][A-Za-z0-9_]{3,30}[A-Za-z0-9]'
 LINK_RE = re.compile(r'(?<![\w-])(?:t\.me|telegram\.me|telegram\.dog)/(?:s/)?(' + NAME + r')(?![A-Za-z0-9_])', re.I)
 TG_RE = re.compile(r'tg://resolve\?domain=(' + NAME + r')(?![A-Za-z0-9_])', re.I)
@@ -45,7 +47,9 @@ class Blocked(Exception):
 
 def fetch(url, headers=None, timeout=20):
     """Возвращает (код, текст, секунд_ждать). Сетевые ошибки — net.NetError. Тесты подменяют эту функцию."""
-    h = {'User-Agent': UA, 'Accept': 'text/html,application/xhtml+xml,*/*;q=0.8', 'Accept-Language': 'ru,en;q=0.8'}
+    h = {'User-Agent': UA, 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 'Accept-Language': 'ru-RU,ru;q=0.9,en;q=0.8',
+         'Accept-Encoding': 'gzip', 'Upgrade-Insecure-Requests': '1', 'Sec-Fetch-Dest': 'document', 'Sec-Fetch-Mode': 'navigate',
+         'Sec-Fetch-Site': 'none', 'Sec-Fetch-User': '?1'}
     h.update(headers or {})
     try:
         st, hdr, body = net.request('GET', url, h, None, timeout)
@@ -104,9 +108,10 @@ def extract(text):
 
 # ---------------------------------------------------------------- поисковики
 class Engine:
-    def __init__(self, eid, name, url, templates=None):
+    def __init__(self, eid, name, url, templates=None, pages=None):
         self.id, self.name, self.url = eid, name, url
         self.templates = list(templates or TEMPLATES)
+        self.pages = max(1, int(pages or 1))
         self.ok = self.found = self.bad = self.empty = 0
         self.off = False
         self.err = ''
@@ -145,30 +150,55 @@ def make_engines():
     return [Engine(*e) for e in ENGINES]
 
 
+def wait_ready(engines, stop, note=None):
+    """Если все живые источники сейчас отдыхают, ждёт, пока хотя бы один отдохнёт (и ещё немного, пока подтянутся остальные).
+    False — живых источников не осталось."""
+    while True:
+        alive = [e for e in engines if not e.off]
+        if not alive:
+            return False
+        cooling = [e for e in alive if e.cooling]
+        if stop():
+            return True
+        if len(cooling) < len(alive) and not any(e.cool_until - time.time() <= GRACE for e in cooling):
+            return True
+        left = min(e.cool_until for e in cooling) - time.time()
+        if note and len(cooling) == len(alive):
+            note(max(1, int(left + 0.99)))
+        time.sleep(min(0.25, max(0.02, left)))
+
+
 def search_word(word, engines, pause, stop=lambda: False):
     """Ищет слово во всех включённых поисковиках (поисковики работают одновременно, каждый — по очереди с паузами).
     Возвращает {имя_в_нижнем_регистре: (имя, поисковик)}."""
     res, lock = {}, threading.Lock()
 
     def work(e):
-        for ti, t in enumerate(e.templates):
-            if stop() or e.off or e.cooling:
-                return
-            if ti:
-                time.sleep(pause())
-            try:
-                st, text, wait = fetch(e.url.format(q=urllib.parse.quote_plus(t.format(w=word))))
-            except net.NetError as ex:
-                e.fail(ex.msg)
-                continue
-            if st != 200:
-                e.fail('ответ сервера %s' % st)
-                continue
-            names = extract(text)
-            with lock:
-                for n in names:
-                    res.setdefault(n.lower(), (n, e.name))
-            e.success(len(names))
+        first, known = True, set()
+        for t in e.templates:
+            for pg in range(1, e.pages + 1):
+                if stop() or e.off or e.cooling:
+                    return
+                if not first:
+                    time.sleep(pause())
+                first = False
+                try:
+                    st, text, wait = fetch(e.url.format(q=urllib.parse.quote_plus(t.format(w=word)), p=pg))
+                except net.NetError as ex:
+                    e.fail(ex.msg)
+                    break
+                if st != 200:
+                    e.fail('ответ сервера %s' % st)
+                    break
+                names = extract(text)
+                with lock:
+                    for n in names:
+                        res.setdefault(n.lower(), (n, e.name))
+                e.success(len(names))
+                fresh = [n for n in names if n.lower() not in known]
+                known.update(n.lower() for n in names)
+                if not fresh:                                  # новых имён на странице нет: дальше листать незачем
+                    break
     ths = [threading.Thread(target=work, args=(e,), daemon=True) for e in engines if not e.off and not e.cooling]
     for t in ths:
         t.start()
@@ -303,26 +333,25 @@ def verify_many(names, stop, pause, progress=None, workers=2):
 
 # ---------------------------------------------------------------- живая проверка для самопроверки сборки
 PROBE_URLS = [
-    ('Yahoo', 'https://search.yahoo.com/search?p={q}'),
-    ('DuckDuckGo lite', 'https://lite.duckduckgo.com/lite/?q={q}'),
-    ('Bing (cn)', 'https://cn.bing.com/search?q={q}&setmkt=ru-RU'),
-    ('Qwant (api)', 'https://api.qwant.com/v3/search/web?q={q}&count=10&locale=ru_RU&offset=0&device=desktop'),
-    ('Yandex', 'https://yandex.ru/search/?text={q}'),
-    ('Lyzem стр.2 (p)', 'https://lyzem.com/search?q={w}&p=2'),
-    ('Lyzem стр.2 (page)', 'https://lyzem.com/search?q={w}&page=2'),
-    ('tgramsearch', 'https://tgramsearch.com/search?query={w}'),
-    ('tgramsearch en', 'https://en.tgramsearch.com/search?query={w}'),
-    ('tgramsearch чаты', 'https://tgramsearch.com/search?query={w}&type=chats'),
-    ('teleteg ?s', 'https://teleteg.com/?s={w}'),
-    ('teleteg search', 'https://teleteg.com/search?q={w}'),
-    ('telesearch', 'https://telesearch.me/search?q={w}'),
-    ('groupda', 'https://groupda.com/tgme/?q={w}'),
-    ('tdirectory', 'https://tdirectory.me/?search={w}'),
-    ('tdirectory groups', 'https://tdirectory.me/groups?search={w}'),
-    ('xtea', 'https://xtea.io/ts_ru.html?q={w}'),
-    ('tgstat поиск', 'https://tgstat.ru/search?q={w}&sort=members&type=chat'),
-    ('telemetr каталог', 'https://telemetr.me/catalog/activity/fishing/'),
-    ('combot top чаты', 'https://combot.org/top/telegram/chats?q={w}'),
+    ('Ask', 'https://www.ask.com/web?q={q}', False),
+    ('AOL', 'https://search.aol.com/aol/search?q={q}', False),
+    ('Dogpile', 'https://www.dogpile.com/serp?q={q}', False),
+    ('Startpage', 'https://www.startpage.com/do/search?q={q}', False),
+    ('Ecosia', 'https://www.ecosia.org/search?q={q}', False),
+    ('Metager', 'https://metager.org/meta/meta.ger3?eingabe={q}', False),
+    ('Searx be', 'https://searx.be/search?q={q}', False),
+    ('Searx tiekoetter', 'https://searx.tiekoetter.com/search?q={q}', False),
+    ('Searx priv.au', 'https://priv.au/search?q={q}', False),
+    ('DuckDuckGo html (GET)', 'https://html.duckduckgo.com/html/?q={q}&kl=ru-ru', False),
+    ('tgramsearch', 'https://tgramsearch.com/search?query={w}', True),
+    ('tgramsearch группа', 'https://tgramsearch.com/search?query={w}&category=group', True),
+    ('tgramsearch en p2', 'https://en.tgramsearch.com/search?query={w}&page=2', False),
+    ('teleteg ?s', 'https://teleteg.com/?s={w}', True),
+    ('telesearch', 'https://telesearch.me/search?q={w}', True),
+    ('tdirectory', 'https://tdirectory.me/?search={w}', True),
+    ('telemetr каталог', 'https://telemetr.me/catalog/activity/fishing/', True),
+    ('tgstat каталог', 'https://tgstat.ru/chat', False),
+    ('combot top чаты', 'https://combot.org/top/telegram/chats?q={w}', False),
 ]
 
 
@@ -338,20 +367,25 @@ def _probe_url(write, name, url, deep=False):
         if any(w in low for w in ('captcha', 'unusual traffic', 'are you a robot', 'verify you are', 'anomaly')):
             write('    | похоже на капчу/проверку на робота')
         if deep:
+            clean = html.unescape(text)
             if not names or 'bing' in url:
                 hrefs = []
-                for h in re.findall(r'href="(https?://[^"]+)"', html.unescape(text)):
-                    if h not in hrefs and not re.search(r'\.(css|js|png|jpg|ico|svg)(\?|$)', h):
+                for h in re.findall(r'href="([^"#][^"]*)"', clean):
+                    if h not in hrefs and not re.search(r'\.(css|js|png|jpe?g|ico|svg|webp|woff2?)(\?|$)|^javascript:|^mailto:', h):
                         hrefs.append(h)
-                write('    | ссылок в ответе: %d; первые: %s' % (len(hrefs), ' ; '.join(x[:110] for x in hrefs[:10])))
+                write('    | ссылок в ответе: %d; первые: %s' % (len(hrefs), ' ; '.join(x[:100] for x in hrefs[:14])))
                 cites = [re.sub(r'<[^>]+>', '', c)[:70] for c in re.findall(r'<cite[^>]*>(.*?)</cite>', text, re.S)[:10]]
                 if cites:
                     write('    | cite: ' + ' ; '.join(cites))
+                if at:
+                    i = clean.find('@' + sorted(at)[0])
+                    write('    | вокруг первого @имени: ' + re.sub(r'\s+', ' ', clean[max(0, i - 250):i + 250]))
                 if len(text) < 6000:
                     write('    | начало ответа: ' + re.sub(r'\s+', ' ', text[:400]))
-            elif names:
-                i = text.lower().find('t.me/' + names[0].lower())
-                write('    | вокруг первого t.me: ' + re.sub(r'\s+', ' ', text[max(0, i - 200):i + 200]))
+            else:
+                for nm in names[1:3]:
+                    i = clean.lower().find('t.me/' + nm.lower())
+                    write('    | вокруг t.me/%s: %s' % (nm, re.sub(r'\s+', ' ', clean[max(0, i - 300):i + 300])))
     except Exception as e:
         write('%s: ОШИБКА %s' % (name, e))
 
@@ -374,12 +408,12 @@ def diagnose(write):
     for e in make_engines():
         for t in e.templates:
             q = t.format(w='рыбалка')
-            _probe_url(write, '%s [%s]' % (e.name, q), e.url.format(q=urllib.parse.quote_plus(q)), deep=True)
+            _probe_url(write, '%s [%s]' % (e.name, q), e.url.format(q=urllib.parse.quote_plus(q), p=1), deep=True)
             time.sleep(2.5)
     write('== другие адреса (проба, слово «рыбалка») ==')
-    for name, url in PROBE_URLS:
-        _probe_url(write, name, url.format(w=urllib.parse.quote('рыбалка'), q=urllib.parse.quote_plus('site:t.me рыбалка чат')))
-        time.sleep(0.8)
+    for name, url, deep in PROBE_URLS:
+        _probe_url(write, name, url.format(w=urllib.parse.quote('рыбалка'), q=urllib.parse.quote_plus('site:t.me рыбалка чат')), deep=deep)
+        time.sleep(1.0)
     write('== сквозной прогон: слова «рыбалка» и «геймеры», все источники, проверка t.me ==')
     try:
         engines = make_engines()

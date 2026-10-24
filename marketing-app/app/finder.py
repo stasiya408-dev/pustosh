@@ -162,6 +162,15 @@ def _run(qs):
                 break
             label = '%s: «%s»' % (names.get(cid, cid), q)
             ST['cur'] = 'ищу в интернете · ' + label
+            if not websearch.wait_ready(engines, lambda: CANCEL[0], lambda sec: ST.update(cur='источники просят подождать, жду ещё %d с · %s' % (sec, label))):
+                ST['engines'] = [e.report() for e in engines]
+                why = '; '.join('%s: %s' % (e.name, e.err or 'не отвечает') for e in engines)
+                if ST['raw'] == 0:
+                    stop_msg = 'Не получилось найти ничего: поисковики не отвечают (%s). Проверь интернет или повтори позже.' % why
+                else:
+                    warn = 'Поисковики перестали отвечать (%s), поэтому поиск остановлен. Найденное сохранено.' % why
+                break
+            ST['cur'] = 'ищу в интернете · ' + label
             cands = websearch.search_word(q, engines, lambda: random_pause(*WEB_PAUSE), lambda: CANCEL[0])
             ST['engines'] = [e.report() for e in engines]
             if CANCEL[0]:

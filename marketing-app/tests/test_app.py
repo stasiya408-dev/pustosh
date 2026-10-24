@@ -250,8 +250,8 @@ except Exception as e:
 
 f = new_run(['fishing', 'games'])
 ok(f['state'] == 'done' and f['done'] == 23 and f['total'] == 23, 'поиск прошёл все 23 слова', f)
-ok(len(fake_web.WORDS_SEEN) == 23 and len(fake_web.SEARCHES) == 23 * 10 and {e for e, _ in fake_web.SEARCHES} == {'ddg', 'bing', 'lyzem', 'mojeek', 'brave'},
-   'каждое слово искалось во всех пяти источниках двумя запросами', (len(fake_web.WORDS_SEEN), len(fake_web.SEARCHES)))
+ok(len(fake_web.WORDS_SEEN) == 23 and len(fake_web.SEARCHES) == 23 * 11 and {e for e, _ in fake_web.SEARCHES} == {'ddg', 'bing', 'lyzem', 'mojeek', 'brave'},
+   'каждое слово искалось во всех пяти источниках (у Lyzem листается, пока на странице есть новые имена)', (len(fake_web.WORDS_SEEN), len(fake_web.SEARCHES)))
 ok(f['total_base'] == 7 and f['unsaved'] == 7 and f['new'] == 7 and f['kept'] == 7, 'в базе 7 новых групп (каналы, люди, пустые и мои чаты не попали)', f)
 ok(f['checked'] == 11 and len(fake_web.TME) == 11 and len(set(fake_web.TME)) == 11 and 'autoua' not in fake_web.TME,
    'страница t.me открыта по разу для каждого нового имени (11), мой чат не проверялся', (f['checked'], fake_web.TME))
@@ -328,6 +328,19 @@ f = wait_find()
 dd = [e for e in f['engines'] if e['id'] == 'ddg'][0]
 ok(f['state'] == 'done' and f['total_base'] == 4 and not dd['off'] and dd['cool'] and '202' in dd['err'] and sum(1 for e, _ in fake_web.SEARCHES if e == 'ddg') == 1,
    'поисковик с отказом 202 уходит на отдых и до его конца не опрашивается, остальные работают', (f, dd))
+websearch.COOL = 0
+
+# все источники отказывают, но отдыхают недолго: поиск ждёт их, а не пропускает слова, и в конце честно говорит, что не вышло
+finder.base().clear(); finder.seen().clear()
+fake_web.reset()
+for _e in ('ddg', 'bing', 'lyzem', 'mojeek', 'brave'):
+    fake_web.ENGINE_FAIL[_e] = 429
+websearch.COOL = 0.3
+_t0 = time.time()
+api('/api/find/start', {'cats': ['fishing']})
+f = wait_find(60)
+ok(f['state'] == 'error' and 'не отвечают' in f['msg'] and time.time() - _t0 > 0.5 and f['done'] == 3 and len(fake_web.SEARCHES) == 15,
+   'если все источники отказали, поиск ждёт их отдыха (а не пропускает слова), в итоге по 3 отказа на источник и честная ошибка', (f, len(fake_web.SEARCHES), time.time() - _t0))
 websearch.COOL = 0
 
 # все поисковики не отвечают

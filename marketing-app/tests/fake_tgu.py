@@ -19,7 +19,26 @@ CHATS = [
 ]
 
 
+def F(id, title, user, members=500, join_request=False, slow=False, forum=False):
+    return {'id': str(id), 'title': title, 'username': user, 'kind': 'group', 'members': members, 'join_request': join_request, 'slow': slow, 'forum': forum}
+
+
+# что «находит» поддельный глобальный поиск по слову (-1001 и -1002 уже есть у пользователя, их в базу попадать не должно)
+FOUND = {
+    'рыбалка': [F(-100500001, 'Рыбалка Украина', 'ryba_ua', 5400), F(-1001, 'Рыбалка Киев — клуб', 'ryba_kiev', 900), F(-100500002, 'Спиннинг для всех', 'spin_all', 1200, slow=True)],
+    'рибалка': [F(-100500001, 'Рыбалка Украина', 'ryba_ua', 5500), F(-100500003, 'Рибалки Львова', 'lviv_fish', 80, join_request=True)],
+    'охота': [F(-100500004, 'Охота и егеря', 'hunt_chat', 2300)],
+    'игры': [F(-100500005, 'Танки и не только', 'tanks_chat', 15000), F(-100500006, 'Мемы про игры', 'memes_games', 700)],
+    'геймеры': [F(-100500007, 'Геймеры Украины', 'gamers_ua', 3000, forum=True)],
+    'автомеханики': [F(-1002, 'Автомеханики Украины', 'autoua', 4000)],
+}
+
+
 class FakeTg:
+    searches = []           # общий журнал запросов поиска (по всем экземплярам)
+    search_flood_at = 0     # с какого по счёту запроса бросать FloodWait (0 = никогда)
+    search_fail = ()        # слова, на которые поиск отвечает ошибкой
+
     def __init__(self):
         self.state = 'need_phone'
         self.me = ''
@@ -56,6 +75,16 @@ class FakeTg:
     def load_chats(self):
         self.loads += 1
         return [dict(c) for c in CHATS]
+
+    def search(self, query, limit=100):
+        if self.state != 'ready':
+            raise tgu.TgError('Сначала войди в Телеграм', 'auth')
+        FakeTg.searches.append(query)
+        if FakeTg.search_flood_at and len(FakeTg.searches) >= FakeTg.search_flood_at:
+            raise tgu.TgError('Телеграм просит подождать 5 мин (защита от частых запросов)', 'flood', 300)
+        if query in FakeTg.search_fail:
+            raise tgu.TgError('Не получилось выполнить запрос', 'error')
+        return [dict(x) for x in FOUND.get(query, [])]
 
     def send(self, chat_id, text, media=None, username=''):
         cid = int(chat_id)

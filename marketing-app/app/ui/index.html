@@ -73,7 +73,19 @@ code{background:#0006;padding:1px 5px;border-radius:5px;font-size:13px}
 .chrow input[type=checkbox]{width:18px;height:18px;accent-color:var(--gold);flex:none}
 .chrow .t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .chrow select{width:170px;flex:none;padding:5px 8px}
+.chrow .t.wrap{white-space:normal;overflow:visible;line-height:1.7}
 .chrow.off{opacity:.5}
+.catrow{display:flex;align-items:center;gap:2px}
+.catrow .ck{width:17px;height:17px;accent-color:var(--gold);margin:0 2px 0 6px;flex:none;cursor:pointer}
+.catrow span.ck{display:inline-block;cursor:default}
+.catrow .cat{flex:1;min-width:0}
+.fchips{display:flex;flex-wrap:wrap;gap:6px;align-items:center;border:1px dashed var(--line);border-radius:10px;padding:6px 10px;min-height:46px;min-width:200px}
+.chip{display:inline-flex;gap:7px;align-items:center;background:#d6942a26;border:1px solid var(--gold);color:var(--gold2);border-radius:20px;padding:3px 6px 3px 11px;font-size:13px}
+.chip a{color:var(--dim);text-decoration:none;font-size:12px;padding:0 4px}.chip a:hover{color:var(--txt)}
+.btn.find{background:linear-gradient(180deg,#4aa258,#2d7038);border-color:#76d884;color:#fff;font-weight:700}
+.btn.find:hover{filter:brightness(1.1)}
+.btn.save{border-color:#a56bd6;line-height:1.25;text-align:left}
+.btn.save:hover{border-color:#c79af0}
 .list{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
 .stat{display:flex;gap:18px;flex-wrap:wrap;color:var(--dim);font-size:13.5px;margin:10px 0}.stat b{color:var(--txt)}
 /* публикация */
@@ -114,7 +126,7 @@ a.btn{text-decoration:none;display:inline-block;color:var(--txt)}
 <script>
 'use strict';
 const TOKEN='__TOKEN__';
-let S=null, tab='post', tgF={cat:'all',q:'',blocked:false}, chatHist=[], uploading=null, pollT=null, busy={};
+let S=null, tab='post', tgF={cat:'all',q:'',blocked:false,view:'mine',minm:50}, chatHist=[], uploading=null, pollT=null, busy={};
 
 /* ---------- помощники ---------- */
 const $=s=>document.querySelector(s);
@@ -157,7 +169,8 @@ function paintShell(){
 }
 function focusInMain(){const a=document.activeElement;return a&&$('#main').contains(a)&&/INPUT|TEXTAREA|SELECT/.test(a.tagName)&&a.type!=='checkbox'}
 async function refresh(force){await load();if(force||!focusInMain())paint();else paintJob()}
-function go(t){tab=t;document.querySelectorAll('.nav').forEach(n=>n.classList.toggle('on',n.dataset.tab===t));paint();$('#main').scrollTop=0}
+function go(t){tab=t;document.querySelectorAll('.nav').forEach(n=>n.classList.toggle('on',n.dataset.tab===t));paint();$('#main').scrollTop=0;
+  if(t==='tg'&&tgF.view==='base')loadBase().then(()=>{if(tab==='tg')paintTg()}).catch(()=>{})}
 function paint(){const m=$('#main'),k=m.scrollTop;({post:paintPost,tg:paintTg,conn:paintConn,claude:paintClaude})[tab]();m.scrollTop=k;paintJob()}
 
 /* ======================= НОВЫЙ ПОСТ ======================= */
@@ -336,31 +349,94 @@ function paintTg(){
     return;
   }
   const all=S.chats,wr=all.filter(c=>c.can_write),sel=wr.filter(c=>c.sel);
+  const F=S.find,base=tgF.view==='base',run=F.state==='running';
+  const fs=findSel.filter(id=>id!=='other'&&S.cats.some(c=>c.id===id));
   const counts={},selc={};S.cats.forEach(c=>{counts[c.id]=0;selc[c.id]=0});
-  all.forEach(c=>{if(!tgF.blocked&&!c.can_write)return;counts[c.cat]=(counts[c.cat]||0)+1;if(c.sel&&c.can_write)selc[c.cat]=(selc[c.cat]||0)+1});
-  const vis=all.filter(c=>(tgF.blocked||c.can_write)&&(tgF.cat==='all'||c.cat===tgF.cat)&&(!tgF.q||(c.title+' '+(c.username||'')).toLowerCase().includes(tgF.q.toLowerCase())));
-  const visW=vis.filter(c=>c.can_write);
+  let vis=[],visW=[];
+  if(base){Object.assign(counts,baseData.counts||{});vis=baseData.items||[]}
+  else{
+    all.forEach(c=>{if(!tgF.blocked&&!c.can_write)return;counts[c.cat]=(counts[c.cat]||0)+1;if(c.sel&&c.can_write)selc[c.cat]=(selc[c.cat]||0)+1});
+    vis=all.filter(c=>(tgF.blocked||c.can_write)&&(tgF.cat==='all'||c.cat===tgF.cat)&&(!tgF.q||(c.title+' '+(c.username||'')).toLowerCase().includes(tgF.q.toLowerCase())));
+    visW=vis.filter(c=>c.can_write);
+  }
   const cur=S.cats.find(c=>c.id===tgF.cat);
-  $('#main').innerHTML=`<div class="row" style="justify-content:space-between"><div><h1>Telegram</h1><p class="sub" style="margin:0">Вошёл как <b>${esc(t.me)}</b> · <a href="#" data-act="tgout">выйти</a></p></div>
-    <button class="btn pri big" data-act="tgload" ${busy.load?'disabled':''}>${busy.load?'<span class="spin">⏳</span> Загружаю…':'⟳ Загрузить чаты из Telegram'}</button></div>
+  const nAll=Object.values(counts).reduce((a,b)=>a+b,0),nSel=Object.values(selc).reduce((a,b)=>a+b,0);
+  const chip=id=>`<span class="chip">${esc(catName(id))}<a href="#" data-act="fcatoff" data-id="${id}" title="Не искать по этой теме">✕</a></span>`;
+  $('#main').innerHTML=`<div class="row" style="align-items:center;gap:14px;flex-wrap:wrap"><div style="flex:none"><h1>Telegram</h1><p class="sub" style="margin:0">Вошёл как <b>${esc(t.me)}</b> · <a href="#" data-act="tgout">выйти</a></p></div>
+    <div class="row grow" style="gap:10px;align-items:stretch">
+      <button class="btn save" data-act="basesave" ${F.unsaved?'':'disabled'} title="Сохранить найденные чаты в базу навсегда">💾 <b>Сохранить базу</b><br><span class="hint">${F.unsaved?'новых: '+F.unsaved:(F.total_base?'сохранено: '+F.total_base:'пока пусто')}</span></button>
+      <div class="fchips grow">${fs.length?'<span class="hint">Искать:</span> '+fs.map(chip).join(''):'<span class="hint">← поставь галочки у тем слева, потом нажми «Найти новые чаты»</span>'}</div>
+      <button class="btn find big" data-act="findstart" ${run?'disabled':''} title="Искать по всему Telegram группы с открытым чатом, где тебя ещё нет">${run?'<span class="spin">⏳</span> Ищу…':'🔎 Найти новые чаты'}</button>
+      <button class="btn pri big" data-act="tgload" ${busy.load?'disabled':''}>${busy.load?'<span class="spin">⏳</span> Загружаю…':'⟳ Загрузить чаты из Telegram'}</button>
+    </div></div>
   <div class="stat"><span>Найдено: <b>${all.length}</b></span><span>Можно писать: <b>${wr.length}</b></span><span>Выбрано для поста: <b>${sel.length}</b></span><span>Сегодня отправлено: <b>${S.tg_today.sent}</b> из ${S.tg_today.limit}</span></div>
-  ${all.length?'':'<div class="card">Список пуст. Нажми <b>«Загрузить чаты из Telegram»</b>: программа найдёт все группы и каналы, где ты состоишь и можешь писать, и сама разложит их по категориям.</div>'}
+  <div id="findbox">${findBoxHtml()}</div>
+  <div class="row" style="margin:4px 0 12px"><button class="btn ${base?'':'pri'}" data-act="viewmine">💬 Мои чаты (${wr.length})</button><button class="btn ${base?'pri':''}" data-act="viewbase">🔎 База найденных (${F.total_base})</button>${base?'':'<span class="hint">Группы, где ты уже состоишь</span>'}${base?'<span class="hint">Группы с открытым чатом, где тебя ещё нет</span>':''}</div>
+  ${(!base&&!all.length)?'<div class="card">Список пуст. Нажми <b>«Загрузить чаты из Telegram»</b>: программа найдёт все группы и каналы, где ты состоишь и можешь писать, и сама разложит их по категориям.</div>':''}
+  ${(base&&!F.total_base)?'<div class="card">База пуста. Поставь галочки у тем слева и нажми <b>«Найти новые чаты»</b>: программа поищет по всему Telegram группы с открытым чатом, где тебя ещё нет, и сложит их сюда по темам.</div>':''}
   <div id="tgwrap"><div id="cats">
-     <button class="cat ${tgF.cat==='all'?'on':''}" data-cat="all">📂 Все чаты<span class="n"><b>${Object.values(selc).reduce((a,b)=>a+b,0)||''}</b> ${Object.values(counts).reduce((a,b)=>a+b,0)}</span></button>
-     ${S.cats.map(c=>`<button class="cat ${tgF.cat===c.id?'on':''}" data-cat="${c.id}">${esc(c.name)}<span class="n">${selc[c.id]?'<b>'+selc[c.id]+'</b> / ':''}${counts[c.id]||0}</span></button>`).join('')}
+     <div class="catrow"><span class="ck"></span><button class="cat ${tgF.cat==='all'?'on':''}" data-cat="all">📂 Все чаты<span class="n">${(!base&&nSel)?'<b>'+nSel+'</b> / ':''}${nAll}</span></button></div>
+     ${S.cats.map(c=>`<div class="catrow">${c.id==='other'?'<span class="ck"></span>':`<input type="checkbox" class="ck" data-fcat="${c.id}" ${fs.includes(c.id)?'checked':''} title="Искать новые чаты по этой теме">`}<button class="cat ${tgF.cat===c.id?'on':''}" data-cat="${c.id}">${esc(c.name)}<span class="n">${(!base&&selc[c.id])?'<b>'+selc[c.id]+'</b> / ':''}${counts[c.id]||0}</span></button></div>`).join('')}
+     <div class="hint" style="padding:6px 10px">☑ галочка = искать по теме: <a href="#" data-act="fcatall">все</a> · <a href="#" data-act="fcatnone">снять</a></div>
      <div class="row" style="padding:8px 4px"><button class="btn" data-act="catadd">＋ Своя категория</button>${cur&&cur.id!=='other'?'<button class="btn" data-act="catren" title="Переименовать">✎</button><button class="btn" data-act="catdel" title="Удалить">🗑</button>':''}</div>
    </div>
    <div id="chats"><div class="row" style="margin-bottom:10px"><input type="search" id="q" class="grow" placeholder="Поиск по названию" value="${esc(tgF.q)}">
-      <button class="btn" data-act="selvis">☑ Выбрать все в списке (${visW.length})</button><button class="btn" data-act="unselvis">☐ Снять</button></div>
-     <label class="hint" style="display:block;margin-bottom:8px"><input type="checkbox" id="blk" ${tgF.blocked?'checked':''}> показывать и те, где писать нельзя</label>
-     <div class="list">${vis.map(rowChat).join('')||'<div class="chrow hint">В этой категории пока пусто</div>'}</div>
-     <details><summary>Безопасность отправки (рекомендую не менять)</summary>
+      ${base?`<span class="hint">Участников:</span><select id="minm" style="width:auto">${[[0,'любое число'],[50,'от 50'],[200,'от 200'],[1000,'от 1000'],[5000,'от 5000']].map(o=>`<option value="${o[0]}" ${+tgF.minm===o[0]?'selected':''}>${o[1]}</option>`).join('')}</select>
+        <button class="btn" data-act="basecsv" title="Скачать базу таблицей (открывается в Excel)">⬇ Таблицей</button>${F.unsaved?`<button class="btn" data-act="basedropnew" title="Убрать из базы всё, что ещё не сохранено">🗑 Убрать несохранённые (${F.unsaved})</button>`:''}`
+       :`<button class="btn" data-act="selvis">☑ Выбрать все в списке (${visW.length})</button><button class="btn" data-act="unselvis">☐ Снять</button>`}</div>
+     ${base?`<div class="hint" style="margin-bottom:8px">Показано ${baseData.shown||0}${baseData.matched>baseData.shown?' из '+baseData.matched:''}. Чтобы писать в группу, открой её (↗), вступи вручную и нажми «Загрузить чаты»: она появится в «Моих чатах».</div>`
+       :`<label class="hint" style="display:block;margin-bottom:8px"><input type="checkbox" id="blk" ${tgF.blocked?'checked':''}> показывать и те, где писать нельзя</label>`}
+     <div class="list">${vis.map(base?rowFound:rowChat).join('')||'<div class="chrow hint">В этой категории пока пусто</div>'}</div>
+     ${base?'':`<details><summary>Безопасность отправки (рекомендую не менять)</summary>
        <p class="hint">Телеграм следит за рассылками: если слать одно и то же в десятки чатов подряд, аккаунт могут ограничить. Поэтому программа ждёт между чатами и не отправляет больше лимита в день. Лучше начинать с 3–5 чатов, где реклама игр разрешена правилами.</p>
        <div class="row"><div class="grow"><label class="f">Пауза между чатами, от (сек)</label><input type="number" id="s_TG_DELAY_MIN" min="15" value="${esc(S.tg_today.dmin)}"></div><div class="grow"><label class="f">до (сек)</label><input type="number" id="s_TG_DELAY_MAX" min="15" value="${esc(S.tg_today.dmax)}"></div><div class="grow"><label class="f">Не больше чатов в день</label><input type="number" id="s_TG_DAILY_LIMIT" min="1" max="100" value="${esc(S.tg_today.limit)}"></div></div>
-       <p><button class="btn" data-act="savelimits">Сохранить</button></p></details>
+       <p><button class="btn" data-act="savelimits">Сохранить</button></p></details>`}
    </div></div>`;
-  const q=$('#q');q.oninput=()=>{tgF.q=q.value;const p=q.selectionStart;paintTg();const n=$('#q');n.focus();n.setSelectionRange(p,p)};
-  $('#blk').onchange=e=>{tgF.blocked=e.target.checked;paintTg()};
+  const q=$('#q');q.oninput=()=>{tgF.q=q.value;const p=q.selectionStart;const again=()=>{paintTg();const n=$('#q');n.focus();n.setSelectionRange(p,p)};
+    if(tgF.view==='base'){clearTimeout(qT);qT=setTimeout(()=>loadBase().then(again).catch(()=>{}),250)}else again()};
+  const bk=$('#blk');if(bk)bk.onchange=e=>{tgF.blocked=e.target.checked;paintTg()};
+}
+/* ---- поиск новых групп по всему Телеграму и база найденных ---- */
+let findSel=[],baseData={items:[],counts:{},shown:0,matched:0},findPoll=null,findWas=false,findDismiss=0,qT=null;
+try{findSel=JSON.parse(localStorage.getItem('findSel')||'[]')}catch(e){}
+function saveFindSel(){try{localStorage.setItem('findSel',JSON.stringify(findSel))}catch(e){}}
+async function loadBase(){const p=new URLSearchParams({cat:tgF.cat,q:tgF.q,min:tgF.minm});baseData=await api('/api/find/list?'+p);S.find=baseData.find;return baseData}
+function findBoxHtml(){
+  const F=S.find;
+  if(F.state==='running'){const pct=F.total?Math.round(F.done*100/F.total):0;
+    return `<div class="card"><h2><span class="spin">🔎</span> Ищу новые группы по всему Telegram…</h2><div class="bar"><i style="width:${pct}%"></i></div>
+      <div class="hint" style="margin-top:8px">Запрос ${F.done} из ${F.total}${F.cur?' · сейчас: '+esc(F.cur):''} · найдено новых: <b>${F.new}</b></div>
+      <div class="hint">Между запросами пауза несколько секунд: так Телеграм не ограничит аккаунт. Окно можно не закрывать.</div>
+      <p><button class="btn red" data-act="findcancel">Остановить</button></p></div>`}
+  if(F.state==='idle'||!F.started||findDismiss===F.started)return '';
+  const head=F.state==='error'?`<div class="bad">⚠ ${esc(F.msg)}</div>`:`<b>${F.state==='cancelled'?'Поиск остановлен':'Поиск закончен'}:</b> просмотрено запросов ${F.done} из ${F.total}, найдено новых чатов: <b>${F.new}</b>.`;
+  return `<div class="card">${head}${F.warn?`<div class="warn" style="margin-top:6px">${esc(F.warn)}</div>`:''}${F.truncated?'<div class="hint" style="margin-top:6px">Тем выбрано много, поэтому за один раз проверено не всё. Запусти поиск ещё раз позже.</div>':''}
+    ${F.new&&F.unsaved?'<div class="hint" style="margin-top:6px">Нажми «💾 Сохранить базу», чтобы оставить найденное навсегда.</div>':''}
+    <p style="margin-bottom:0"><button class="btn" data-act="findclose">Закрыть</button></p></div>`;
+}
+function paintFindBox(){const b=$('#findbox');if(b)b.innerHTML=findBoxHtml()}
+function pollFind(){
+  clearTimeout(findPoll);
+  if(!S||!S.find)return;
+  if(S.find.state==='running'){findPoll=setTimeout(async()=>{
+      try{if(tgF.view==='base')await loadBase();else await load()}catch(e){}
+      if(tab==='tg'){if(focusInMain())paintFindBox();else paintTg()}
+      pollFind()},2500);return}
+  if(findWas){findWas=false;const F=S.find;
+    (async()=>{tgF.view='base';tgF.cat='all';try{await loadBase()}catch(e){}if(tab==='tg')paintTg();
+      toast(F.state==='error'?'⚠ '+F.msg:(F.warn?'⚠ '+F.warn:'Поиск закончен: новых чатов '+F.new),8000)})()}
+}
+function rowFound(c){
+  const tags=[];
+  if(c.members)tags.push(`<span class="tag" title="Участников в группе">👥 ${c.members}</span>`);
+  if(c.join_request)tags.push('<span class="tag y" title="Чтобы вступить, нужно подать заявку админам">по заявке</span>');
+  if(c.slow)tags.push('<span class="tag y" title="В чате медленный режим">⏱ медленный режим</span>');
+  if(c.forum)tags.push('<span class="tag y">темы</span>');
+  if(!c.saved)tags.push('<span class="tag g">новое</span>');
+  return `<div class="chrow"><div class="t wrap" title="${esc(c.title)}">${esc(c.title)} <span class="hint">@${esc(c.username)}</span> ${tags.join('')}</div>
+    <a class="btn" href="https://t.me/${esc(c.username)}" target="_blank" title="Открыть группу в Telegram, чтобы вступить">↗ Открыть</a>
+    <select data-fcatsel="${esc(c.id)}">${S.cats.map(k=>`<option value="${k.id}" ${k.id===c.cat?'selected':''}>${esc(k.name)}</option>`).join('')}</select>
+    <button class="btn" data-act="basedrop" data-id="${esc(c.id)}" title="Убрать из базы">✕</button></div>`;
 }
 function rowChat(c){
   const tags=[c.kind==='channel'?'<span class="tag">канал</span>':'<span class="tag">группа</span>'];
@@ -458,7 +534,7 @@ document.addEventListener('click',async e=>{
   const t=e.target.closest('[data-act],[data-tab],[data-tab-go],[data-cat]');if(!t)return;
   if(t.dataset.tab)return go(t.dataset.tab);
   if(t.dataset.tabGo)return go(t.dataset.tabGo);
-  if(t.dataset.cat){tgF.cat=t.dataset.cat;return paintTg()}
+  if(t.dataset.cat){tgF.cat=t.dataset.cat;if(tgF.view==='base'){try{await loadBase()}catch(e){}}return paintTg()}
   const a=t.dataset.act;e.preventDefault();
   const A={
     quit:async()=>{if(await askBox('<h2>Выключить программу?</h2><div class="hint">Идущая отправка будет прервана.</div>','Выключить'))await api('/api/quit',{}).catch(()=>{});document.body.innerHTML='<p style="padding:40px">Программа выключена. Закрой это окно.</p>'},
@@ -479,6 +555,28 @@ document.addEventListener('click',async e=>{
     tgpw:async()=>{if(await act(()=>api('/api/tg/password',{password:$('#tg_pw').value})))refresh(true)},
     tgback:async()=>{await act(()=>api('/api/tg/logout',{}));refresh(true)},
     tgout:async()=>{if(await askBox('<h2>Выйти из Telegram?</h2><div class="hint">Список чатов останется, но чтобы отправлять, нужно будет войти снова.</div>','Выйти')){await act(()=>api('/api/tg/logout',{}));refresh(true)}},
+    viewmine:()=>{tgF.view='mine';paintTg()},
+    viewbase:async()=>{tgF.view='base';try{await loadBase()}catch(e){toast('⚠ '+e.message)}paintTg()},
+    fcatoff:()=>{findSel=findSel.filter(x=>x!==t.dataset.id);saveFindSel();paintTg()},
+    fcatall:()=>{findSel=S.cats.map(c=>c.id).filter(x=>x!=='other');saveFindSel();paintTg()},
+    fcatnone:()=>{findSel=[];saveFindSel();paintTg()},
+    findstart:async()=>{
+      const ids=findSel.filter(id=>id!=='other'&&S.cats.some(c=>c.id===id));
+      if(!ids.length){toast('Сначала поставь галочки у тем слева (например, Игры или Рыбалка и охота)',5000);return}
+      const nq=Math.min(120,ids.reduce((a,id)=>a+((S.find.queries||{})[id]||0),0)),mins=Math.max(1,Math.round(nq*6.5/60));
+      const ok=await askBox(`<h2>🔎 Искать новые чаты?</h2><ul style="padding-left:18px"><li style="margin:6px 0">Темы: <b>${ids.map(id=>esc(catName(id))).join(', ')}</b></li>
+        <li style="margin:6px 0">Запросов к Telegram: <b>${nq}</b>, займёт примерно <b>${mins} мин</b> (пауза 4–8 секунд между запросами, чтобы Телеграм не ограничил аккаунт).</li>
+        <li style="margin:6px 0">Ищу по всему Telegram только <b>публичные группы с открытым чатом, где тебя ещё нет</b>. Вступать в них программа не будет.</li></ul>
+        ${S.chats.length?'':'<div class="warn">Сначала лучше нажать «Загрузить чаты»: тогда я точно знаю, в каких группах ты уже состоишь, и не покажу их заново.</div>'}`,'Начать поиск');
+      if(!ok)return;
+      const r=await act(()=>api('/api/find/start',{cats:ids}));
+      if(r){S.find=r.find;findWas=true;findDismiss=0;paintTg();pollFind()}},
+    findcancel:async()=>{await act(()=>api('/api/find/cancel',{}));await load();paintTg()},
+    findclose:()=>{findDismiss=S.find.started;paintFindBox()},
+    basesave:async()=>{const r=await act(()=>api('/api/find/save',{}));if(r){toast('База сохранена: '+r.total+' чатов. Она останется в программе навсегда.',5000);await load();if(tgF.view==='base')await loadBase();paintTg()}},
+    basedrop:async()=>{await act(()=>api('/api/find/drop',{ids:[t.dataset.id]}));await loadBase();paintTg()},
+    basedropnew:async()=>{if(await askBox('<h2>Убрать несохранённые?</h2><div class="hint">Из базы пропадёт всё, что вы ещё не сохранили кнопкой «Сохранить базу».</div>','Убрать')){await act(()=>api('/api/find/drop',{unsaved:true}));await loadBase();paintTg()}},
+    basecsv:()=>{const a=document.createElement('a');a.href='/api/find/export?t='+encodeURIComponent(TOKEN);a.download='pustosh_chat_base.csv';document.body.appendChild(a);a.click();a.remove()},
     tgload:async()=>{busy.load=true;paintTg();const r=await act(()=>api('/api/tg/load',{}));busy.load=false;if(r)toast('Найдено чатов: '+r.total+', писать можно в '+r.can_write,6000);refresh(true)},
     selvis:async()=>{const ids=visibleIds();await act(()=>api('/api/tg/bulk',{ids,sel:true}));refresh(true)},
     unselvis:async()=>{const ids=visibleIds();await act(()=>api('/api/tg/bulk',{ids,sel:false}));refresh(true)},
@@ -507,6 +605,9 @@ document.addEventListener('toggle',e=>{if(e.target.id==='x_det')xopt.open=e.targ
 document.addEventListener('change',async e=>{
   const t=e.target;
   if(t.id==='x_n'){xopt.n=+t.value;return}if(t.id==='x_size'){xopt.size=t.value;return}if(t.id==='x_q'){xopt.q=t.value;return}
+  if(t.dataset.fcat){findSel=findSel.filter(x=>x!==t.dataset.fcat);if(t.checked)findSel.push(t.dataset.fcat);saveFindSel();const k=$('#main').scrollTop;paintTg();$('#main').scrollTop=k;return}
+  if(t.dataset.fcatsel){await act(()=>api('/api/find/cat',{id:t.dataset.fcatsel,cat:t.value}));await loadBase();const k=$('#main').scrollTop;paintTg();$('#main').scrollTop=k;return}
+  if(t.id==='minm'){tgF.minm=+t.value;try{await loadBase()}catch(e){}paintTg();return}
   if(t.dataset.sel){await act(()=>api('/api/tg/chat',{id:t.dataset.sel,sel:t.checked}));await load();const k=$('#main').scrollTop;paintTg();$('#main').scrollTop=k;return}
   if(t.dataset.catsel){await act(()=>api('/api/tg/chat',{id:t.dataset.catsel,cat:t.value}));await load();const k=$('#main').scrollTop;paintTg();$('#main').scrollTop=k}
 });
@@ -516,7 +617,7 @@ document.addEventListener('drop',e=>{e.preventDefault();if(tab==='post'&&!$('#dr
 document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='clq')document.querySelector('[data-act=clask]').click();if(e.key==='Enter'&&e.target.id==='tg_code')document.querySelector('[data-act=tgcode]').click();if(e.key==='Enter'&&e.target.id==='tg_pw')document.querySelector('[data-act=tgpw]').click();if(e.key==='Enter'&&e.target.id==='tg_phone')document.querySelector('[data-act=tgphone]').click()});
 /* жив ли экран: сигнал программе, чтобы она не выключалась */
 setInterval(()=>fetch('/api/ping',{headers:{'X-Token':TOKEN}}).catch(()=>{}),4000);
-load().then(()=>{paint();if(S.job&&S.job.state==='running')pollJob();if(S.extra&&S.extra.state==='running'){xWas='running';pollExtra()};if(!S.update&&!S.update_error)api('/api/update/check').then(()=>load()).catch(()=>{})});
+load().then(()=>{paint();if(S.job&&S.job.state==='running')pollJob();if(S.extra&&S.extra.state==='running'){xWas='running';pollExtra()};if(S.find&&S.find.state==='running'){findWas=true;pollFind()};if(!S.update&&!S.update_error)api('/api/update/check').then(()=>load()).catch(()=>{})});
 </script>
 </body>
 </html>

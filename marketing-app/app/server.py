@@ -3,7 +3,7 @@
 import json, mimetypes, os, platform, random, re, secrets, shutil, socket, subprocess, sys, threading, time, traceback, urllib.parse, webbrowser
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
-import cfg, net, gen, card, pubs, yt, cats, jobs, update, version, tgu, imggen
+import cfg, net, gen, card, pubs, yt, cats, jobs, update, version, tgu, imggen, finder
 from cfg import env, S
 
 UI_DIR = os.path.join(cfg.CODE, 'ui')
@@ -204,6 +204,7 @@ def state():
         'tg_today': {'sent': jobs.sent_today(), 'limit': limit, 'dmin': dmin, 'dmax': dmax},
         'draft': public_draft(),
         'extra': extra_view(),
+        'find': finder.view(),
         'job': cur.snap() if cur else None,
     }
 
@@ -404,6 +405,8 @@ def api_publish(q, b):
     d = DRAFT
     if jobs.running():
         err('Публикация уже идёт, дождись окончания')
+    if finder.running():
+        err('Сейчас идёт поиск новых чатов. Дождись его окончания или останови поиск (вкладка Telegram).')
     if b.get('texts'):
         api_draft({}, {'texts': b['texts']})
     if not d['texts']:
@@ -620,6 +623,55 @@ def api_yt_logout(q, b):
     return {'ok': True}
 
 
+# ---------- поиск новых групп по всему Телеграму ----------
+def api_find_start(q, b):
+    if TG.status()['state'] != 'ready':
+        err('Сначала войди в Telegram (вкладка «Подключения» или «Telegram»)')
+    if jobs.running():
+        err('Сейчас идёт публикация. Запусти поиск после неё.')
+    ids = [c for c in (b.get('cats') or []) if isinstance(c, str)]
+    try:
+        return {'find': finder.start(TG, ids)}
+    except ValueError as e:
+        err(str(e))
+
+
+def api_find_cancel(q, b):
+    finder.cancel()
+    return {'find': finder.view()}
+
+
+def api_find_list(q, b):
+    def one(k, d=''):
+        return (q.get(k) or [d])[0]
+    try:
+        minm = int(one('min', '0') or 0)
+    except ValueError:
+        minm = 0
+    r = finder.listing(one('cat'), one('q'), minm)
+    r['find'] = finder.view()
+    return r
+
+
+def api_find_save(q, b):
+    n, total = finder.save_all()
+    return {'saved_now': n, 'total': total, 'find': finder.view()}
+
+
+def api_find_drop(q, b):
+    ids = [i for i in (b.get('ids') or []) if isinstance(i, str)]
+    n = finder.drop(ids, bool(b.get('unsaved')))
+    return {'dropped': n, 'find': finder.view()}
+
+
+def api_find_cat(q, b):
+    try:
+        finder.set_cat(str(b.get('id') or ''), str(b.get('cat') or ''))
+    except ValueError as e:
+        err(str(e))
+    return {'find': finder.view()}
+
+
 # ---------- Claude, обновления, отчёт ----------
 def api_claude_ask(q, b):
     text = (b.get('text') or '').strip()
@@ -651,8 +703,8 @@ def api_update_check(q, b):
 
 
 def api_update_install(q, b):
-    if jobs.running():
-        err('Сейчас идёт публикация. Обнови после неё.')
+    if jobs.running() or finder.running():
+        err('Сейчас идёт публикация или поиск чатов. Обнови после них.')
     try:
         ver = update.install()
     except net.NetError as e:
@@ -690,7 +742,7 @@ def api_report(q, b):
     lines = ['Пустошь Маркетинг v%s' % version.VERSION, 'Система: %s, Python %s' % (platform.platform(), platform.python_version()),
              'Claude: %s | GPT-картинки: %s | картинки с надписью: %s | GitHub-хостинг: %s' % ('ключ есть' if gen.ai_ready() else 'нет ключа', 'ключ есть' if imggen.ready() else 'нет ключа', 'да' if card.available() else 'нет', 'да' if pubs.host_ready() else 'нет'),
              'Telegram: %s' % TG.status()['state'], 'Threads: %s' % pubs.threads_status(), 'YouTube: %s' % yt.status(),
-             'Чатов: %d, можно писать: %d, выбрано: %d' % (len(S['chats']), sum(1 for c in ch if c.get('can_write')), len(selected_tg())),
+             'Чатов: %d, можно писать: %d, выбрано: %d | база найденных: %d' % (len(S['chats']), sum(1 for c in ch if c.get('can_write')), len(selected_tg()), finder.view()['total_base']),
              '--- журнал ---']
     try:
         with open(LOG_FILE, encoding='utf-8', errors='replace') as f:
@@ -721,7 +773,9 @@ ROUTES = {
     ('GET', '/api/state'): api_state, ('GET', '/api/ping'): api_ping, ('POST', '/api/settings'): api_settings,
     ('POST', '/api/draft'): api_draft, ('POST', '/api/media/meta'): api_media_meta, ('POST', '/api/media/clear'): api_media_clear,
     ('POST', '/api/generate'): api_generate, ('POST', '/api/extra/start'): api_extra_start, ('POST', '/api/extra/use'): api_extra_use,
-    ('POST', '/api/extra/drop'): api_extra_drop, ('POST', '/api/publish'): api_publish, ('POST', '/api/job/cancel'): api_job_cancel,
+    ('POST', '/api/extra/drop'): api_extra_drop, ('POST', '/api/publish'): api_publish,
+    ('POST', '/api/find/start'): api_find_start, ('POST', '/api/find/cancel'): api_find_cancel, ('GET', '/api/find/list'): api_find_list,
+    ('POST', '/api/find/save'): api_find_save, ('POST', '/api/find/drop'): api_find_drop, ('POST', '/api/find/cat'): api_find_cat, ('POST', '/api/job/cancel'): api_job_cancel,
     ('POST', '/api/job/clear'): api_job_clear,
     ('POST', '/api/tg/phone'): api_tg_phone, ('POST', '/api/tg/code'): api_tg_code, ('POST', '/api/tg/password'): api_tg_password,
     ('POST', '/api/tg/logout'): api_tg_logout, ('POST', '/api/tg/load'): api_tg_load, ('POST', '/api/tg/chat'): api_tg_chat,
@@ -782,6 +836,9 @@ class H(BaseHTTPRequestHandler):
                 return self._bytes(b'', 'image/x-icon', 204)
             if not self._token_ok(q):
                 return self._json({'ok': False, 'error': 'Окно устарело — закрой его и открой программу заново (значок на рабочем столе).'}, 401)
+            if path == '/api/find/export' and method == 'GET':
+                return self._bytes(finder.export_csv().encode('utf-8-sig'), 'text/csv; charset=utf-8',
+                                   extra={'Content-Disposition': 'attachment; filename="pustosh_chat_base.csv"'})
             if path.startswith('/media/') and method == 'GET':
                 return self.serve_media(path[7:])
             if path == '/api/upload' and method == 'PUT':
@@ -951,7 +1008,7 @@ def open_window(url):
 def watchdog():
     while True:
         time.sleep(5)
-        if IDLE_EXIT and time.time() - LAST_PING[0] > IDLE_EXIT and not jobs.running() and YT_LOGIN['state'] != 'wait':
+        if IDLE_EXIT and time.time() - LAST_PING[0] > IDLE_EXIT and not jobs.running() and not finder.running() and YT_LOGIN['state'] != 'wait':
             log('нет окна — закрываюсь')
             _quit()
 

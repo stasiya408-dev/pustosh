@@ -25,7 +25,7 @@ def run(out, live=False):
     LINES.append('python %s, frozen=%s' % (sys.version.split()[0], getattr(sys, 'frozen', False)))
 
     def imports():
-        names = ['cfg', 'net', 'gen', 'card', 'pubs', 'yt', 'cats', 'tgu', 'jobs', 'update', 'version', 'server']
+        names = ['cfg', 'net', 'gen', 'card', 'pubs', 'yt', 'cats', 'tgu', 'jobs', 'update', 'version', 'imggen', 'finder', 'server']
         for n in names:
             __import__(n)
         import version
@@ -77,6 +77,31 @@ def run(out, live=False):
         assert pid == -1000000000001, pid
         return 'telethon %s: типы и права распознаются' % telethon.__version__
     step('Telethon: типы чатов и права', tele)
+
+    def search_():
+        import datetime, telethon, tgu, finder, cats
+        from telethon.tl import types as T
+        from telethon import functions
+        now = datetime.datetime.now(datetime.timezone.utc)
+        ph = T.ChatPhotoEmpty()
+        ok_ = T.Channel(id=11, title='Рыбалка Украина', photo=ph, date=now, megagroup=True, username='ryba_ua', participants_count=5400)
+        r = tgu.classify_found(ok_)
+        assert r and r['username'] == 'ryba_ua' and r['members'] == 5400 and r['kind'] == 'group', r
+        assert tgu.classify_found(T.Channel(id=12, title='Канал', photo=ph, date=now, broadcast=True, username='chan')) is None
+        assert tgu.classify_found(T.Channel(id=13, title='Без имени', photo=ph, date=now, megagroup=True)) is None
+        assert tgu.classify_found(T.Channel(id=14, title='Нельзя писать', photo=ph, date=now, megagroup=True, username='ro',
+                                            default_banned_rights=T.ChatBannedRights(until_date=None, send_messages=True))) is None
+        assert tgu.classify_found(T.Channel(id=15, title='Мошенники', photo=ph, date=now, megagroup=True, username='sc', scam=True)) is None
+        alt = T.Channel(id=16, title='Запасное имя', photo=ph, date=now, megagroup=True, usernames=[T.Username(username='alt16', editable=False, active=True)])
+        assert tgu.classify_found(alt)['username'] == 'alt16'
+        flags = T.Channel(id=17, title='Флаги', photo=ph, date=now, megagroup=True, username='fl', join_request=True, slowmode_enabled=True, forum=True)
+        f = tgu.classify_found(flags)
+        assert f['join_request'] and f['slow'] and f['forum'], f
+        q = functions.contacts.SearchRequest(q='рыбалка', limit=100)
+        assert q.q == 'рыбалка' and q.limit == 100
+        assert len(finder.plan(['fishing', 'games'])) == 23 and not finder.plan(['other'])
+        return 'telethon %s: глобальный поиск и разбор найденных групп' % telethon.__version__
+    step('Telethon: поиск новых групп', search_)
 
     def errors():
         import tgu

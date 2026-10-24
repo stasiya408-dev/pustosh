@@ -11,12 +11,13 @@ BASE = 'http://127.0.0.1:%d' % ST.port
 HOME = tempfile.mkdtemp(prefix='mkt_ui_')
 os.environ.update({'MKT_HOME': HOME, 'MKT_TG_IMPL': 'fake_tgu:FakeTg', 'MKT_IDLE_EXIT': '0', 'MKT_ANTHROPIC_URL': BASE, 'MKT_OPENAI_URL': BASE,
                    'MKT_THREADS_BASE': BASE, 'MKT_THREADS_POLL': '0.02', 'MKT_GITHUB_API': BASE, 'MKT_UPDATE_URL': BASE + '/upd', 'MKT_BASE_DEPS': 'A'})
-import cfg, server, jobs, net
+import cfg, server, jobs, net, finder
 from PIL import Image, ImageDraw
 httpd = server.bind(0)
 PORT = httpd.server_port
 threading.Thread(target=httpd.serve_forever, daemon=True).start()
 jobs.random_pause = lambda a, b: 0.3
+finder.random_pause = lambda a, b: 0.05
 SH = os.path.join(HERE, 'shots'); os.makedirs(SH, exist_ok=True)
 cfg.set_settings({'ANTHROPIC_API_KEY': 'good-key', 'GAME_BOT_LINK': 'https://t.me/pustosh_bot', 'GITHUB_TOKEN': 'x', 'GITHUB_MEDIA_REPO': 'a/b',
                   'THREADS_APP_ID': 'A', 'THREADS_APP_SECRET': 'B', 'TG_API_ID': '1234567', 'TG_API_HASH': 'a' * 32})
@@ -44,6 +45,10 @@ with sync_playwright() as p:
     pg.wait_for_selector('h1')
     pg.screenshot(path=SH + '/1_post_empty.png')
     check('Новый пост' in pg.inner_text('h1'), 'открывается вкладка «Новый пост»')
+    try:
+        pg.wait_for_selector('#banner', state='visible', timeout=8000)      # проверка обновления идёт в фоне, баннер появляется чуть позже
+    except Exception:
+        pass
     check(pg.is_visible('#banner'), 'виден баннер об обновлении')
 
     pg.click('[data-tab=tg]'); pg.wait_for_selector('#s_TG_API_ID')
@@ -68,6 +73,44 @@ with sync_playwright() as p:
     pg.fill('#q', 'авто'); pg.wait_for_timeout(200)
     check(pg.locator('.chrow').count() >= 1, 'поиск по названию')
     pg.fill('#q', '')
+    # --- поиск новых групп по всему Telegram + база ---
+    check(pg.locator('[data-fcat]').count() == 13, 'у 13 тем слева есть галочки для поиска (у «Другое» нет)')
+    check(pg.is_visible('[data-act=findstart]') and pg.is_visible('[data-act=basesave]') and pg.is_visible('[data-act=tgload]'),
+          'видны кнопки: «Найти новые чаты», «Сохранить базу» и «Загрузить чаты»')
+    pg.screenshot(path=SH + '/4a_find_ui.png')
+    pg.click('[data-act=findstart]'); pg.wait_for_timeout(300)
+    check('галочки' in pg.inner_text('#toast') and pg.locator('#mo').count() == 0, 'без галочек поиск просит их поставить')
+    pg.check('[data-fcat=fishing]'); pg.check('[data-fcat=games]'); pg.wait_for_timeout(200)
+    check(pg.locator('.chip').count() == 2, 'выбранные темы показаны плашками сверху')
+    pg.screenshot(path=SH + '/4b_find_checked.png')
+    pg.click('[data-act=findstart]'); pg.wait_for_selector('#mo')
+    check('23' in pg.inner_text('#mbox') and 'Рыбалка' in pg.inner_text('#mbox'), 'перед поиском показано, сколько запросов и по каким темам')
+    pg.click('#mo')
+    pg.wait_for_selector('#findbox .bar', timeout=10000)
+    pg.screenshot(path=SH + '/4c_find_running.png')
+    check(pg.is_visible('[data-act=findcancel]'), 'во время поиска есть кнопка «Остановить»')
+    pg.wait_for_selector('[data-act=basedrop]', timeout=40000); pg.wait_for_timeout(500)
+    pg.screenshot(path=SH + '/4d_find_base.png')
+    check(pg.locator('.chrow').count() == 7, 'после поиска сразу открылась база: 7 групп')
+    check('https://t.me/ryba_ua' in pg.inner_html('#chats'), 'у групп из базы есть кнопка «Открыть» со ссылкой')
+    check('новых: 7' in pg.inner_text('[data-act=basesave]'), 'кнопка «Сохранить базу» показывает, сколько новых')
+    pg.click('[data-act=basesave]'); pg.wait_for_timeout(600)
+    check(all(x['saved'] for x in cfg.S['base'].values()) and len(cfg.S['base']) == 7, 'база сохранена')
+    check(pg.is_disabled('[data-act=basesave]'), 'после сохранения кнопка гаснет')
+    pg.click('[data-cat=fishing]'); pg.wait_for_timeout(400)
+    check(pg.locator('.chrow').count() == 4, 'в базе можно смотреть по темам: «Рыбалка и охота» = 4')
+    pg.screenshot(path=SH + '/4e_find_cat.png')
+    pg.select_option('[data-fcatsel="-100500003"]', 'humor'); pg.wait_for_timeout(500)
+    check(cfg.S['base']['-100500003']['cat'] == 'humor' and pg.locator('.chrow').count() == 3, 'тему группы в базе можно поменять')
+    pg.click('[data-cat=all]'); pg.wait_for_timeout(300)
+    pg.select_option('#minm', '1000'); pg.wait_for_timeout(500)
+    check(pg.locator('.chrow').count() == 5, 'фильтр «от 1000 участников»')
+    pg.select_option('#minm', '0'); pg.wait_for_timeout(400)
+    pg.click('[data-act=basedrop][data-id="-100500006"]'); pg.wait_for_timeout(500)
+    check('-100500006' not in cfg.S['base'], 'группу можно убрать из базы')
+    pg.click('[data-act=viewmine]'); pg.wait_for_selector('[data-sel]')
+    check(pg.locator('.chrow').count() == 11, 'кнопка «Мои чаты» возвращает мои 11 чатов')
+    pg.click('[data-cat=all]')
     pg.once('dialog', lambda d: d.accept())
     pg.click('[data-act=catadd]'); pg.wait_for_selector('#mi'); pg.fill('#mi', 'Мотоциклисты'); pg.click('#mo'); pg.wait_for_timeout(400)
     check(pg.locator('.cat', has_text='Мотоциклисты').count() == 1, 'своя категория появилась слева')

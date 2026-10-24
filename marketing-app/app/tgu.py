@@ -113,6 +113,33 @@ def classify(e):
     return None
 
 
+def classify_found(e):
+    """Подходит ли чат из глобального поиска: публичная группа (не канал) с открытым чатом. Иначе None.
+    Работает по именам классов, поэтому проверяется и без Telethon."""
+    if type(e).__name__ != 'Channel':
+        return None
+    if not getattr(e, 'megagroup', False) or getattr(e, 'broadcast', False) or getattr(e, 'gigagroup', False):
+        return None
+    if getattr(e, 'restricted', False) or getattr(e, 'scam', False) or getattr(e, 'fake', False):
+        return None
+    if getattr(e, 'creator', False) or getattr(e, 'admin_rights', None):      # свои группы не ищем
+        return None
+    un = getattr(e, 'username', '') or ''
+    if not un:
+        for u in getattr(e, 'usernames', None) or []:
+            if getattr(u, 'active', False) and getattr(u, 'username', ''):
+                un = u.username
+                break
+    if not un:                                                                # без публичного имени в группу не зайти по ссылке
+        return None
+    d = getattr(e, 'default_banned_rights', None)
+    if _b(d, 'send_messages'):                                                # писать не может никто
+        return None
+    return {'title': e.title, 'username': un, 'kind': 'group', 'members': getattr(e, 'participants_count', None),
+            'join_request': bool(getattr(e, 'join_request', False)), 'slow': bool(getattr(e, 'slowmode_enabled', False)),
+            'forum': bool(getattr(e, 'forum', False))}
+
+
 def msg_link(peer_id, username, mid):
     if username:
         return 'https://t.me/%s/%s' % (username, mid)
@@ -297,6 +324,24 @@ class TgUser:
             out.append(info)
         self._warm = True
         self._save_session()
+        return out
+
+    # ---------- поиск новых групп ----------
+    def search(self, query, limit=100):
+        """Глобальный поиск Телеграма по слову: список публичных групп с открытым чатом (каналы и закрытое отбрасываются)."""
+        if self.state != 'ready':
+            raise TgError('Сначала войди в Телеграм', 'auth')
+        return self._run(self._asearch(query, limit), 60)
+
+    async def _asearch(self, q, limit):
+        from telethon import functions, utils
+        r = await self._client(functions.contacts.SearchRequest(q=q, limit=limit))
+        out = []
+        for ch in getattr(r, 'chats', None) or []:
+            info = classify_found(ch)
+            if info:
+                info['id'] = str(utils.get_peer_id(ch))
+                out.append(info)
         return out
 
     # ---------- отправка ----------

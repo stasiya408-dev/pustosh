@@ -36,7 +36,6 @@ NAMES = {
     'ChatSendVideosForbiddenError': ('nomedia', 'В чате запрещены видео'),
     'ChannelPrivateError': ('forbidden', 'Чат закрыт, или ты из него вышел'),
     'ChannelBannedError': ('forbidden', 'Чат заблокирован Телеграмом'),
-    'ChannelInvalidError': ('forbidden', 'Группа недоступна (удалена или закрыта)'),
     'MessageTooLongError': ('error', 'Текст слишком длинный'),
     'ApiIdInvalidError': ('auth', 'Телеграм не принял api_id / api_hash. Проверь, что скопировал их без пробелов (вкладка «Подключения»).'),
     'PhoneNumberInvalidError': ('auth', 'Неверный номер телефона. Пиши с кодом страны, например +380501234567.'),
@@ -114,34 +113,6 @@ def classify(e):
     return None
 
 
-def classify_found(e):
-    """Подходит ли чат из глобального поиска: публичная группа (не канал) с открытым чатом. Иначе None.
-    Работает по именам классов, поэтому проверяется и без Telethon."""
-    if type(e).__name__ != 'Channel':
-        return None
-    if not getattr(e, 'megagroup', False) or getattr(e, 'broadcast', False) or getattr(e, 'gigagroup', False):
-        return None
-    if getattr(e, 'restricted', False) or getattr(e, 'scam', False) or getattr(e, 'fake', False):
-        return None
-    if getattr(e, 'creator', False) or getattr(e, 'admin_rights', None):      # свои группы не ищем
-        return None
-    un = getattr(e, 'username', '') or ''
-    if not un:
-        for u in getattr(e, 'usernames', None) or []:
-            if getattr(u, 'active', False) and getattr(u, 'username', ''):
-                un = u.username
-                break
-    if not un:                                                                # без публичного имени в группу не зайти по ссылке
-        return None
-    d = getattr(e, 'default_banned_rights', None)
-    if _b(d, 'send_messages'):                                                # писать не может никто
-        return None
-    return {'title': e.title, 'username': un, 'kind': 'group', 'members': getattr(e, 'participants_count', None),
-            'cid': getattr(e, 'id', None), 'hash': getattr(e, 'access_hash', None),
-            'join_request': bool(getattr(e, 'join_request', False)), 'slow': bool(getattr(e, 'slowmode_enabled', False)),
-            'forum': bool(getattr(e, 'forum', False))}
-
-
 def msg_link(peer_id, username, mid):
     if username:
         return 'https://t.me/%s/%s' % (username, mid)
@@ -157,7 +128,6 @@ class TgUser:
     def __init__(self):
         self.state = 'off'          # off | need_phone | need_code | need_password | ready
         self.me = ''
-        self.last_raw = 0           # сколько чатов вернул последний глобальный поиск (до отбора)
         self.phone = ''
         self._hash = ''
         self._client = None
@@ -328,42 +298,6 @@ class TgUser:
         self._warm = True
         self._save_session()
         return out
-
-    # ---------- поиск новых групп ----------
-    def search(self, query, limit=100):
-        """Глобальный поиск Телеграма по слову: список публичных групп с открытым чатом (каналы и закрытое отбрасываются)."""
-        if self.state != 'ready':
-            raise TgError('Сначала войди в Телеграм', 'auth')
-        return self._run(self._asearch(query, limit), 60)
-
-    async def _asearch(self, q, limit):
-        from telethon import functions, utils
-        r = await self._client(functions.contacts.SearchRequest(q=q, limit=limit))
-        out = []
-        self.last_raw = len(getattr(r, 'chats', None) or [])             # сколько чатов и каналов вернул Телеграм до отбора
-        for ch in getattr(r, 'chats', None) or []:
-            info = classify_found(ch)
-            if info:
-                info['id'] = str(utils.get_peer_id(ch))
-                out.append(info)
-        return out
-
-    def full(self, chat_id, cid=None, access_hash=None):
-        """Полные данные группы: сколько людей сейчас онлайн, сколько участников, описание. Один обычный запрос, как при открытии группы в приложении."""
-        if self.state != 'ready':
-            raise TgError('Сначала войди в Телеграм', 'auth')
-        return self._run(self._afull(int(chat_id), cid, access_hash), 60)
-
-    async def _afull(self, peer_id, cid, access_hash):
-        from telethon import functions, types
-        if cid and access_hash:
-            ref = types.InputChannel(int(cid), int(access_hash))
-        else:                                                              # старая запись без ключа доступа: берём из памяти Телеграм-клиента
-            ref = await self._client.get_input_entity(peer_id)
-        r = await self._client(functions.channels.GetFullChannelRequest(ref))
-        f = r.full_chat
-        return {'online': getattr(f, 'online_count', None), 'members': getattr(f, 'participants_count', None),
-                'about': (getattr(f, 'about', '') or '').strip()[:300]}
 
     # ---------- отправка ----------
     def send(self, chat_id, text, media=None, username=''):

@@ -11,20 +11,22 @@ BASE = 'http://127.0.0.1:%d' % ST.port
 HOME = tempfile.mkdtemp(prefix='mkt_ui_')
 os.environ.update({'MKT_HOME': HOME, 'MKT_TG_IMPL': 'fake_tgu:FakeTg', 'MKT_IDLE_EXIT': '0', 'MKT_ANTHROPIC_URL': BASE, 'MKT_OPENAI_URL': BASE,
                    'MKT_THREADS_BASE': BASE, 'MKT_THREADS_POLL': '0.02', 'MKT_GITHUB_API': BASE, 'MKT_UPDATE_URL': BASE + '/upd', 'MKT_BASE_DEPS': 'A'})
-import cfg, server, jobs, net, finder
+import cfg, server, jobs, net, finder, websearch
+import fake_web
+fake_web.install(); websearch.BLOCK_MIN = 0.05
 from fake_tgu import FakeTg
 from PIL import Image, ImageDraw
 httpd = server.bind(0)
 PORT = httpd.server_port
 threading.Thread(target=httpd.serve_forever, daemon=True).start()
 jobs.random_pause = lambda a, b: 0.3
-finder.random_pause = lambda a, b: 0.4
+finder.random_pause = lambda a, b: 0.25
 SH = os.path.join(HERE, 'shots'); os.makedirs(SH, exist_ok=True)
 cfg.set_settings({'ANTHROPIC_API_KEY': 'good-key', 'GAME_BOT_LINK': 'https://t.me/pustosh_bot', 'GITHUB_TOKEN': 'x', 'GITHUB_MEDIA_REPO': 'a/b',
                   'THREADS_APP_ID': 'A', 'THREADS_APP_SECRET': 'B', 'TG_API_ID': '1234567', 'TG_API_HASH': 'a' * 32})
 cfg.S['threads'] = {'token': 'T', 'user_id': '777', 'username': 'kozak_dev', 'expires': cfg.now() + 50 * 86400, 'saved': cfg.now()}
 cfg.save()
-ST.upd_json = {'version': '1.3.0', 'zip': 'a.zip', 'notes': 'новые категории чатов', 'deps_hash': 'A'}
+ST.upd_json = {'version': '1.9.0', 'zip': 'a.zip', 'notes': 'новые категории чатов', 'deps_hash': 'A'}
 
 im = Image.new('RGB', (1280, 720), (40, 30, 20)); d = ImageDraw.Draw(im)
 d.rectangle([0, 420, 1280, 720], fill=(90, 60, 30)); d.ellipse([500, 120, 780, 520], fill=(180, 90, 40)); d.text((40, 40), 'BOSS', fill=(255, 255, 255))
@@ -97,14 +99,18 @@ with sync_playwright() as p:
     pg.screenshot(path=SH + '/4b_find_checked.png')
     pg.click('[data-act=findstart]'); pg.wait_for_selector('#mo')
     check('23' in pg.inner_text('#mbox') and 'Рыбалка' in pg.inner_text('#mbox'), 'перед поиском показано, сколько запросов и по каким темам')
-    check('от 5 до 15 минут' in pg.inner_text('#mbox') and '3 ч 40 мин' in pg.inner_text('#mbox'), 'перед поиском честно сказано: пауза 5–15 минут, всего около 3 ч 40 мин')
+    mt = pg.inner_text('#mbox')
+    check('в интернете' in mt and 'Telegram и твой аккаунт для поиска не используются' in mt and 'минут' not in mt.split('Займёт')[0], 'перед поиском сказано: ищем в интернете, Telegram и аккаунт не используются')
+    check('Займёт примерно' in mt and 'Вступать в группы программа не будет' in mt, 'перед поиском написано, сколько это займёт и что программа в группы не вступает')
     pg.screenshot(path=SH + '/4b2_find_confirm.png')
     pg.click('#mo')
     pg.wait_for_selector('#findbox .bar', timeout=10000)
     pg.screenshot(path=SH + '/4c_find_running.png')
     check(pg.is_visible('[data-act=findcancel]'), 'во время поиска есть кнопка «Остановить»')
-    pg.wait_for_function("document.querySelector('#findbox').innerText.includes('Следующий запрос через')", timeout=15000)
-    check('Осталось примерно' in pg.inner_text('#findbox'), 'в окне видно, через сколько следующий запрос и сколько осталось')
+    pg.wait_for_function("document.querySelector('#findbox').innerText.includes('Слов проверено')", timeout=15000)
+    ft = pg.inner_text('#findbox')
+    check('Осталось примерно' in ft and 'страниц t.me проверено' in ft and 'Поисковики' in ft, 'в окне видно: сколько слов проверено, сколько страниц t.me открыто, какие поисковики работают, сколько осталось')
+    check('Следующий запрос через' not in ft and 'паузa' not in ft, 'никаких долгих пауз между запросами больше нет')
     pg.screenshot(path=SH + '/4c2_find_wait.png')
     pg.wait_for_selector('[data-act=basedrop]', timeout=40000)
     check('Найденные группы' in pg.inner_text('#chats'), 'во время поиска найденные группы уже видны в правой панели')
@@ -117,7 +123,8 @@ with sync_playwright() as p:
     check(pg.locator('.onl.on').count() >= 5 and 'онлайн' in pg.inner_text('.onl.on >> nth=0'), 'у групп видно, сколько человек онлайн')
     nums = [int(x) for x in pg.locator('.onl.on b').all_inner_texts() and [t.replace('🟢', '').strip() for t in pg.locator('.onl.on b').all_inner_texts()]]
     check(nums == sorted(nums, reverse=True), 'по умолчанию сверху те, где больше онлайн: %s' % nums)
-    check('Telegram вернул групп' in pg.inner_text('#findbox'), 'в итоге поиска написано, сколько вернул Telegram и сколько подошло')
+    ft = pg.inner_text('#findbox')
+    check('Ссылок на t.me найдено' in ft and 'страниц проверено: 11' in ft and 'из них групп: 7' in ft, 'в итоге поиска написано: сколько ссылок найдено, сколько страниц проверено и сколько групп подошло ' + ft.replace(chr(10), ' | ')[:300])
     check(pg.inner_text('[data-act=basesave] .cnt').strip() == '7', 'кнопка «Сохранить базу» показывает, сколько новых')
     pg.select_option('#sortb', 'members'); pg.wait_for_timeout(500)
     mem = [int(x.replace('👥', '').strip()) for x in pg.locator('.frow .tag[title="Участников в группе"]').all_inner_texts()]
@@ -130,13 +137,15 @@ with sync_playwright() as p:
     except Exception:
         clip = ''
     check('Скопировано ссылок: 7' in pg.inner_text('#toast') and (not clip or (clip.count('https://t.me/') == 7 and 'ryba_ua' in clip)), 'кнопка «Скопировать ссылки» копирует названия и ссылки всех 7 групп')
-    nf0 = len(FakeTg.fulls)
-    pg.click('[data-act=onlrun]'); pg.wait_for_selector('#mo'); pg.click('#mo')
+    fake_web.reset(); n0 = len(fake_web.TME)
+    pg.click('[data-act=onlrun]'); pg.wait_for_selector('#mo')
+    check('Telegram и твой аккаунт для этого не используются' in pg.inner_text('#mbox'), 'перед обновлением онлайна сказано, что Telegram не используется')
+    pg.click('#mo')
     pg.wait_for_function("document.querySelector('#toast').innerText.includes('Онлайн обновлён')", timeout=60000)
-    check(len(FakeTg.fulls) - nf0 >= 6, 'кнопка «Обновить онлайн» спросила у Telegram про группы (%d запросов)' % (len(FakeTg.fulls) - nf0))
-    nf1 = len(FakeTg.fulls)
+    check(len(fake_web.TME) - n0 >= 6 and not fake_web.SEARCHES, 'кнопка «Обновить онлайн» открыла страницы групп на t.me (%d) и не ходила в поисковики' % (len(fake_web.TME) - n0))
+    nf1 = len(fake_web.TME)
     pg.click('[data-act=onlone] >> nth=0'); pg.wait_for_function("document.querySelector('#toast').innerText.includes('Онлайн обновлён')", timeout=30000)
-    check(len(FakeTg.fulls) - nf1 == 1, 'кнопка ↻ у строки проверяет одну группу')
+    check(len(fake_web.TME) - nf1 == 1, 'кнопка ↻ у строки проверяет одну группу')
     pg.screenshot(path=SH + '/4d2_find_online.png')
     pg.click('[data-act=basesave]'); pg.wait_for_timeout(600)
     check(all(x['saved'] for x in cfg.S['base'].values()) and len(cfg.S['base']) == 7, 'база сохранена')
@@ -144,14 +153,14 @@ with sync_playwright() as p:
     pg.click('[data-cat=fishing]'); pg.wait_for_timeout(400)
     check(pg.locator('.frow').count() == 4, 'в базе можно смотреть по темам: «Рыбалка и охота» = 4')
     pg.screenshot(path=SH + '/4e_find_cat.png')
-    pg.select_option('[data-fcatsel="-100500003"]', 'humor'); pg.wait_for_timeout(500)
-    check(cfg.S['base']['-100500003']['cat'] == 'humor' and pg.locator('.frow').count() == 3, 'тему группы в базе можно поменять')
+    pg.select_option('[data-fcatsel="w_ryba_ua"]', 'humor'); pg.wait_for_timeout(500)
+    check(cfg.S['base']['w_ryba_ua']['cat'] == 'humor' and pg.locator('.frow').count() == 3, 'тему группы в базе можно поменять')
     pg.click('[data-cat=all]'); pg.wait_for_timeout(300)
     pg.select_option('#minm', '1000'); pg.wait_for_timeout(500)
     check(pg.locator('.frow').count() == 5, 'фильтр «от 1000 участников»')
     pg.select_option('#minm', '0'); pg.wait_for_timeout(400)
-    pg.click('[data-act=basedrop][data-id="-100500006"]'); pg.wait_for_timeout(500)
-    check('-100500006' not in cfg.S['base'], 'группу можно убрать из базы')
+    pg.click('[data-act=basedrop][data-id="w_gamers_ua"]'); pg.wait_for_timeout(500)
+    check('w_gamers_ua' not in cfg.S['base'], 'группу можно убрать из базы')
     pg.click('[data-act=viewmine]'); pg.wait_for_selector('[data-sel]')
     check(pg.locator('.chrow').count() == 11, 'кнопка «Мои чаты» возвращает мои 11 чатов')
     pg.click('[data-cat=all]')

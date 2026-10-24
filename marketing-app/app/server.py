@@ -625,13 +625,9 @@ def api_yt_logout(q, b):
 
 # ---------- поиск новых групп по всему Телеграму ----------
 def api_find_start(q, b):
-    if TG.status()['state'] != 'ready':
-        err('Сначала войди в Telegram (вкладка «Подключения» или «Telegram»)')
-    if jobs.running():
-        err('Сейчас идёт публикация. Запусти поиск после неё.')
     ids = [c for c in (b.get('cats') or []) if isinstance(c, str)]
     try:
-        return {'find': finder.start(TG, ids)}
+        return {'find': finder.start(ids)}
     except ValueError as e:
         err(str(e))
 
@@ -654,13 +650,9 @@ def api_find_list(q, b):
 
 
 def api_find_online(q, b):
-    if TG.status()['state'] != 'ready':
-        err('Сначала войди в Telegram (вкладка «Подключения» или «Telegram»)')
-    if jobs.running():
-        err('Сейчас идёт публикация. Обнови онлайн после неё.')
     ids = [c for c in (b.get('ids') or []) if isinstance(c, str)]
     try:
-        return {'find': finder.start_online(TG, ids)}
+        return {'find': finder.start_online(ids)}
     except ValueError as e:
         err(str(e))
 

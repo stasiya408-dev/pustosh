@@ -394,7 +394,7 @@ function paintTg(){
   $('#main').innerHTML=`<div class="tghead"><div><h1>Telegram</h1><p class="sub" style="margin:0">Вошёл как <b>${esc(t.me)}</b> · <a href="#" data-act="tgout">выйти</a></p></div>
     <div class="tgbtns">
       <button class="btn sm save" data-act="basesave" ${F.unsaved?'':'disabled'} title="${F.unsaved?'Сохранить найденные чаты в базу навсегда (несохранённых: '+F.unsaved+')':(F.total_base?'Всё уже сохранено: '+F.total_base:'База пока пуста')}">💾 Сохранить базу${F.unsaved?' <span class="cnt">'+F.unsaved+'</span>':''}</button>
-      <button class="btn sm find" data-act="findstart" ${run?'disabled':''} title="Искать по всему Telegram группы с открытым чатом, где тебя ещё нет">${run?'<span class="spin">⏳</span> Ищу…':'🔎 Найти новые чаты'}</button>
+      <button class="btn sm find" data-act="findstart" ${run?'disabled':''} title="Искать группы в интернете (поисковики), Telegram и твой аккаунт не используются">${run?'<span class="spin">⏳</span> Ищу…':'🔎 Найти новые чаты'}</button>
       <button class="btn sm pri" data-act="tgload" ${busy.load?'disabled':''} title="Подтянуть все группы и каналы, где ты состоишь и можешь писать">${busy.load?'<span class="spin">⏳</span> Загружаю…':'⟳ Загрузить чаты'}</button>
     </div></div>
       <div class="fchips">${fs.length?'<span class="hint">Искать:</span> '+fs.map(chip).join(''):'<span class="hint">← поставь галочки у тем слева, потом нажми «Найти новые чаты»</span>'}</div>
@@ -403,7 +403,7 @@ function paintTg(){
      <div id="findbox">${findBoxHtml()}</div>
      <div class="vtog"><button class="btn ${base?'':'pri'}" data-act="viewmine">💬 Мои чаты (${wr.length})</button><button class="btn ${base?'pri':''}" data-act="viewbase">🔎 Найденные (${F.total_base})</button></div>
      ${(!base&&!all.length)?'<div class="card">Список пуст. Нажми <b>«Загрузить чаты»</b>: программа найдёт все группы и каналы, где ты состоишь и можешь писать, и сама разложит их по категориям.</div>':''}
-     ${(base&&!F.total_base)?'<div class="card">База пуста. Поставь галочки у тем ниже и нажми <b>«Найти новые чаты»</b>: программа поищет по всему Telegram группы с открытым чатом, где тебя ещё нет, и сложит их сюда по темам.</div>':''}
+     ${(base&&!F.total_base)?'<div class="card">База пуста. Поставь галочки у тем ниже и нажми <b>«Найти новые чаты»</b>: программа поищет группы в интернете, проверит их страницы t.me и сложит сюда по темам.<</div>':''}
      <div id="cats">
      <div class="catrow"><span class="ck"></span><button class="cat ${tgF.cat==='all'?'on':''}" data-cat="all">📂 Все чаты<span class="n">${(!base&&nSel)?'<b>'+nSel+'</b> / ':''}${nAll}</span></button></div>
      ${S.cats.map((c,i)=>(c.hot&&(i===0||!S.cats[i-1].hot)?'<div class="hint railgrp">⭐ Для твоей игры</div>':'')+(!c.hot&&i>0&&S.cats[i-1].hot?'<div class="hint railgrp">Другие темы</div>':'')+`<div class="catrow">${c.id==='other'?'<span class="ck"></span>':`<input type="checkbox" class="ck" data-fcat="${c.id}" ${fs.includes(c.id)?'checked':''} title="Искать новые чаты по этой теме">`}<button class="cat ${tgF.cat===c.id?'on':''}" data-cat="${c.id}">${esc(c.name)}<span class="n">${(!base&&selc[c.id])?'<b>'+selc[c.id]+'</b> / ':''}${counts[c.id]||0}</span></button></div>`).join('')}
@@ -417,12 +417,12 @@ function paintTg(){
         <select id="minm" title="Сколько участников в группе">${[[0,'участников: любое число'],[50,'участников от 50'],[200,'участников от 200'],[1000,'участников от 1000'],[5000,'участников от 5000']].map(o=>`<option value="${o[0]}" ${+tgF.minm===o[0]?'selected':''}>${o[1]}</option>`).join('')}</select>
         <select id="sortb" title="Порядок в списке">${sortOpts.map(o=>`<option value="${o[0]}" ${tgF.sort===o[0]?'selected':''}>${o[1]}</option>`).join('')}</select></div>
       <div class="tools">
-        <button class="btn sm" data-act="onlrun" ${onRun||!shownIds.length?'disabled':''} title="Спросить у Telegram, сколько людей сейчас онлайн в показанных группах (не больше ${F.max_online||100} за раз)">🟢 Обновить онлайн</button>
+        <button class="btn sm" data-act="onlrun" ${onRun||!shownIds.length?'disabled':''} title="Открыть страницы показанных групп на t.me и узнать, сколько людей сейчас онлайн (не больше ${F.max_online||200} за раз). Telegram-аккаунт не используется">🟢 Обновить онлайн</button>
         <button class="btn sm" data-act="copylinks" ${shownIds.length?'':'disabled'} title="Скопировать ссылки t.me всех показанных групп">📋 Скопировать ссылки</button>
         <button class="btn sm" data-act="basecsv" title="Скачать базу таблицей (открывается в Excel)">⬇ Таблицей</button>
         ${F.unsaved?`<button class="btn sm" data-act="basedropnew" title="Убрать из базы всё, что ещё не сохранено">🗑 Убрать несохранённые (${F.unsaved})</button>`:''}</div>
       <div id="onbox">${onBoxHtml()}</div>
-      <div class="hint" style="margin-bottom:8px">Нажми на название, чтобы посмотреть группу в Telegram. Число «онлайн» — это снимок на момент проверки, у каждой группы подписано, когда он сделан. Вступать в группу придётся самому; после вступления нажми «Загрузить чаты»: она появится в «Моих чатах».</div>
+      <div class="hint" style="margin-bottom:8px">Нажми на название, чтобы посмотреть группу в Telegram. Число «онлайн» — это снимок на момент проверки, у каждой группы подписано, когда он сделан. Можно ли писать в группе, станет видно, когда ты в неё вступишь (сам, по ссылке); после этого нажми «Загрузить чаты»: она появится в «Моих чатах».</div>
       <div class="list">${vis.map(rowFound).join('')||'<div class="chrow hint">В этой теме пока пусто</div>'}</div></div>`
      :`<div class="panel"><div class="ph"><h2>💬 Мои чаты</h2><span class="tag g" style="margin:0">${vis.length}</span></div>
       <div class="tools"><input type="search" id="q" placeholder="Поиск по названию" value="${esc(tgF.q)}">
@@ -455,21 +455,26 @@ function fmtWait(sec){
   if(m<60)return m+' мин';
   const h=Math.floor(m/60),r=m%60;return h+' ч'+(r?' '+r+' мин':'');
 }
-function pauseAvg(F){const p=F.pause||[300,900];return (p[0]+p[1])/2}
 async function loadBase(){const p=new URLSearchParams({cat:tgF.cat,q:tgF.q,min:tgF.minm,sort:tgF.sort});baseData=await api('/api/find/list?'+p);S.find=baseData.find;return baseData}
+function enginesLine(F){
+  const e=F.engines||[];if(!e.length)return '';
+  return 'Поисковики: '+e.map(x=>esc(x.name)+(x.off?' <span class="bad" title="'+esc(x.err||'не отвечает')+'">✗ не отвечает</span>':(x.found?' <span class="ok">'+x.found+'</span>':' …'))).join(' · ');
+}
 function findBoxHtml(){
   const F=S.find;
   if(F.state==='running'){const pct=F.total?Math.round(F.done*100/F.total):0;
-    return `<div class="card"><h2><span class="spin">🔎</span> Ищу новые группы по всему Telegram…</h2><div class="bar"><i style="width:${pct}%"></i></div>
-      <div class="hint" style="margin-top:8px">Сделано запросов: ${F.done} из ${F.total} · найдено новых: <b>${F.new}</b></div>
-      ${F.done?`<div class="hint">Telegram вернул групп: ${F.raw||0} · подошло (открытые, с чатом, где тебя нет): ${F.kept||0}</div>`:''}
-      ${F.new?'<div class="hint">Найденные группы уже видны справа, ссылки можно открывать, пока идёт поиск.</div>':''}
-      <div class="hint">${F.wait_until?'Следующий запрос через <b>'+fmtWait(F.wait_until-Date.now()/1000)+'</b>: '+esc(F.next):(F.cur?'Сейчас спрашиваю: '+esc(F.cur):'')}</div>
-      <div class="hint">Осталось примерно <b>${fmtWait(Math.max(0,F.wait_until-Date.now()/1000)+Math.max(0,F.total-F.done-1)*pauseAvg(F))}</b>. Пауза между запросами случайная, 5–15 минут: так Телеграм не ограничит аккаунт. Окно можно свернуть или закрыть, поиск идёт в фоне.</div>
+    const el=Math.max(0,Date.now()/1000-F.started),per=F.done?el/F.done:7,left=Math.max(0,F.total-F.done)*per;
+    return `<div class="card"><h2><span class="spin">🔎</span> Ищу новые группы в интернете…</h2><div class="bar"><i style="width:${pct}%"></i></div>
+      <div class="hint" style="margin-top:8px">Слов проверено: ${F.done} из ${F.total} · найдено новых групп: <b>${F.new}</b></div>
+      <div class="hint">Ссылок найдено: ${F.raw||0} · страниц t.me проверено: ${F.checked||0} · подошло (группы): ${F.kept||0}</div>
+      <div class="hint">${enginesLine(F)}</div>
+      ${F.cur?`<div class="hint">Сейчас: ${esc(F.cur)}</div>`:''}
+      <div class="hint">Осталось примерно <b>${fmtWait(left)}</b>. Найденные группы уже видны справа, ссылки можно открывать, пока идёт поиск. Окно можно свернуть или закрыть, поиск идёт в фоне.</div>
       <p><button class="btn red" data-act="findcancel">Остановить</button></p></div>`}
   if(F.state==='idle'||!F.started||findDismiss===F.started)return '';
-  const head=F.state==='error'?`<div class="bad">⚠ ${esc(F.msg)}</div>`:`<b>${F.state==='cancelled'?'Поиск остановлен':'Поиск закончен'}:</b> просмотрено запросов ${F.done} из ${F.total}, найдено новых чатов: <b>${F.new}</b>.${F.done?`<div class="hint" style="margin-top:4px">Telegram вернул групп: ${F.raw||0}, подошло (открытые, с чатом, где тебя нет): ${F.kept||0}, из них новых в базе: ${F.new}.${F.raw===0?' Telegram на эти слова ничего не вернул: попробуй другие темы.':''}</div>`:''}`;
-  return `<div class="card">${head}${F.warn?`<div class="warn" style="margin-top:6px">${esc(F.warn)}</div>`:''}${F.truncated?'<div class="hint" style="margin-top:6px">Тем выбрано много, поэтому за один раз проверено не всё. Запусти поиск ещё раз позже.</div>':''}
+  const head=F.state==='error'?`<div class="bad">⚠ ${esc(F.msg)}</div>`:`<b>${F.state==='cancelled'?'Поиск остановлен':'Поиск закончен'}:</b> проверено слов ${F.done} из ${F.total}, найдено новых групп: <b>${F.new}</b>.`;
+  const det=F.done?`<div class="hint" style="margin-top:4px">Ссылок на t.me найдено: ${F.raw||0}, страниц проверено: ${F.checked||0}, из них групп: ${F.kept||0}. ${enginesLine(F)}${!F.raw&&F.state!=='error'?'<br>По этим словам поисковики ничего не вернули: попробуй другие темы или повтори позже.':''}</div>`:'';
+  return `<div class="card">${head}${det}${F.warn?`<div class="warn" style="margin-top:6px">${esc(F.warn)}</div>`:''}${F.truncated?'<div class="hint" style="margin-top:6px">Тем выбрано много, поэтому за один раз проверено не всё. Запусти поиск ещё раз: уже проверенное повторно не открывается.</div>':''}
     ${F.new&&F.unsaved?'<div class="hint" style="margin-top:6px">Нажми «💾 Сохранить базу», чтобы оставить найденное навсегда.</div>':''}
     <p style="margin-bottom:0"><button class="btn" data-act="findclose">Закрыть</button></p></div>`;
 }
@@ -648,11 +653,12 @@ document.addEventListener('click',async e=>{
     findstart:async()=>{
       const ids=findSel.filter(id=>id!=='other'&&S.cats.some(c=>c.id===id));
       if(!ids.length){toast('Сначала поставь галочки у тем слева (например, «Взаимопиар игр и ботов»)',5000);return}
-      const F0=S.find,all=ids.reduce((a,id)=>a+((F0.queries||{})[id]||0),0),mx=F0.max_queries||60,nq=Math.min(mx,all),p=F0.pause||[300,900];
+      const F0=S.find,all=ids.reduce((a,id)=>a+((F0.queries||{})[id]||0),0),mx=F0.max_queries||60,nq=Math.min(mx,all);
       const ok=await askBox(`<h2>🔎 Искать новые чаты?</h2><ul style="padding-left:18px"><li style="margin:6px 0">Темы: <b>${ids.map(id=>esc(catName(id))).join(', ')}</b></li>
-        <li style="margin:6px 0">Запросов к Telegram: <b>${nq}</b>${all>nq?` (за один запуск не больше ${mx}, остальное — в следующий раз)`:''}. Между запросами пауза <b>случайная, от ${Math.round(p[0]/60)} до ${Math.round(p[1]/60)} минут</b>, чтобы Телеграм не ограничил аккаунт.</li>
-        <li style="margin:6px 0">Поиск получается долгим: примерно <b>${fmtWait(Math.max(0,nq-1)*pauseAvg(F0))}</b>. Окно можно свернуть или закрыть, поиск идёт в фоне, пока включён компьютер (программа не даст Windows уснуть). Найденное сохраняется сразу, смотреть можно в любой момент.</li>
-        <li style="margin:6px 0">Ищу по всему Telegram только <b>публичные группы с открытым чатом, где тебя ещё нет</b>. Вступать в них программа не будет.</li></ul>
+        <li style="margin:6px 0">Слов для поиска: <b>${nq}</b>${all>nq?` (за один запуск не больше ${mx}, остальное — в следующий раз)`:''}. Ищу <b>в интернете</b>: DuckDuckGo, Bing, Mojeek и Brave. <b>Telegram и твой аккаунт для поиска не используются</b>: ничего не отправляется, аккаунту ничего не грозит.</li>
+        <li style="margin:6px 0">Каждую найденную ссылку открываю на публичной странице t.me/…: оттуда беру название, сколько участников и сколько сейчас онлайн. Остаются только группы; каналы, люди и боты отбрасываются.</li>
+        <li style="margin:6px 0">Займёт примерно <b>${fmtWait(nq*7)}</b>. Окно можно свернуть или закрыть, поиск идёт в фоне (программа не даст Windows уснуть). Найденное сохраняется сразу, смотреть можно в любой момент.</li>
+        <li style="margin:6px 0">Вступать в группы программа не будет. Можно ли писать в группе, станет видно, когда зайдёшь в неё сам.</li></ul>
         ${S.chats.length?'':'<div class="warn">Сначала лучше нажать «Загрузить чаты»: тогда я точно знаю, в каких группах ты уже состоишь, и не покажу их заново.</div>'}`,'Начать поиск');
       if(!ok)return;
       const r=await act(()=>api('/api/find/start',{cats:ids}));
@@ -664,8 +670,8 @@ document.addEventListener('click',async e=>{
       const F0=S.find,mx=F0.max_online||100,ids=(baseData.items||[]).filter(c=>!c.gone).map(c=>c.id).slice(0,mx);
       if(!ids.length){toast('Нет групп для проверки');return}
       const ok=await askBox(`<h2>🟢 Узнать, сколько людей онлайн?</h2><ul style="padding-left:18px"><li style="margin:6px 0">Групп: <b>${ids.length}</b>${(baseData.items||[]).length>ids.length?` (за раз не больше ${mx}, берутся первые в списке)`:''}.</li>
-        <li style="margin:6px 0">Между запросами пауза 2,5–5 секунд, займёт примерно <b>${fmtWait(ids.length*3.75)}</b>. Окно можно не закрывать и пользоваться программой.</li>
-        <li style="margin:6px 0">Программа только читает открытые данные групп, никуда не вступает и ничего не пишет.</li></ul>`,'Узнать онлайн');
+        <li style="margin:6px 0">Открываю публичную страницу каждой группы (t.me/…), займёт примерно <b>${fmtWait(ids.length*1.4)}</b>. Окно можно не закрывать и пользоваться программой.</li>
+        <li style="margin:6px 0">Telegram и твой аккаунт для этого не используются. Программа только читает открытые данные, никуда не вступает и ничего не пишет.</li></ul>`,'Узнать онлайн');
       if(!ok)return;
       const r=await act(()=>api('/api/find/online',{ids}));
       if(r){S.find=r.find;onlineWas=true;onDismiss=0;paintTg();pollFind()}},

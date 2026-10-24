@@ -25,7 +25,7 @@ def run(out, live=False):
     LINES.append('python %s, frozen=%s' % (sys.version.split()[0], getattr(sys, 'frozen', False)))
 
     def imports():
-        names = ['cfg', 'net', 'gen', 'card', 'pubs', 'yt', 'cats', 'tgu', 'jobs', 'update', 'version', 'imggen', 'finder', 'server']
+        names = ['cfg', 'net', 'gen', 'card', 'pubs', 'yt', 'cats', 'tgu', 'jobs', 'update', 'version', 'imggen', 'websearch', 'finder', 'server']
         for n in names:
             __import__(n)
         import version
@@ -78,40 +78,21 @@ def run(out, live=False):
         return 'telethon %s: типы и права распознаются' % telethon.__version__
     step('Telethon: типы чатов и права', tele)
 
-    def search_():
-        import datetime, telethon, tgu, finder, cats
-        from telethon.tl import types as T
-        from telethon import functions
-        now = datetime.datetime.now(datetime.timezone.utc)
-        ph = T.ChatPhotoEmpty()
-        ok_ = T.Channel(id=11, title='Рыбалка Украина', photo=ph, date=now, megagroup=True, username='ryba_ua', participants_count=5400)
-        r = tgu.classify_found(ok_)
-        assert r and r['username'] == 'ryba_ua' and r['members'] == 5400 and r['kind'] == 'group', r
-        assert tgu.classify_found(T.Channel(id=12, title='Канал', photo=ph, date=now, broadcast=True, username='chan')) is None
-        assert tgu.classify_found(T.Channel(id=13, title='Без имени', photo=ph, date=now, megagroup=True)) is None
-        assert tgu.classify_found(T.Channel(id=14, title='Нельзя писать', photo=ph, date=now, megagroup=True, username='ro',
-                                            default_banned_rights=T.ChatBannedRights(until_date=None, send_messages=True))) is None
-        assert tgu.classify_found(T.Channel(id=15, title='Мошенники', photo=ph, date=now, megagroup=True, username='sc', scam=True)) is None
-        alt = T.Channel(id=16, title='Запасное имя', photo=ph, date=now, megagroup=True, usernames=[T.Username(username='alt16', editable=False, active=True)])
-        assert tgu.classify_found(alt)['username'] == 'alt16'
-        flags = T.Channel(id=17, title='Флаги', photo=ph, date=now, megagroup=True, username='fl', join_request=True, slowmode_enabled=True, forum=True)
-        f = tgu.classify_found(flags)
-        assert f['join_request'] and f['slow'] and f['forum'], f
-        q = functions.contacts.SearchRequest(q='рыбалка', limit=100)
-        assert q.q == 'рыбалка' and q.limit == 100
+    def web_():
+        import websearch, finder
+        page = ('<div class="tgme_page_title" dir="auto"><span dir="auto">Рыбалка Украина</span></div>'
+                '<div class="tgme_page_extra">5 400 members, 321 online</div>'
+                '<div class="tgme_page_description" dir="auto">Чат рыбаков</div>'
+                '<div class="tgme_page_action"><a class="tgme_action_button_new shine" href="tg://resolve?domain=ryba_ua">Join Group</a></div>')
+        d = websearch.parse_tme(page, 'ryba_ua')
+        assert d['kind'] == 'group' and d['members'] == 5400 and d['online'] == 321 and d['title'] == 'Рыбалка Украина', d
+        assert websearch.parse_tme(page.replace('members', 'subscribers'), 'x')['kind'] == 'channel'
+        assert websearch.parse_tme('<html>If you have Telegram, you can contact @zzzzz</html>', 'zzzzz')['kind'] == 'none'
+        assert websearch.extract('<a href="https://t.me/ryba_ua">x</a> t.me/joinchat/AAA t.me/some_bot') == ['ryba_ua']
         assert len(finder.plan(['fishing', 'games'])) == 23 and not finder.plan(['other'])
-        # онлайн в группах: полный профиль канала по id и access_hash, который запомнили при поиске
-        hh = T.Channel(id=18, title='С ключом', photo=ph, date=now, megagroup=True, username='hh', access_hash=987654321)
-        c = tgu.classify_found(hh)
-        assert c['cid'] == 18 and c['hash'] == 987654321, c
-        fr = functions.channels.GetFullChannelRequest(T.InputChannel(channel_id=c['cid'], access_hash=c['hash']))
-        assert fr.channel.channel_id == 18 and fr.channel.access_hash == 987654321
-        import inspect
-        params = inspect.signature(T.ChannelFull.__init__).parameters
-        for k in ('online_count', 'participants_count', 'about'):
-            assert k in params, 'в ChannelFull нет поля ' + k
-        return 'telethon %s: глобальный поиск, разбор групп и запрос онлайна (GetFullChannel)' % telethon.__version__
-    step('Telethon: поиск новых групп', search_)
+        return 'разбор страниц t.me и ссылок из поисковиков работает'
+    step('поиск групп в интернете: разбор страниц', web_)
+
 
     def errors():
         import tgu
@@ -160,6 +141,17 @@ def run(out, live=False):
                 return 'ответ Телеграма понятен: %s' % e.msg
             return 'неожиданно: Телеграм принял фальшивые ключи'
         step('ЖИВОЙ тест: связь с серверами Telegram', lv)
+
+        def lw():
+            import websearch
+            lines = []
+            websearch.diagnose(lines.append)
+            p = os.path.join(os.path.dirname(os.path.abspath(out)), 'web_probe.txt')
+            with open(p, 'w', encoding='utf-8') as f:
+                f.write('\n'.join(lines))
+            ok = [l for l in lines if l.startswith('проверено страниц')]
+            return ok[0] if ok else 'проба записана в web_probe.txt'
+        step('ЖИВОЙ тест: поиск групп в интернете (не ломает сборку)', lw)
 
     LINES.append('')
     LINES.append('ИТОГО: %s' % ('ВСЁ ХОРОШО' if not FAILED else 'ПРОВАЛ: ' + ', '.join(FAILED)))

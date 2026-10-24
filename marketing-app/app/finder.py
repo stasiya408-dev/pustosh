@@ -1,20 +1,25 @@
 # -*- coding: utf-8 -*-
-"""Поиск НОВЫХ групп по всему Телеграму (по темам) и база найденных чатов.
-Ищем только публичные группы с открытым чатом, где тебя ещё нет. Вступать в них программа не пытается."""
+"""Поиск НОВЫХ групп Telegram в интернете (по темам) и база найденных чатов.
+Аккаунт Telegram при поиске НЕ используется и ничего в Telegram не отправляется: слова ищутся в поисковиках,
+а каждая найденная группа проверяется по публичной странице t.me/имя (название, участники, онлайн, описание).
+Вступать в группы программа не пытается."""
 import csv, io, itertools, random, sys, threading, time, traceback
-import cfg, cats, tgu
+import cfg, cats, net, websearch
 from cfg import S
 
 LOCK = threading.RLock()
 CANCEL = [False]
 CANCEL_ON = [False]
-PAUSE = (300.0, 900.0)     # секунд между запросами: от 5 до 15 минут, случайно (Телеграм жёстко ограничивает частый глобальный поиск)
-MAX_QUERIES = 60           # за один запуск (при паузе 5–15 минут это около 10 часов)
-ONLINE_PAUSE = (2.5, 5.0)  # секунд между проверками онлайна групп (обычный запрос, как при открытии группы в приложении)
-MAX_ONLINE_QUERY = 40      # онлайн проверяется сразу для новых групп после каждого запроса, но не больше стольки за раз
-MAX_ONLINE_JOB = 100       # кнопка «Обновить онлайн»: не больше стольки групп за раз
+WEB_PAUSE = (1.2, 2.6)       # секунд между запросами к одному поисковику
+VERIFY_PAUSE = (0.4, 0.9)    # секунд между проверками страниц t.me (проверяют два «потока» одновременно)
+ONLINE_PAUSE = (0.5, 1.1)    # секунд между проверками онлайна кнопкой «Обновить онлайн»
+MAX_QUERIES = 60             # слов за один запуск (по каждому слову идут запросы во все поисковики)
+MAX_ONLINE_JOB = 200         # кнопка «Обновить онлайн»: не больше стольки групп за раз
+SEEN_TTL = 14 * 86400        # каналы, люди и боты, которых уже проверили, две недели не проверяем снова
+DROP_TTL = 90 * 86400        # группы, которые ты убрал из базы крестиком, три месяца не показываем снова
+SEEN_MAX = 6000
 ST = {'state': 'idle', 'msg': '', 'warn': '', 'cats': [], 'done': 0, 'total': 0, 'new': 0, 'cur': '', 'errors': 0, 'started': 0, 'truncated': False,
-      'wait_until': 0, 'next': '', 'raw': 0, 'kept': 0}
+      'raw': 0, 'kept': 0, 'checked': 0, 'engines': []}
 ON = {'state': 'idle', 'msg': '', 'warn': '', 'done': 0, 'total': 0, 'started': 0}
 
 
@@ -59,7 +64,7 @@ def plan(cat_ids):
     return mixed
 
 
-def start(tg, cat_ids):
+def start(cat_ids):
     with LOCK:
         if running():
             raise ValueError('Поиск уже идёт')
@@ -70,8 +75,8 @@ def start(tg, cat_ids):
         qs = qs[:MAX_QUERIES]
         CANCEL[0] = False
         ST.update(state='running', msg='', warn='', cats=sorted({c for c, _ in qs}), done=0, total=len(qs), new=0, cur='', errors=0,
-                  started=cfg.now(), truncated=trunc, wait_until=0, next='', raw=0, kept=0)
-    threading.Thread(target=_run, args=(tg, qs), daemon=True, name='find').start()
+                  started=cfg.now(), truncated=trunc, raw=0, kept=0, checked=0, engines=[])
+    threading.Thread(target=_run, args=(qs,), daemon=True, name='find').start()
     return view()
 
 
@@ -90,53 +95,172 @@ def _sleep(sec, stop=None):
     return True
 
 
-def _merge(found, cid, query, selected):
-    """Кладёт найденное в базу. Возвращает список id новых чатов."""
+# ---------- что уже знаем ----------
+def seen():
+    return S.setdefault('webseen', {})
+
+
+def _remember(low, kind):
+    d = seen()
+    d[low] = [cfg.now(), kind]
+    if len(d) > SEEN_MAX:
+        for k in sorted(d, key=lambda k: d[k][0])[:500]:
+            del d[k]
+
+
+def _skip(low):
+    v = seen().get(low)
+    if not v:
+        return False
+    return cfg.now() - v[0] < (DROP_TTL if v[1] == 'dropped' else SEEN_TTL)
+
+
+def _known():
+    """(имена моих чатов, {имя группы в базе: ключ})."""
+    own = {(c.get('username') or '').lower() for c in S['chats'].values() if c.get('username')}
+    inbase = {(x.get('username') or '').lower(): k for k, x in base().items() if x.get('username')}
+    return own, inbase
+
+
+def _is_new(low):
+    own, inbase = _known()
+    return low not in own and low not in inbase and not _skip(low)
+
+
+def _merge(groups, cid, query, selected):
+    """Кладёт найденные группы в базу. groups: [(имя, описание страницы t.me, поисковик)]. Возвращает ключи новых."""
     n = []
-    b, own = base(), S['chats']
-    for f in found:
-        i = f['id']
-        if i in own:                       # ты уже в этой группе
+    b = base()
+    own, inbase = _known()
+    for name, info, src in groups:
+        low = name.lower()
+        if low in own or low in inbase:
             continue
-        old = b.get(i)
-        if old:                            # уже знаем: обновим число участников и название
-            for k in ('title', 'username', 'members', 'join_request', 'slow', 'forum', 'cid', 'hash'):
-                if f.get(k) is not None:
-                    old[k] = f[k]
-            continue
-        g = cats.guess(f['title'], f.get('username', ''))
+        k = 'w_' + low
+        g = cats.guess(info.get('title', ''), name)
         c = g if (g in selected and g != cats.OTHER) else cid       # тема по названию, если она среди выбранных
-        item = {k: f.get(k) for k in ('id', 'title', 'username', 'kind', 'members', 'join_request', 'slow', 'forum', 'cid', 'hash')}
-        item.update(cat=c, saved=False, found=cfg.now(), q=query, manual=False, online=None, online_at=0, about='', gone=False)
-        b[i] = item
-        n.append(i)
+        b[k] = {'id': k, 'title': info.get('title') or name, 'username': name, 'kind': 'group', 'members': info.get('members'),
+                'join_request': bool(info.get('join_request')), 'slow': False, 'forum': False, 'cid': None, 'hash': None,
+                'cat': c, 'saved': False, 'found': cfg.now(), 'q': query, 'manual': False,
+                'online': info.get('online'), 'online_at': cfg.now(), 'about': info.get('about') or '', 'gone': False, 'src': src}
+        inbase[low] = k
+        n.append(k)
     return n
 
 
-def _fetch_online(tg, ids, stop, step=None):
-    """Спрашивает у Телеграма, сколько людей сейчас онлайн (и описание) у каждой группы, по очереди с паузами. Возвращает (проверено, предупреждение)."""
-    done, warn = 0, ''
+def _run(qs):
+    selected = {c for c, _ in qs}
+    stop_msg, warn = '', ''
+    names = {c['id']: c['name'] for c in cats.categories()}
+    engines = websearch.make_engines()
+    ST['engines'] = [e.report() for e in engines]
+    dead = 0
+    _keep_awake(True)
+    try:
+        for i, (cid, q) in enumerate(qs):
+            if CANCEL[0]:
+                break
+            label = '%s: «%s»' % (names.get(cid, cid), q)
+            ST['cur'] = 'ищу в интернете · ' + label
+            cands = websearch.search_word(q, engines, lambda: random_pause(*WEB_PAUSE), lambda: CANCEL[0])
+            ST['engines'] = [e.report() for e in engines]
+            if CANCEL[0]:
+                break
+            with LOCK:
+                ST['raw'] += len(cands)
+            todo = [v[0] for low, v in cands.items() if _is_new(low)]
+            groups, blocked, neterr = [], False, ''
+            if todo:
+                def prog(k, n, label=label):
+                    ST['cur'] = 'проверяю страницы t.me: %d из %d · %s' % (k, n, label)
+                infos, blocked, neterr = websearch.verify_many(todo, lambda: CANCEL[0], lambda: random_pause(*VERIFY_PAUSE), prog)
+                dead = dead + 1 if (not infos and not blocked) else 0
+                with LOCK:
+                    ST['checked'] += len(infos)
+                    for n in todo:
+                        info = infos.get(n)
+                        if not info:
+                            continue
+                        if info['kind'] == 'group' and (info['members'] or 0) >= websearch.MIN_MEMBERS:
+                            groups.append((n, info, cands[n.lower()][1]))
+                        else:
+                            _remember(n.lower(), info['kind'])
+            with LOCK:
+                fresh = _merge(groups, cid, q, selected)
+                ST['kept'] += len(groups)
+                ST['new'] += len(fresh)
+                ST['done'] = i + 1
+                cfg.save()
+            if blocked:
+                warn = 't.me просит подождать (слишком частые запросы с этого компьютера). Найденное сохранено, повтори поиск через несколько минут.'
+                break
+            if neterr or dead >= 3:
+                stop_msg = 'Поиск остановлен: страницы t.me не открываются (%s). Проверь интернет или VPN и повтори.' % (neterr or 'нет ответа')
+                break
+            if all(e.off for e in engines):
+                why = '; '.join('%s: %s' % (e.name, e.err or 'не отвечает') for e in engines)
+                if ST['raw'] == 0:
+                    stop_msg = 'Не получилось найти ничего: поисковики не отвечают (%s). Проверь интернет или повтори позже.' % why
+                else:
+                    warn = 'Поисковики перестали отвечать (%s), поэтому поиск остановлен. Найденное сохранено.' % why
+                break
+    except Exception as e:
+        traceback.print_exc()
+        stop_msg = 'Ошибка программы: %s' % e
+    finally:
+        with LOCK:
+            if stop_msg:
+                ST.update(state='error', msg=stop_msg)
+            else:
+                ST.update(state='cancelled' if CANCEL[0] else 'done', warn=warn)
+            ST.update(cur='', engines=[e.report() for e in engines])
+            _keep_awake(False)
+            try:
+                cfg.save()
+            except Exception:
+                pass
+
+
+# ---------- онлайн ----------
+def _check_retry(username, stop):
+    """Страница t.me/имя; если просят подождать — ждём один раз и пробуем снова."""
+    try:
+        return websearch.check(username)
+    except websearch.Blocked as b:
+        if not _sleep(min(60, max(websearch.BLOCK_MIN, b.wait)), stop):
+            return None
+        return websearch.check(username)
+
+
+def _fetch_online(ids, stop, step=None):
+    """Открывает страницу t.me каждой группы и берёт оттуда онлайн, участников и описание. Возвращает (проверено, предупреждение)."""
+    done, warn, bad = 0, '', 0
     for i, gid in enumerate(ids):
         if stop():
             break
         if i and not _sleep(random_pause(*ONLINE_PAUSE), stop):
             break
         x = base().get(gid)
-        if not x:
+        if not x or not x.get('username'):
             continue
         if step:
             step(i, len(ids))
         try:
-            d = tg.full(gid, x.get('cid'), x.get('hash'))
-        except tgu.TgError as e:
-            if e.kind in ('flood', 'peerflood'):
-                warn = 'Телеграм попросил подождать при проверке онлайна (%s). Онлайн можно обновить позже кнопкой «🟢 Обновить онлайн».' % e.msg
+            d = _check_retry(x['username'], stop)
+        except websearch.Blocked:
+            warn = 't.me просит подождать (слишком частые запросы). Онлайн можно обновить позже кнопкой «🟢 Обновить онлайн».'
+            break
+        except net.NetError as e:
+            bad += 1
+            if bad >= 3:
+                warn = 'Нет связи с интернетом: %s' % e.msg
                 break
-            if e.kind == 'auth':
-                warn = e.msg
-                break
-            if e.kind == 'forbidden':                         # группу закрыли или удалили
-                x.update(gone=True, online=None, online_at=cfg.now())
+            continue
+        if d is None:
+            break
+        bad = 0
+        if d['kind'] != 'group':                              # страницы нет, группу закрыли, удалили или она стала каналом
+            x.update(gone=True, online=None, online_at=cfg.now())
             done += 1
             continue
         x['online'] = d.get('online')
@@ -144,24 +268,24 @@ def _fetch_online(tg, ids, stop, step=None):
         x['gone'] = False
         if d.get('members') is not None:
             x['members'] = d['members']
-        if d.get('about') is not None:
+        if d.get('about'):
             x['about'] = d['about']
         done += 1
     return done, warn
 
 
-def start_online(tg, ids):
+def start_online(ids):
     """Обновляет онлайн у выбранных групп (не больше MAX_ONLINE_JOB за раз)."""
     with LOCK:
         if online_running():
             raise ValueError('Онлайн уже обновляется')
         b = base()
-        ids = [i for i in dict.fromkeys(ids) if i in b and i not in S['chats']][:MAX_ONLINE_JOB]
+        ids = [i for i in dict.fromkeys(ids) if i in b and i not in S['chats'] and b[i].get('username')][:MAX_ONLINE_JOB]
         if not ids:
             raise ValueError('Нет групп для проверки')
         CANCEL_ON[0] = False
         ON.update(state='running', msg='', warn='', done=0, total=len(ids), started=cfg.now())
-    threading.Thread(target=_run_online, args=(tg, ids), daemon=True, name='online').start()
+    threading.Thread(target=_run_online, args=(ids,), daemon=True, name='online').start()
     return view()
 
 
@@ -170,13 +294,13 @@ def cancel_online():
         CANCEL_ON[0] = True
 
 
-def _run_online(tg, ids):
+def _run_online(ids):
     stop_msg, warn = '', ''
     _keep_awake(True)
     try:
         def step(i, n):
             ON['done'] = i
-        done, warn = _fetch_online(tg, ids, lambda: CANCEL_ON[0], step)
+        done, warn = _fetch_online(ids, lambda: CANCEL_ON[0], step)
         ON['done'] = ON['total'] if not CANCEL_ON[0] and not warn else ON['done']
     except Exception as e:
         traceback.print_exc()
@@ -194,82 +318,12 @@ def _run_online(tg, ids):
                 pass
 
 
-def _run(tg, qs):
-    selected = {c for c, _ in qs}
-    bad = 0
-    stop_msg, warn = '', ''
-    names = {c['id']: c['name'] for c in cats.categories()}
-    online_off, online_warn = False, ''
-    _keep_awake(True)
-    try:
-        for i, (cid, q) in enumerate(qs):
-            if CANCEL[0]:
-                break
-            label = '%s: «%s»' % (names.get(cid, cid), q)
-            if i:
-                pause = random_pause(*PAUSE)
-                ST.update(wait_until=time.time() + pause, next=label)
-                ok = _sleep(pause)
-                ST.update(wait_until=0, next='')
-                if not ok:
-                    break
-            ST['cur'] = label
-            try:
-                found = tg.search(q)
-                bad = 0
-                raw = getattr(tg, 'last_raw', None)
-                with LOCK:
-                    ST['raw'] += raw if isinstance(raw, int) else len(found)
-                    ST['kept'] += len(found)
-            except tgu.TgError as e:
-                if e.kind in ('flood', 'peerflood'):
-                    warn = '%s. Найденное сохранено — продолжи позже.' % e.msg
-                    break
-                if e.kind == 'auth':
-                    stop_msg = e.msg
-                    break
-                bad += 1
-                ST['errors'] += 1
-                if bad >= 3:
-                    stop_msg = 'Поиск остановлен: три запроса подряд не прошли. Последняя ошибка: ' + e.msg
-                    break
-                found = []
-            with LOCK:
-                fresh = _merge(found, cid, q, selected)
-                ST['new'] += len(fresh)
-                ST['done'] = i + 1
-                cfg.save()
-            if fresh and not online_off and not CANCEL[0]:        # сразу узнаём онлайн и описание новых групп
-                ids = fresh[:MAX_ONLINE_QUERY]
-                _, w = _fetch_online(tg, ids, lambda: CANCEL[0],
-                                     lambda k, n: ST.update(cur='проверяю онлайн новых групп: %d из %d' % (k + 1, n)))
-                ST['cur'] = label
-                with LOCK:
-                    cfg.save()
-                if w:
-                    online_off, online_warn = True, w
-    except Exception as e:
-        traceback.print_exc()
-        stop_msg = 'Ошибка программы: %s' % e
-    finally:
-        with LOCK:
-            if stop_msg:
-                ST.update(state='error', msg=stop_msg)
-            else:
-                ST.update(state='cancelled' if CANCEL[0] else 'done', warn=warn or online_warn)
-            ST.update(cur='', wait_until=0, next='')
-            _keep_awake(False)
-            try:
-                cfg.save()
-            except Exception:
-                pass
-
-
 # ---------- база ----------
 def _live():
     with LOCK:
         own = S['chats']
-        return [x for k, x in list(base().items()) if k not in own]
+        own_names = {(c.get('username') or '').lower() for c in own.values() if c.get('username')}
+        return [x for k, x in list(base().items()) if k not in own and (x.get('username') or '\0').lower() not in own_names]
 
 
 def view():
@@ -279,7 +333,6 @@ def view():
         d['total_base'] = len(v)
         d['unsaved'] = sum(1 for x in v if not x.get('saved'))
         d['queries'] = {c['id']: len(cats.queries(c['id'])) for c in cats.categories()}
-        d['pause'] = list(PAUSE)
         d['max_queries'] = MAX_QUERIES
         d['online_job'] = dict(ON)
         d['online_known'] = sum(1 for x in v if x.get('online_at') and not x.get('gone'))
@@ -333,6 +386,9 @@ def drop(ids=None, unsaved=False):
                 n += 1
         for i in ids or []:
             if i in b:
+                u = (b[i].get('username') or '').lower()
+                if u:
+                    _remember(u, 'dropped')           # убрал крестиком: этот чат больше не предлагаем
                 del b[i]
                 n += 1
         cfg.save()

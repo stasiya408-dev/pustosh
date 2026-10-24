@@ -174,9 +174,12 @@ api('/api/tg/bulk', {'ids': ['-1005', '-1007'], 'sel': False})
 r = api('/api/tg/recat', {'all': True})
 ok(r['ok'], 'автоопределение категорий заново')
 
-print('\n[4б] Поиск новых групп по всему Telegram и база найденных')
+print('\n[4б] Поиск новых групп в интернете и база найденных')
+import fake_web, websearch, copy, base64, urllib.parse
+fake_web.install()
 REAL_PAUSE = finder.random_pause
 finder.random_pause = lambda a, b: 0.02
+websearch.BLOCK_MIN = 0.05
 
 
 def wait_find(timeout=30):
@@ -190,55 +193,54 @@ def wait_find(timeout=30):
 
 
 def new_run(ids):
-    fake_tgu.FakeTg.searches = []
-    fake_tgu.FakeTg.search_flood_at = 0
-    fake_tgu.FakeTg.search_fail = ()
-    fake_tgu.FakeTg.fulls = []
-    fake_tgu.FakeTg.full_flood_at = 0
+    fake_web.reset()
     r = api('/api/find/start', {'cats': ids})
     return r if not r.get('ok', True) else wait_find()
 
 
-# классификация найденных чатов (на подставных объектах с теми же именами классов, что у Telethon)
-class _R:
-    def __init__(self, **k):
-        self.__dict__.update(k)
+def wait_online(timeout=30):
+    t0 = time.time()
+    while time.time() - t0 < timeout:
+        j = state()['find']['online_job']
+        if j['state'] != 'running':
+            return j
+        time.sleep(0.05)
+    return state()['find']['online_job']
 
 
-def mk(name='Channel', **k):
-    d = dict(megagroup=True, broadcast=False, gigagroup=False, restricted=False, scam=False, fake=False, creator=False, admin_rights=None,
-             username='grp', title='Группа', participants_count=321, join_request=False, slowmode_enabled=False, forum=False,
-             default_banned_rights=None, usernames=None)
-    d.update(k)
-    return type(name, (), d)()
-
-
-r = tgu.classify_found(mk())
-ok(r and r['username'] == 'grp' and r['members'] == 321 and r['kind'] == 'group', 'открытая публичная группа подходит', r)
-ok(tgu.classify_found(mk(broadcast=True, megagroup=False)) is None, 'канал отбрасывается (в нём нельзя писать)')
-ok(tgu.classify_found(mk(username='')) is None, 'группа без публичного имени отбрасывается')
-ok(tgu.classify_found(mk(username='', usernames=[_R(active=True, username='alt_name')]))['username'] == 'alt_name', 'берётся запасное публичное имя')
-ok(tgu.classify_found(mk(restricted=True)) is None and tgu.classify_found(mk(scam=True)) is None and tgu.classify_found(mk(fake=True)) is None,
-   'ограниченные, мошеннические и фейковые группы отбрасываются')
-ok(tgu.classify_found(mk(creator=True)) is None, 'свои группы отбрасываются')
-ok(tgu.classify_found(mk(default_banned_rights=_R(send_messages=True))) is None, 'группа, где писать нельзя никому, отбрасывается')
-ok(tgu.classify_found(mk('Chat')) is None and tgu.classify_found(mk('User')) is None, 'не-каналы отбрасываются')
-r = tgu.classify_found(mk(join_request=True, slowmode_enabled=True, forum=True))
-ok(r and r['join_request'] and r['slow'] and r['forum'], 'пометки «по заявке», «медленный режим», «темы» запоминаются')
+# --- разбор ответов поисковиков и страниц t.me (на образцах той же формы, что у настоящих) ---
+ex = websearch.extract
+ddg = '<a class="result__a" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Ft.me%2Fryba_ua&amp;rut=1">x</a> <a class="result__snippet">t.me/s/fish_chat_ua — чат</a>'
+ok(ex(ddg) == ['fish_chat_ua', 'ryba_ua'] or sorted(ex(ddg)) == ['fish_chat_ua', 'ryba_ua'], 'из ответа DuckDuckGo достаются имена t.me', ex(ddg))
+bu = base64.urlsafe_b64encode(b'https://t.me/spinning_all').decode().rstrip('=')
+ok(ex('<a href="https://www.bing.com/ck/a?!&amp;&amp;p=1&amp;u=a1%s&amp;ntb=1">x</a>' % bu) == ['spinning_all'], 'из зашифрованной ссылки Bing достаётся имя t.me')
+ok(ex('https://t.me/joinchat/AAAA https://t.me/+AbCdEf t.me/addstickers/xx t.me/some_bot https://t.me/share/url?u=1') == [], 'приглашения, стикеры, боты и служебные адреса отбрасываются')
+ok(sorted(ex('tg://resolve?domain=hunt_chat и tgstat.ru/chat/@memes_games и telegram.me/Tanks_Chat')) == ['Tanks_Chat', 'hunt_chat', 'memes_games'], 'берутся и адреса tg://, tgstat и telegram.me')
+pg = fake_web.tme_page('ryba_ua')
+p = websearch.parse_tme(pg, 'ryba_ua')
+ok(p['kind'] == 'group' and p['title'] == 'Рыбалка Украина' and p['members'] == 5400 and p['online'] == 321 and p['about'] == 'Чат рыбаков Украины' and not p['join_request'],
+   'страница группы: название, участники, онлайн, описание', p)
+PAGES_BACK = copy.deepcopy(fake_web.PAGES)
+ok(websearch.parse_tme(fake_web.tme_page('lviv_fish'), 'lviv_fish')['join_request'], 'кнопка «Request to Join» = вступление по заявке')
+ok(websearch.parse_tme(fake_web.tme_page('hidden_group'), 'hidden_group')['online'] is None, 'если онлайн скрыт, это видно (None, а не 0)')
+ok(websearch.parse_tme(fake_web.tme_page('fish_channel'), 'fish_channel')['kind'] == 'channel', 'канал распознаётся по слову «subscribers»')
+ok(websearch.parse_tme(fake_web.tme_page('some_person'), 'some_person')['kind'] == 'user' and websearch.parse_tme(fake_web.tme_page('some_x_bot'), 'some_x_bot')['kind'] == 'none',
+   'человек распознаётся, а несуществующая страница — как «нет»')
+ru = pg.replace('5 400 members, 321 online', '5 400 участников, 321 в сети')
+p = websearch.parse_tme(ru, 'ryba_ua')
+ok(p['kind'] == 'group' and p['members'] == 5400 and p['online'] == 321, 'русская версия страницы тоже читается (участников, в сети)', p)
+p = websearch.parse_tme(pg.replace('5 400 members, 321 online', '1 member'), 'x')
+ok(p['kind'] == 'group' and p['members'] == 1 and p['online'] is None, 'группа из одного участника читается')
 
 r = api('/api/find/start', {'cats': []})
 ok(r['ok'] is False and 'галочки' in r['error'], 'без выбранных тем поиск не запускается')
 r = api('/api/find/start', {'cats': ['other']})
 ok(r['ok'] is False, '«Другое» искать нельзя')
 f = state()['find']
-ok(f['queries']['fishing'] == 10 and f['queries']['other'] == 0 and f['total_base'] == 0, 'для каждой темы известно число запросов, база пока пуста', f)
+ok(f['queries']['fishing'] == 10 and f['queries']['other'] == 0 and f['total_base'] == 0, 'для каждой темы известно число слов, база пока пуста', f)
 ok(len(finder.plan(['fishing', 'games'])) == 23 and finder.plan(['fishing', 'games'])[:2][0][0] != finder.plan(['fishing', 'games'])[:2][1][0],
-   'запросы разных тем идут вперемешку (поровну на каждую)')
-
-ok(finder.PAUSE == (300.0, 900.0) and f['pause'] == [300.0, 900.0], 'пауза между запросами поиска: случайная от 5 до 15 минут', f['pause'])
-ok(f['max_queries'] == 60, 'за один запуск не больше 60 запросов', f['max_queries'])
-t0 = [REAL_PAUSE(*finder.PAUSE) for _ in range(300)]
-ok(min(t0) >= 300 and max(t0) <= 900 and max(t0) - min(t0) > 300, 'паузы действительно случайные в пределах 5–15 минут')
+   'слова разных тем идут вперемешку (поровну на каждую)')
+ok(f['max_queries'] == 60 and not hasattr(tgu.TgUser, 'search') and not hasattr(tgu.TgUser, 'full'), 'поиск не использует аккаунт Telegram: в программе нет запросов поиска в Telegram')
 try:
     finder._keep_awake(True); finder._keep_awake(False)
     ok(True, 'защита от сна Windows не ломает работу вне Windows')
@@ -246,18 +248,25 @@ except Exception as e:
     ok(False, 'защита от сна Windows не ломает работу вне Windows', e)
 
 f = new_run(['fishing', 'games'])
-ok(f['state'] == 'done' and f['done'] == 23 and f['total'] == 23, 'поиск прошёл все 23 запроса', f)
-ok(len(fake_tgu.FakeTg.searches) == 23, 'в Телеграм ушло ровно столько запросов, сколько в плане', len(fake_tgu.FakeTg.searches))
-ok(f['total_base'] == 7 and f['unsaved'] == 7 and f['new'] == 7, 'в базе 7 новых групп (повторы склеены, чат, где я уже состою, не попал)', f)
+ok(f['state'] == 'done' and f['done'] == 23 and f['total'] == 23, 'поиск прошёл все 23 слова', f)
+ok(len(fake_web.WORDS_SEEN) == 23 and len(fake_web.SEARCHES) == 23 * 8 and {e for e, _ in fake_web.SEARCHES} == {'ddg', 'bing', 'mojeek', 'brave'},
+   'каждое слово искалось во всех четырёх поисковиках двумя запросами', (len(fake_web.WORDS_SEEN), len(fake_web.SEARCHES)))
+ok(f['total_base'] == 7 and f['unsaved'] == 7 and f['new'] == 7 and f['kept'] == 7, 'в базе 7 новых групп (каналы, люди, пустые и мои чаты не попали)', f)
+ok(f['checked'] == 11 and len(fake_web.TME) == 11 and len(set(fake_web.TME)) == 11 and 'autoua' not in fake_web.TME,
+   'страница t.me открыта по разу для каждого нового имени (11), мой чат не проверялся', (f['checked'], fake_web.TME))
+ok(f['raw'] > 11 and [e['name'] for e in f['engines']] == ['DuckDuckGo', 'Bing', 'Mojeek', 'Brave'] and not any(e['off'] for e in f['engines']) and all(e['found'] for e in f['engines']),
+   'окну известно, сколько ссылок найдено и как отработал каждый поисковик', f['engines'])
 b = finder.base()
-ok('-1001' not in b and '-100500001' in b, 'группа, в которой я уже состою, в базу не попала')
-ok(b['-100500001']['members'] == 5500, 'число участников обновилось при повторной находке')
-ok(b['-100500001']['cat'] == 'fishing' and b['-100500005']['cat'] == 'games' and b['-100500003']['cat'] == 'fishing' and b['-100500006']['cat'] == 'games',
+ok(set(b) == {'w_ryba_ua', 'w_spin_all', 'w_lviv_fish', 'w_hunt_chat', 'w_tanks_chat', 'w_memes_games', 'w_gamers_ua'}, 'в базе нужные 7 групп', sorted(b))
+ok(b['w_ryba_ua']['members'] == 5400 and b['w_ryba_ua']['online'] == 321 and b['w_ryba_ua']['online_at'] and b['w_ryba_ua']['about'] == 'Чат рыбаков Украины'
+   and b['w_ryba_ua']['username'] == 'ryba_ua' and b['w_ryba_ua']['title'] == 'Рыбалка Украина', 'у группы сразу есть название, участники, онлайн и описание')
+ok(b['w_ryba_ua']['cat'] == 'fishing' and b['w_tanks_chat']['cat'] == 'games' and b['w_lviv_fish']['cat'] == 'fishing' and b['w_memes_games']['cat'] == 'games',
    'темы групп расставлены по выбранным категориям', {k: v['cat'] for k, v in b.items()})
-ok(b['-100500003']['join_request'] and b['-100500002']['slow'] and b['-100500007']['forum'], 'пометки групп сохранились в базе')
+ok(b['w_lviv_fish']['join_request'] and not b['w_spin_all']['join_request'], 'пометка «по заявке» сохранилась')
+ok(finder.seen().get('fish_channel', [0, ''])[1] == 'channel' and finder.seen().get('tiny_group'), 'каналы и пустые группы запомнены, чтобы не проверять их снова')
 
 r = api('/api/find/list?cat=fishing')
-ok([x['id'] for x in r['items']] == ['-100500001', '-100500004', '-100500002', '-100500003'], 'тема «Рыбалка»: 4 группы, больше участников выше', [x['id'] for x in r['items']])
+ok([x['id'] for x in r['items']] == ['w_ryba_ua', 'w_hunt_chat', 'w_spin_all', 'w_lviv_fish'], 'тема «Рыбалка»: 4 группы, где больше онлайн — выше', [x['id'] for x in r['items']])
 ok(r['counts'].get('fishing') == 4 and r['counts'].get('games') == 3, 'число групп по темам считается для всех тем сразу', r['counts'])
 r = api('/api/find/list?cat=all&min=1000')
 ok(len(r['items']) == 5 and all(x['members'] >= 1000 for x in r['items']), 'фильтр «от 1000 участников»', len(r['items']))
@@ -265,14 +274,14 @@ r = api('/api/find/list?cat=all&q=%D1%82%D0%B0%D0%BD%D0%BA%D0%B8')
 ok([x['username'] for x in r['items']] == ['tanks_chat'], 'поиск по названию внутри базы')
 
 own = cfg.S['chats']
-own['-100500001'] = {'id': '-100500001', 'title': 'Рыбалка Украина'}
-ok(api('/api/find/list?cat=all')['matched'] == 6 and state()['find']['total_base'] == 6, 'если я вступил в группу из базы, она пропадает из базы')
+own['-100500001'] = {'id': '-100500001', 'title': 'Рыбалка Украина', 'username': 'Ryba_UA'}
+ok(api('/api/find/list?cat=all')['matched'] == 6 and state()['find']['total_base'] == 6, 'если я вступил в группу из базы, она пропадает из базы (по имени)')
 del own['-100500001']
 ok(state()['find']['total_base'] == 7, '...и возвращается, если чата у меня нет')
 
-r = api('/api/find/cat', {'id': '-100500006', 'cat': 'humor'})
-ok(r['ok'] and finder.base()['-100500006']['cat'] == 'humor' and finder.base()['-100500006']['manual'], 'тему группы в базе можно поменять вручную')
-r = api('/api/find/cat', {'id': '-100500006', 'cat': 'нет_такой'})
+r = api('/api/find/cat', {'id': 'w_memes_games', 'cat': 'humor'})
+ok(r['ok'] and finder.base()['w_memes_games']['cat'] == 'humor' and finder.base()['w_memes_games']['manual'], 'тему группы в базе можно поменять вручную')
+r = api('/api/find/cat', {'id': 'w_memes_games', 'cat': 'нет_такой'})
 ok(r['ok'] is False, 'неизвестная тема отклоняется')
 r = api('/api/find/cat', {'id': '-1', 'cat': 'humor'})
 ok(r['ok'] is False, 'неизвестная группа отклоняется')
@@ -284,69 +293,147 @@ with open(os.path.join(HOME, 'data.json'), encoding='utf-8') as fh:
 ok(len(dj.get('base', {})) == 7 and all(x['saved'] for x in dj['base'].values()), 'база лежит на диске и помечена сохранённой')
 
 f = new_run(['fishing'])
-ok(f['state'] == 'done' and f['new'] == 0 and f['unsaved'] == 0 and f['total_base'] == 7, 'повторный поиск не дублирует группы и не ломает сохранённое', f)
-ok(finder.base()['-100500006']['cat'] == 'humor', 'ручная тема не сбрасывается повторным поиском')
+ok(f['state'] == 'done' and f['new'] == 0 and f['unsaved'] == 0 and f['total_base'] == 7 and len(fake_web.TME) == 0, 'повторный поиск не дублирует группы и не открывает уже проверенные страницы', (f, fake_web.TME))
+ok(finder.base()['w_memes_games']['cat'] == 'humor', 'ручная тема не сбрасывается повторным поиском')
 
-# флуд-защита: Телеграм просит подождать — останавливаемся сразу
-fake_tgu.FakeTg.searches = []
-fake_tgu.FakeTg.search_flood_at = 3
-fake_tgu.FakeTg.search_fail = ()
-api('/api/find/start', {'cats': ['sport']})
-f = wait_find()
-ok(f['state'] == 'done' and f['done'] == 2 and 'подождать' in f['warn'] and len(fake_tgu.FakeTg.searches) == 3,
-   'при просьбе Телеграма подождать поиск сразу останавливается с понятным предупреждением', f)
-ok(len(finder.base()) == 7, 'то, что нашли до остановки, остаётся в базе')
-
-# три ошибки подряд — остановка
+# если убрать группу крестиком, она больше не предлагается
+r = api('/api/find/drop', {'ids': ['w_hunt_chat']})
+ok(r['dropped'] == 1 and 'w_hunt_chat' not in finder.base(), 'группу можно убрать из базы')
+f = new_run(['fishing', 'games'])
+ok('w_hunt_chat' not in finder.base() and 'hunt_chat' not in fake_web.TME, 'убранная крестиком группа больше не появляется и не проверяется')
+finder.seen().pop('hunt_chat', None)
 f = new_run(['fishing'])
-fake_tgu.FakeTg.search_fail = ('рыбалка', 'рибалка', 'рыболовы')
+ok('w_hunt_chat' in finder.base(), '...пока запись о ней не сотрётся (через три месяца)')
+r = api('/api/find/drop', {'ids': ['w_hunt_chat']})
+finder.seen().pop('hunt_chat', None)
+
+# один поисковик отказал: остальные работают, отказавший отключается
+finder.base().clear(); finder.seen().clear()
+fake_web.reset()
+fake_web.ENGINE_FAIL['brave'] = 429
 api('/api/find/start', {'cats': ['fishing']})
 f = wait_find()
-ok(f['state'] == 'error' and 'три запроса подряд' in f['msg'] and len(fake_tgu.FakeTg.searches) == 3 + 10, 'три ошибки подряд останавливают поиск', f)
-fake_tgu.FakeTg.search_fail = ()
+br = [e for e in f['engines'] if e['id'] == 'brave'][0]
+ok(f['state'] == 'done' and f['total_base'] == 4 and br['off'] and '429' in br['err'] and sum(1 for e, _ in fake_web.SEARCHES if e == 'brave') == 3,
+   'если поисковик отвечает отказом, после трёх неудач он отключается, остальные продолжают', (f, br))
+
+# все поисковики не отвечают
+finder.base().clear(); finder.seen().clear()
+fake_web.reset()
+fake_web.NET_DOWN[0] = True
+api('/api/find/start', {'cats': ['fishing']})
+f = wait_find()
+ok(f['state'] == 'error' and 'поисковики не отвечают' in f['msg'] and f['done'] < f['total'], 'нет интернета: поиск останавливается с понятным сообщением', f)
+
+# t.me просит подождать
+finder.base().clear(); finder.seen().clear()
+fake_web.reset()
+fake_web.TME_BLOCK[0] = 1000
+api('/api/find/start', {'cats': ['fishing']})
+f = wait_find()
+ok(f['state'] == 'done' and 'подождать' in f['warn'] and f['done'] == 1 and f['total_base'] == 0 and not finder.seen(),
+   'если t.me просит подождать, поиск останавливается, ничего лишнего не запоминая', f)
+fake_web.TME_BLOCK[0] = 0
+f = new_run(['fishing'])
+ok(f['state'] == 'done' and f['total_base'] == 4, 'после паузы тот же поиск находит всё (ничего не потерялось)', f)
+
+# t.me не открывается совсем
+finder.base().clear(); finder.seen().clear()
+fake_web.reset()
+fake_web.TME_NETFAIL[0] = True
+api('/api/find/start', {'cats': ['fishing']})
+f = wait_find()
+ok(f['state'] == 'error' and 'не открываются' in f['msg'], 'если страницы t.me не открываются, поиск говорит об этом, а не молчит', f)
+fake_web.TME_NETFAIL[0] = False
 
 # отмена и защита от двойного запуска
+finder.base().clear(); finder.seen().clear()
 finder.random_pause = lambda a, b: 0.5
-fake_tgu.FakeTg.searches = []
+fake_web.reset()
 r = api('/api/find/start', {'cats': ['fishing', 'games']})
 ok(r['ok'] and r['find']['state'] == 'running', 'поиск запускается и идёт в фоне', r)
 time.sleep(0.3)
 fw = state()['find']
-ok(fw['state'] == 'running' and fw['wait_until'] > time.time() and fw['next'] and fw['done'] == 1, 'пока идёт пауза, окну известно, когда следующий запрос и какой', fw)
+ok(fw['state'] == 'running' and fw['cur'] and fw['total'] == 23, 'пока идёт поиск, окну известно, чем он занят', fw)
 r2 = api('/api/find/start', {'cats': ['fishing']})
 ok(r2['ok'] is False and 'уже идёт' in r2['error'], 'второй поиск параллельно не запускается')
 r3 = api('/api/publish', {})
 ok(r3['ok'] is False and 'поиск новых чатов' in r3['error'], 'во время поиска публикация не стартует')
 api('/api/find/cancel', {})
 f = wait_find()
-ok(f['state'] == 'cancelled' and f['done'] < f['total'], 'кнопка «Остановить» останавливает поиск', f)
+ok(f['state'] == 'cancelled' and f['done'] < f['total'] and f['cur'] == '', 'кнопка «Остановить» останавливает поиск', f)
 finder.random_pause = lambda a, b: 0.02
 
-# удаление
-r = api('/api/find/drop', {'ids': ['-100500001']})
-ok(r['dropped'] == 1 and '-100500001' not in finder.base(), 'группу можно убрать из базы')
-finder.base()['-100500001'] = dict(finder.base()['-100500002'], id='-100500001', saved=False)
-finder.base()['-100500009'] = dict(finder.base()['-100500002'], id='-100500009', saved=False)
+# удаление «несохранённых» не трогает сохранённое
+f = new_run(['fishing', 'games'])
+r = api('/api/find/save', {})
+finder.base()['w_extra1'] = dict(finder.base()['w_ryba_ua'], id='w_extra1', username='extra1', saved=False)
+finder.base()['w_extra2'] = dict(finder.base()['w_ryba_ua'], id='w_extra2', username='extra2', saved=False)
 r = api('/api/find/drop', {'unsaved': True})
-ok(r['dropped'] == 2 and len(finder.base()) == 6 and all(x['saved'] for x in finder.base().values()), '«Убрать несохранённые» не трогает сохранённое')
+ok(r['dropped'] == 2 and len(finder.base()) == 7 and all(x['saved'] for x in finder.base().values()), '«Убрать несохранённые» не трогает сохранённое')
 
-ok(state()['find']['wait_until'] == 0 and state()['find']['next'] == '', 'после остановки таймер паузы сброшен')
+# --- онлайн кнопкой: страницы t.me, без аккаунта Telegram ---
+ids = list(finder.base())
+fake_web.reset()
+r = api('/api/find/online', {'ids': ids})
+j = wait_online()
+ok(r['ok'] and j['state'] == 'done' and j['done'] == j['total'] == 7 and len(fake_web.TME) == 7 and not fake_web.SEARCHES, 'кнопка «Обновить онлайн» открывает страницу t.me каждой группы (7) и не ходит в поисковики', (j, fake_web.TME))
+ok(api('/api/find/online', {'ids': ['нет']})['ok'] is False, 'без существующих групп обновлять нечего')
+fp = fake_web.PAGES
+fp['hunt_chat']['online'] = 77
+fp['hunt_chat']['members'] = 2400
+fp['spin_all'] = {'type': 'channel', 'title': 'Спиннинг', 'members': 5000}
+del fp['lviv_fish']
+fp['tanks_chat']['online'] = None
+fake_web.reset()
+api('/api/find/online', {'ids': ids})
+j = wait_online()
+b = finder.base()
+ok(b['w_hunt_chat']['online'] == 77 and b['w_hunt_chat']['members'] == 2400, 'онлайн и участники обновились')
+ok(b['w_spin_all']['gone'] and b['w_lviv_fish']['gone'] and b['w_lviv_fish']['online'] is None, 'если страницы нет или группа стала каналом, она помечается недоступной')
+ok(b['w_tanks_chat']['online'] is None and b['w_tanks_chat']['online_at'] and not b['w_tanks_chat']['gone'], 'если онлайн скрыт, группа остаётся, а число пустое')
+lst = api('/api/find/list?cat=all&min=0&sort=online')['items']
+on = [x['online'] for x in lst if x['online'] is not None]
+nn = [x['online'] is None for x in lst]
+ok(on == sorted(on, reverse=True) and nn == sorted(nn) and nn[-1], 'сортировка «по онлайну»: больше онлайна выше, без онлайна в конце', [(x['title'], x['online']) for x in lst])
+lst = api('/api/find/list?cat=all&min=0&sort=members')['items']
+ok([x['members'] for x in lst] == sorted([x['members'] for x in lst], reverse=True), 'сортировка «по участникам»')
+ok(len(api('/api/find/list?cat=all&min=0&sort=new')['items']) == len(lst), 'сортировка «сначала новые» работает')
+fake_web.PAGES.clear(); fake_web.PAGES.update(copy.deepcopy(PAGES_BACK))
 
-# темы для игры «Пустошь»: стоят в начале списка, помечены, у каждой есть слова для поиска и для определения
+fake_web.reset()
+fake_web.TME_BLOCK[0] = 1000
+api('/api/find/online', {'ids': ids})
+j = wait_online()
+ok(j['state'] == 'done' and 'подождать' in j['warn'] and j['done'] < j['total'], 'если t.me просит подождать, обновление онлайна останавливается с предупреждением', j)
+fake_web.TME_BLOCK[0] = 0
+
+finder.random_pause = lambda a, b: 0.5
+fake_web.reset()
+api('/api/find/online', {'ids': ids})
+r2 = api('/api/find/online', {'ids': ids})
+ok(r2['ok'] is False and 'уже обновляется' in r2['error'], 'второе обновление онлайна параллельно не запускается')
+r3 = api('/api/publish', {})
+ok(r3['ok'] is False and 'онлайн' in r3['error'], 'пока идёт проверка онлайна, публикация не стартует')
+api('/api/find/online/cancel', {})
+j = wait_online()
+ok(j['state'] == 'cancelled' and j['done'] < j['total'], 'обновление онлайна можно остановить', j)
+finder.random_pause = lambda a, b: 0.02
+
+# --- темы для игры «Пустошь»: стоят в начале списка, помечены, у каждой есть слова для поиска и для определения ---
 cl = state()['cats']
 ids = [c['id'] for c in cl]
 ok(ids[:5] == ['promo', 'showcase', 'gamedev', 'tgdev', 'feedback'] and all(c['hot'] for c in cl[:5]) and not any(c['hot'] for c in cl[5:]),
    'пять новых тем для игры стоят в самом верху списка и помечены', ids[:7])
-ok(all(len(cats.queries(i)) >= 6 for i in cats.HOT), 'у каждой новой темы есть слова для поиска по всему Telegram', {i: len(cats.queries(i)) for i in cats.HOT})
+ok(all(len(cats.queries(i)) >= 6 for i in cats.HOT), 'у каждой новой темы есть слова для поиска', {i: len(cats.queries(i)) for i in cats.HOT})
 exp = {'Взаимопиар игр и ботов': 'promo', 'Делимся своими играми': 'showcase', 'Разработчики игр Украины': 'gamedev', 'Telegram Mini Apps разработка': 'tgdev',
        'Тестеры игр — плейтест': 'feedback', 'Помощь в играх': 'feedback', 'Гайды по Dota': 'games', 'Hamster Kombat mini app': 'tggames', 'Новости игр': 'games'}
 bad = {t: (cats.guess(t), v) for t, v in exp.items() if cats.guess(t) != v}
 ok(not bad, 'чаты по названию попадают в новые темы, а обычные игровые остаются в «Игры»', bad)
 f = new_run(['promo', 'tgdev'])
-ok(f['state'] == 'done' and f['total'] == 13 and len(fake_tgu.FakeTg.searches) == 13 and fake_tgu.FakeTg.searches[0] == 'взаимопиар', 'поиск по новым темам идёт по их словам', f)
+ok(f['state'] == 'done' and f['total'] == 13 and len(fake_web.WORDS_SEEN) == 13 and fake_web.WORDS_SEEN[0] == 'взаимопиар', 'поиск по новым темам идёт по их словам', f)
 
 # перенос новых тем в уже сохранённый список (у тех, кто пользовался до обновления)
-import copy
 orig = copy.deepcopy(cfg.S['cats'])
 old = [c for c in orig if c['id'] not in cats.HOT]
 old.insert(0, {'id': 'cMy', 'name': 'Мои друзья', 'words': ''})
@@ -363,77 +450,17 @@ cfg.S['cats_v2'] = 1
 cfg.save()
 
 # таблица
+finder.base().clear(); finder.seen().clear()
+f = new_run(['fishing', 'games'])
 h = {'X-Token': server.TOKEN}
 st, hh, raw = net.request('GET', 'http://127.0.0.1:%d/api/find/export' % PORT, h, None, 30)
 txt = raw.decode('utf-8-sig')
 ok(st == 200 and raw[:3] == b'\xef\xbb\xbf' and 'attachment' in str(hh).lower(), 'таблица скачивается файлом (Excel откроет кириллицу)')
-ok(txt.splitlines()[0].startswith('Название;Ссылка;Участников;Онлайн;Тема') and 'https://t.me/tanks_chat' in txt and len(txt.splitlines()) == 7, 'в таблице заголовок и все группы', txt[:200])
+ok(txt.splitlines()[0].startswith('Название;Ссылка;Участников;Онлайн;Тема') and 'https://t.me/tanks_chat' in txt and len(txt.splitlines()) == 8 and ';600;' in txt, 'в таблице заголовок, все группы и онлайн')
 st, _ = call('GET', '/api/find/export', token=False)
 ok(st == 401, 'без ключа окна таблица не отдаётся')
 st, _ = call('GET', '/api/find/list', token=False)
 ok(st == 401, 'без ключа окна база не отдаётся')
-
-# --- онлайн групп и описание ---
-def wait_online(timeout=30):
-    t0 = time.time()
-    while time.time() - t0 < timeout:
-        j = state()['find']['online_job']
-        if j['state'] != 'running':
-            return j
-        time.sleep(0.05)
-    return state()['find']['online_job']
-
-
-finder.base().clear()
-f = new_run(['fishing'])
-b = finder.base()
-ok(len(b) == 4 and len(fake_tgu.FakeTg.fulls) == 4, 'сразу после находки у каждой новой группы спрошен онлайн (4 запроса на 4 группы)', (len(b), fake_tgu.FakeTg.fulls))
-ok(all(x['online_at'] and x['online'] is not None and x['about'].startswith('Описание') for x in b.values()), 'у групп есть онлайн, время проверки и описание')
-ok(f['kept'] == 6 and f['raw'] == 36, 'окно знает, сколько чатов вернул Телеграм и сколько из них подошло', (f['raw'], f['kept']))
-ids = list(b)
-n0 = len(fake_tgu.FakeTg.fulls)
-r = api('/api/find/online', {'ids': ids})
-j = wait_online()
-ok(r['ok'] and j['state'] == 'done' and j['done'] == j['total'] == 4 and len(fake_tgu.FakeTg.fulls) == n0 + 4, 'кнопка «Обновить онлайн» заново спрашивает онлайн у всех выбранных групп', j)
-ok(api('/api/find/online', {'ids': ['нет']})['ok'] is False, 'без существующих групп обновлять нечего')
-
-f = new_run(['games'])
-b = finder.base()
-ok(b['-100500007']['gone'] and b['-100500007']['online'] is None, 'закрытая или удалённая группа помечается недоступной')
-lst = api('/api/find/list?cat=all&min=0&sort=online')['items']
-on = [x['online'] for x in lst if x['online'] is not None]
-ok(on == sorted(on, reverse=True) and lst[-1]['id'] == '-100500007', 'сортировка «по онлайну»: больше онлайна выше, недоступные в конце', [(x['title'], x['online']) for x in lst])
-lst = api('/api/find/list?cat=all&min=0&sort=members')['items']
-ok([x['members'] for x in lst] == sorted([x['members'] for x in lst], reverse=True), 'сортировка «по участникам»')
-ok(len(api('/api/find/list?cat=all&min=0&sort=new')['items']) == len(lst), 'сортировка «сначала новые» работает')
-
-fake_tgu.FakeTg.full_flood_at = len(fake_tgu.FakeTg.fulls) + 2
-api('/api/find/online', {'ids': list(finder.base())})
-j = wait_online()
-ok(j['state'] == 'done' and 'подождать' in j['warn'] and j['done'] < j['total'], 'если Телеграм просит подождать, обновление онлайна сразу останавливается', j)
-fake_tgu.FakeTg.full_flood_at = 0
-
-finder.random_pause = lambda a, b: 0.5
-api('/api/find/online', {'ids': list(finder.base())})
-r2 = api('/api/find/online', {'ids': list(finder.base())})
-ok(r2['ok'] is False and 'уже обновляется' in r2['error'], 'второе обновление онлайна параллельно не запускается')
-r3 = api('/api/publish', {})
-ok(r3['ok'] is False and 'онлайн' in r3['error'], 'пока идёт проверка онлайна, публикация не стартует')
-api('/api/find/online/cancel', {})
-j = wait_online()
-ok(j['state'] == 'cancelled' and j['done'] < j['total'], 'обновление онлайна можно остановить', j)
-finder.random_pause = lambda a, b: 0.02
-
-finder.base().clear()
-fake_tgu.FakeTg.searches = []
-fake_tgu.FakeTg.fulls = []
-fake_tgu.FakeTg.full_flood_at = 2
-api('/api/find/start', {'cats': ['fishing']})
-f = wait_find()
-ok(f['state'] == 'done' and f['done'] == 10 and len(fake_tgu.FakeTg.searches) == 10 and 'онлайн' in f['warn'] and len(fake_tgu.FakeTg.fulls) == 2,
-   'если Телеграм просит подождать при проверке онлайна, поиск продолжается, а онлайн больше не спрашивается', f)
-ok(len(finder.base()) == 4 and sum(1 for x in finder.base().values() if x['online_at']) == 1, 'найденные группы остаются в базе и без онлайна')
-fake_tgu.FakeTg.full_flood_at = 0
 
 print('\n[5] Файлы')
 png = jpg()
@@ -796,9 +823,7 @@ print('\n[13] Выход из Telegram и данные на диске')
 r = api('/api/tg/logout', {})
 ok(r['tg']['state'] == 'need_phone', 'выход из Telegram')
 r = api('/api/find/start', {'cats': ['fishing']})
-ok(r['ok'] is False and 'войди' in r['error'].lower(), 'без входа в Telegram поиск не запускается')
-r = api('/api/find/online', {'ids': ['-100500001']})
-ok(r['ok'] is False and 'войди' in r['error'].lower(), 'без входа в Telegram онлайн не обновляется')
+ok(r['ok'] and wait_find()['state'] == 'done', 'поиск групп работает и без входа в Telegram (аккаунт ему не нужен)')
 with open(os.path.join(HOME, 'data.json'), encoding='utf-8') as f:
     dj = json.load(f)
 ok('-1001' in dj['chats'] and dj['threads'].get('user_id') == '777', 'чаты и ключ Threads сохранены на диск')

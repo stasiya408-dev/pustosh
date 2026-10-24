@@ -1,0 +1,7 @@
+pillow                    13.0.0
+pyaes                     1.6.1
+pyasn1                    0.6.4
+pyinstaller               6.22.3
+pyinstaller-hooks-contrib 2026.9
+rsa                       4.9.1
+Telethon                  1.45.0

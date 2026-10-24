@@ -1,0 +1,156 @@
+Inno Setup 6 Command-Line Compiler
+Copyright (C) 1997-2026 Jordan Russell. All rights reserved.
+Portions Copyright (C) 2000-2026 Martijn Laan. All rights reserved.
+Portions Copyright (C) 2001-2004 Alex Yackimoff. All rights reserved.
+https://www.innosetup.com
+
+Compiler engine version: Inno Setup 6.7.1
+Non-commercial use only
+
+Preprocessing
+   Reading file: C:\Program Files (x86)\Inno Setup 6\ISPPBuiltins.iss
+Parsing [Setup] section, line 8
+Parsing [Setup] section, line 9
+Parsing [Setup] section, line 10
+Parsing [Setup] section, line 11
+Parsing [Setup] section, line 12
+Parsing [Setup] section, line 13
+Parsing [Setup] section, line 14
+Parsing [Setup] section, line 15
+Parsing [Setup] section, line 16
+Parsing [Setup] section, line 17
+Parsing [Setup] section, line 18
+Parsing [Setup] section, line 19
+Parsing [Setup] section, line 20
+Parsing [Setup] section, line 21
+Parsing [Setup] section, line 22
+Parsing [Setup] section, line 23
+Parsing [Setup] section, line 24
+Parsing [Setup] section, line 25
+Creating output directory: D:\a\pustosh\pustosh\marketing-app\setup_out
+Reading file (WizardImageFile)
+Reading file (WizardSmallImageFile)
+Preparing Setup program executable
+   Verification successful
+   Updating icons (Setup.e32)
+   Updating version info (Setup.e32)
+Determining language code pages
+Parsing [Languages] section, line 28
+   Reading file: C:\Program Files (x86)\Inno Setup 6\Languages\Russian.isl
+   Messages in script file
+Reading default messages from Default.isl
+Parsing [Languages] section, line 28
+   Reading file: C:\Program Files (x86)\Inno Setup 6\Languages\Russian.isl
+Parsing [LangOptions], [Messages], and [CustomMessages] sections
+   Messages in script file
+Reading [Code] section
+Parsing [Tasks] section, line 31
+Parsing [Icons] section, line 37
+Parsing [Icons] section, line 38
+Parsing [Run] section, line 41
+Parsing [Files] section, line 34
+Creating setup files
+   Verification successful
+   Updating icons (Setup.exe)
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\PustoshMarketing.exe
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\api-ms-win-core-console-l1-1-0.dll
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\api-ms-win-core-datetime-l1-1-0.dll
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\api-ms-win-core-debug-l1-1-0.dll
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\api-ms-win-core-errorhandling-l1-1-0.dll
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\api-ms-win-core-fibers-l1-1-0.dll
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\api-ms-win-core-fibers-l1-1-1.dll
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\api-ms-win-core-file-l1-1-0.dll
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\api-ms-win-core-file-l1-2-0.dll
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\api-ms-win-core-file-l2-1-0.dll
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\api-ms-win-core-handle-l1-1-0.dll
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\api-ms-win-core-heap-l1-1-0.dll
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\api-ms-win-core-interlocked-l1-1-0.dll
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\api-ms-win-core-kernel32-legacy-l1-1-1.dll
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\api-ms-win-core-libraryloader-l1-1-0.dll
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\api-ms-win-core-localization-l1-2-0.dll
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\api-ms-win-core-memory-l1-1-0.dll
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\api-ms-win-core-namedpipe-l1-1-0.dll
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\api-ms-win-core-processenvironment-l1-1-0.dll
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\api-ms-win-core-processthreads-l1-1-0.dll
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\api-ms-win-core-processthreads-l1-1-1.dll
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\api-ms-win-core-profile-l1-1-0.dll
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\api-ms-win-core-rtlsupport-l1-1-0.dll
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\api-ms-win-core-string-l1-1-0.dll
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\api-ms-win-core-synch-l1-1-0.dll
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\api-ms-win-core-synch-l1-2-0.dll
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\api-ms-win-core-sysinfo-l1-1-0.dll
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\api-ms-win-core-sysinfo-l1-2-0.dll
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\api-ms-win-core-timezone-l1-1-0.dll
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\api-ms-win-core-util-l1-1-0.dll
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\api-ms-win-crt-conio-l1-1-0.dll
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\api-ms-win-crt-convert-l1-1-0.dll
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\api-ms-win-crt-environment-l1-1-0.dll
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\api-ms-win-crt-filesystem-l1-1-0.dll
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\api-ms-win-crt-heap-l1-1-0.dll
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\api-ms-win-crt-locale-l1-1-0.dll
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\api-ms-win-crt-math-l1-1-0.dll
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\api-ms-win-crt-process-l1-1-0.dll
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\api-ms-win-crt-runtime-l1-1-0.dll
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\api-ms-win-crt-stdio-l1-1-0.dll
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\api-ms-win-crt-string-l1-1-0.dll
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\api-ms-win-crt-time-l1-1-0.dll
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\api-ms-win-crt-utility-l1-1-0.dll
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\base_library.zip
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\libcrypto-3.dll
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\libffi-8.dll
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\libssl-3.dll
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\pyexpat.pyd
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\python312.dll
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\select.pyd
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\sqlite3.dll
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\ucrtbase.dll
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\unicodedata.pyd
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\VCRUNTIME140.dll
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\VCRUNTIME140_1.dll
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\_asyncio.pyd
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\_bz2.pyd
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\_ctypes.pyd
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\_decimal.pyd
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\_elementtree.pyd
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\_hashlib.pyd
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\_lzma.pyd
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\_multiprocessing.pyd
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\_overlapped.pyd
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\_queue.pyd
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\_socket.pyd
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\_sqlite3.pyd
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\_ssl.pyd
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\_uuid.pyd
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\_wmi.pyd
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\app\build_info.json
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\app\card.py
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\app\cats.py
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\app\cfg.py
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\app\finder.py
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\app\game_info.txt
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\app\gen.py
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\app\imggen.py
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\app\jobs.py
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\app\net.py
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\app\pubs.py
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\app\selftest.py
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\app\server.py
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\app\tgu.py
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\app\update.py
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\app\version.py
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\app\websearch.py
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\app\yt.py
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\app\ui\index.html
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\PIL\_avif.cp312-win_amd64.pyd
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\PIL\_imaging.cp312-win_amd64.pyd
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\PIL\_imagingcms.cp312-win_amd64.pyd
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\PIL\_imagingft.cp312-win_amd64.pyd
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\PIL\_imagingtk.cp312-win_amd64.pyd
+   Compressing: D:\a\pustosh\pustosh\marketing-app\build\..\dist\PustoshMarketing\_internal\PIL\_webp.cp312-win_amd64.pyd
+   Compressing Setup program executable
+   Updating version info (Setup.exe)
+   Updating manifest (Setup.exe)
+
+
+Successful compile (5.485 sec). Resulting Setup program filename is:
+D:\a\pustosh\pustosh\marketing-app\setup_out\PustoshMarketing-Setup.exe

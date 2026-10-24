@@ -1,0 +1,52 @@
+Requirement already satisfied: pip in C:\hostedtoolcache\windows\Python\3.12.10\x64\Lib\site-packages (26.2.2)
+Collecting telethon
+  Downloading telethon-1.45.0-py3-none-any.whl.metadata (4.2 kB)
+Collecting pillow
+  Downloading pillow-13.0.0-cp312-cp312-win_amd64.whl.metadata (9.3 kB)
+Collecting pyinstaller
+  Downloading pyinstaller-6.22.3-py3-none-win_amd64.whl.metadata (8.5 kB)
+Collecting pyaes (from telethon)
+  Downloading pyaes-1.6.1.tar.gz (28 kB)
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Getting requirements to build wheel: started
+  Getting requirements to build wheel: finished with status 'done'
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Collecting rsa (from telethon)
+  Downloading rsa-4.9.1-py3-none-any.whl.metadata (5.6 kB)
+Collecting altgraph (from pyinstaller)
+  Downloading altgraph-0.17.5-py2.py3-none-any.whl.metadata (7.5 kB)
+Requirement already satisfied: packaging>=22.0 in C:\hostedtoolcache\windows\Python\3.12.10\x64\Lib\site-packages (from pyinstaller) (26.3)
+Collecting pefile>=2022.5.30 (from pyinstaller)
+  Downloading pefile-2024.8.26-py3-none-any.whl.metadata (1.4 kB)
+Collecting pyinstaller-hooks-contrib>=2026.7 (from pyinstaller)
+  Downloading pyinstaller_hooks_contrib-2026.9-py3-none-any.whl.metadata (16 kB)
+Collecting pywin32-ctypes>=0.2.1 (from pyinstaller)
+  Downloading pywin32_ctypes-0.2.3-py3-none-any.whl.metadata (3.9 kB)
+Collecting setuptools>=42.0.0 (from pyinstaller)
+  Using cached setuptools-84.2.1-py3-none-any.whl.metadata (6.6 kB)
+Collecting pyasn1>=0.1.3 (from rsa->telethon)
+  Downloading pyasn1-0.6.4-py3-none-any.whl.metadata (8.4 kB)
+Downloading telethon-1.45.0-py3-none-any.whl (804 kB)
+   ---------------------------------------- 804.1/804.1 kB 6.9 MB/s  0:00:00
+Downloading pillow-13.0.0-cp312-cp312-win_amd64.whl (7.3 MB)
+   ---------------------------------------- 7.3/7.3 MB 32.0 MB/s  0:00:00
+Downloading pyinstaller-6.22.3-py3-none-win_amd64.whl (1.5 MB)
+   ---------------------------------------- 1.5/1.5 MB 25.4 MB/s  0:00:00
+Downloading pefile-2024.8.26-py3-none-any.whl (74 kB)
+Downloading pyinstaller_hooks_contrib-2026.9-py3-none-any.whl (462 kB)
+Downloading pywin32_ctypes-0.2.3-py3-none-any.whl (30 kB)
+Using cached setuptools-84.2.1-py3-none-any.whl (876 kB)
+Downloading altgraph-0.17.5-py2.py3-none-any.whl (21 kB)
+Downloading rsa-4.9.1-py3-none-any.whl (34 kB)
+Downloading pyasn1-0.6.4-py3-none-any.whl (84 kB)
+Building wheels for collected packages: pyaes
+  Building wheel for pyaes (pyproject.toml): started
+  Building wheel for pyaes (pyproject.toml): finished with status 'done'
+  Created wheel for pyaes: filename=pyaes-1.6.1-py3-none-any.whl size=26436 sha256=a53634469ffd36de25c1965b1d31debc3c7ee1fc402daa9ace415ee46505fa5f
+  Stored in directory: c:\users\runneradmin\appdata\local\pip\cache\wheels\d9\43\32\ec313dd557e88e419489b9df40c04dad7b99576bde162496f8
+Successfully built pyaes
+Installing collected packages: pyaes, altgraph, setuptools, pywin32-ctypes, pyinstaller-hooks-contrib, pyasn1, pillow, pefile, rsa, pyinstaller, telethon
+
+Successfully installed altgraph-0.17.5 pefile-2024.8.26 pillow-13.0.0 pyaes-1.6.1 pyasn1-0.6.4 pyinstaller-6.22.3 pyinstaller-hooks-contrib-2026.9 pywin32-ctypes-0.2.3 rsa-4.9.1 setuptools-84.2.1 telethon-1.45.0

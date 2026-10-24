@@ -1,0 +1,84 @@
+226 INFO: PyInstaller: 6.22.3, contrib hooks: 2026.9
+226 INFO: Python: 3.12.10
+245 INFO: Platform: Windows-2025Server-10.0.26100-SP0
+245 INFO: Python environment: C:\hostedtoolcache\windows\Python\3.12.10\x64
+245 INFO: wrote D:\a\pustosh\pustosh\marketing-app\PustoshMarketing.spec
+251 INFO: Removing temporary files and cleaning cache in C:\Users\runneradmin\AppData\Local\pyinstaller
+167 INFO: Failed to load SSL library: <class 'OSError'> (no library called "ssl" found)
+167 INFO: cryptg module not installed and libssl not found, falling back to (slower) Python encryption
+683 INFO: Module search paths (PYTHONPATH):
+['D:\\a\\pustosh\\pustosh\\marketing-app',
+ 'C:\\hostedtoolcache\\windows\\Python\\3.12.10\\x64\\python312.zip',
+ 'C:\\hostedtoolcache\\windows\\Python\\3.12.10\\x64\\DLLs',
+ 'C:\\hostedtoolcache\\windows\\Python\\3.12.10\\x64\\Lib',
+ 'C:\\hostedtoolcache\\windows\\Python\\3.12.10\\x64',
+ 'C:\\hostedtoolcache\\windows\\Python\\3.12.10\\x64\\Lib\\site-packages',
+ 'D:\\a\\pustosh\\pustosh\\marketing-app',
+ 'D:\\a\\pustosh\\pustosh\\marketing-app\\build']
+854 INFO: Appending 'datas' from .spec
+854 INFO: checking Analysis
+854 INFO: Building Analysis because Analysis-00.toc is non existent
+854 INFO: Looking for Python shared library...
+854 INFO: Using Python shared library: C:\hostedtoolcache\windows\Python\3.12.10\x64\python312.dll
+854 INFO: Running Analysis Analysis-00.toc
+854 INFO: Target bytecode optimization level: 0
+854 INFO: Initializing module dependency graph...
+856 INFO: Initializing module graph hook caches...
+865 INFO: Analyzing modules for base_library.zip ...
+1644 INFO: Processing standard module hook 'hook-encodings.py' from 'C:\\hostedtoolcache\\windows\\Python\\3.12.10\\x64\\Lib\\site-packages\\PyInstaller\\hooks'
+1892 INFO: Processing standard module hook 'hook-math.py' from 'C:\\hostedtoolcache\\windows\\Python\\3.12.10\\x64\\Lib\\site-packages\\PyInstaller\\hooks'
+2035 INFO: Processing standard module hook 'hook-heapq.py' from 'C:\\hostedtoolcache\\windows\\Python\\3.12.10\\x64\\Lib\\site-packages\\PyInstaller\\hooks'
+2671 INFO: Processing standard module hook 'hook-pickle.py' from 'C:\\hostedtoolcache\\windows\\Python\\3.12.10\\x64\\Lib\\site-packages\\PyInstaller\\hooks'
+3663 INFO: Caching module dependency graph...
+3687 INFO: Analyzing D:\a\pustosh\pustosh\marketing-app\launcher.py
+3695 INFO: Processing standard module hook 'hook-PIL.py' from 'C:\\hostedtoolcache\\windows\\Python\\3.12.10\\x64\\Lib\\site-packages\\PyInstaller\\hooks'
+3765 INFO: Processing standard module hook 'hook-PIL.Image.py' from 'C:\\hostedtoolcache\\windows\\Python\\3.12.10\\x64\\Lib\\site-packages\\PyInstaller\\hooks'
+3979 INFO: Processing standard module hook 'hook-xml.py' from 'C:\\hostedtoolcache\\windows\\Python\\3.12.10\\x64\\Lib\\site-packages\\PyInstaller\\hooks'
+3994 INFO: Processing standard module hook 'hook-xml.etree.cElementTree.py' from 'C:\\hostedtoolcache\\windows\\Python\\3.12.10\\x64\\Lib\\site-packages\\PyInstaller\\hooks'
+4094 INFO: Processing standard module hook 'hook-PIL.ImageFilter.py' from 'C:\\hostedtoolcache\\windows\\Python\\3.12.10\\x64\\Lib\\site-packages\\PyInstaller\\hooks'
+4540 INFO: Processing standard module hook 'hook-multiprocessing.util.py' from 'C:\\hostedtoolcache\\windows\\Python\\3.12.10\\x64\\Lib\\site-packages\\PyInstaller\\hooks'
+4753 INFO: Processing standard module hook 'hook-_ctypes.py' from 'C:\\hostedtoolcache\\windows\\Python\\3.12.10\\x64\\Lib\\site-packages\\PyInstaller\\hooks'
+5013 INFO: Processing standard module hook 'hook-platform.py' from 'C:\\hostedtoolcache\\windows\\Python\\3.12.10\\x64\\Lib\\site-packages\\PyInstaller\\hooks'
+7906 INFO: Processing standard module hook 'hook-difflib.py' from 'C:\\hostedtoolcache\\windows\\Python\\3.12.10\\x64\\Lib\\site-packages\\PyInstaller\\hooks'
+8058 INFO: Processing standard module hook 'hook-sysconfig.py' from 'C:\\hostedtoolcache\\windows\\Python\\3.12.10\\x64\\Lib\\site-packages\\PyInstaller\\hooks'
+8089 INFO: Processing standard module hook 'hook-webbrowser.py' from 'C:\\hostedtoolcache\\windows\\Python\\3.12.10\\x64\\Lib\\site-packages\\PyInstaller\\hooks'
+8428 INFO: Processing standard module hook 'hook-sqlite3.py' from 'C:\\hostedtoolcache\\windows\\Python\\3.12.10\\x64\\Lib\\site-packages\\PyInstaller\\hooks'
+9057 INFO: Analyzing hidden import 'telethon.sync'
+9059 INFO: Processing module hooks (post-graph stage)...
+9230 INFO: Processing standard module hook 'hook-PIL.SpiderImagePlugin.py' from 'C:\\hostedtoolcache\\windows\\Python\\3.12.10\\x64\\Lib\\site-packages\\PyInstaller\\hooks'
+9292 INFO: Performing binary vs. data reclassification (20 entries)
+9292 INFO: Looking for ctypes DLLs
+9306 INFO: Analyzing run-time hooks ...
+9308 INFO: Including run-time hook 'pyi_rth_inspect.py' from 'C:\\hostedtoolcache\\windows\\Python\\3.12.10\\x64\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks'
+9310 INFO: Including run-time hook 'pyi_rth_pkgutil.py' from 'C:\\hostedtoolcache\\windows\\Python\\3.12.10\\x64\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks'
+9310 INFO: Including run-time hook 'pyi_rth_multiprocessing.py' from 'C:\\hostedtoolcache\\windows\\Python\\3.12.10\\x64\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks'
+9317 INFO: Creating base_library.zip...
+9330 INFO: Looking for dynamic libraries
+9692 INFO: Extra DLL search directories (AddDllDirectory): []
+9692 INFO: Extra DLL search directories (PATH): []
+10188 INFO: Warnings written to D:\a\pustosh\pustosh\marketing-app\build\PustoshMarketing\warn-PustoshMarketing.txt
+10214 INFO: Graph cross-reference written to D:\a\pustosh\pustosh\marketing-app\build\PustoshMarketing\xref-PustoshMarketing.html
+10229 INFO: checking PYZ
+10229 INFO: Building PYZ because PYZ-00.toc is non existent
+10229 INFO: Building PYZ (ZlibArchive) D:\a\pustosh\pustosh\marketing-app\build\PustoshMarketing\PYZ-00.pyz
+10733 INFO: Building PYZ (ZlibArchive) D:\a\pustosh\pustosh\marketing-app\build\PustoshMarketing\PYZ-00.pyz completed successfully.
+10747 INFO: checking PKG
+10747 INFO: Building PKG because PKG-00.toc is non existent
+10747 INFO: Building PKG (CArchive) PustoshMarketing.pkg
+10761 INFO: Building PKG (CArchive) PustoshMarketing.pkg completed successfully.
+10761 INFO: Bootloader C:\hostedtoolcache\windows\Python\3.12.10\x64\Lib\site-packages\PyInstaller\bootloader\Windows-64bit-intel\runw.exe
+10761 INFO: checking EXE
+10763 INFO: Building EXE because EXE-00.toc is non existent
+10763 INFO: Building EXE from EXE-00.toc
+10763 INFO: Copying bootloader EXE to D:\a\pustosh\pustosh\marketing-app\build\PustoshMarketing\PustoshMarketing.exe
+10763 INFO: Copying icon to EXE
+10765 INFO: Copying 0 resources to EXE
+10765 INFO: Embedding manifest in EXE
+10767 INFO: Appending PKG archive to EXE
+10769 INFO: Fixing EXE headers
+10816 INFO: Building EXE from EXE-00.toc completed successfully.
+10818 INFO: checking COLLECT
+10819 INFO: Building COLLECT because COLLECT-00.toc is non existent
+10819 INFO: Building COLLECT COLLECT-00.toc
+10926 INFO: Building COLLECT COLLECT-00.toc completed successfully.
+10927 INFO: Build complete! The results are available in: D:\a\pustosh\pustosh\marketing-app\dist

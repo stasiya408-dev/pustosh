@@ -180,6 +180,7 @@ fake_web.install()
 REAL_PAUSE = finder.random_pause
 finder.random_pause = lambda a, b: 0.02
 websearch.BLOCK_MIN = 0.05
+websearch.COOL = 0          # в обычных проверках поисковик после отказа не отдыхает
 
 
 def wait_find(timeout=30):
@@ -249,12 +250,12 @@ except Exception as e:
 
 f = new_run(['fishing', 'games'])
 ok(f['state'] == 'done' and f['done'] == 23 and f['total'] == 23, 'поиск прошёл все 23 слова', f)
-ok(len(fake_web.WORDS_SEEN) == 23 and len(fake_web.SEARCHES) == 23 * 8 and {e for e, _ in fake_web.SEARCHES} == {'ddg', 'bing', 'mojeek', 'brave'},
-   'каждое слово искалось во всех четырёх поисковиках двумя запросами', (len(fake_web.WORDS_SEEN), len(fake_web.SEARCHES)))
+ok(len(fake_web.WORDS_SEEN) == 23 and len(fake_web.SEARCHES) == 23 * 10 and {e for e, _ in fake_web.SEARCHES} == {'ddg', 'bing', 'lyzem', 'mojeek', 'brave'},
+   'каждое слово искалось во всех пяти источниках двумя запросами', (len(fake_web.WORDS_SEEN), len(fake_web.SEARCHES)))
 ok(f['total_base'] == 7 and f['unsaved'] == 7 and f['new'] == 7 and f['kept'] == 7, 'в базе 7 новых групп (каналы, люди, пустые и мои чаты не попали)', f)
 ok(f['checked'] == 11 and len(fake_web.TME) == 11 and len(set(fake_web.TME)) == 11 and 'autoua' not in fake_web.TME,
    'страница t.me открыта по разу для каждого нового имени (11), мой чат не проверялся', (f['checked'], fake_web.TME))
-ok(f['raw'] > 11 and [e['name'] for e in f['engines']] == ['DuckDuckGo', 'Bing', 'Mojeek', 'Brave'] and not any(e['off'] for e in f['engines']) and all(e['found'] for e in f['engines']),
+ok(f['raw'] > 11 and [e['name'] for e in f['engines']] == ['DuckDuckGo', 'Bing', 'Lyzem', 'Mojeek', 'Brave'] and not any(e['off'] for e in f['engines']) and all(e['found'] for e in f['engines']),
    'окну известно, сколько ссылок найдено и как отработал каждый поисковик', f['engines'])
 b = finder.base()
 ok(set(b) == {'w_ryba_ua', 'w_spin_all', 'w_lviv_fish', 'w_hunt_chat', 'w_tanks_chat', 'w_memes_games', 'w_gamers_ua'}, 'в базе нужные 7 групп', sorted(b))
@@ -316,6 +317,18 @@ f = wait_find()
 br = [e for e in f['engines'] if e['id'] == 'brave'][0]
 ok(f['state'] == 'done' and f['total_base'] == 4 and br['off'] and '429' in br['err'] and sum(1 for e, _ in fake_web.SEARCHES if e == 'brave') == 3,
    'если поисковик отвечает отказом, после трёх неудач он отключается, остальные продолжают', (f, br))
+
+# поисковик просит «подождать»: отдыхает и не спрашивается заново, пока отдыхает (не выключается совсем)
+finder.base().clear(); finder.seen().clear()
+fake_web.reset()
+fake_web.ENGINE_FAIL['ddg'] = 202
+websearch.COOL = 600
+api('/api/find/start', {'cats': ['fishing']})
+f = wait_find()
+dd = [e for e in f['engines'] if e['id'] == 'ddg'][0]
+ok(f['state'] == 'done' and f['total_base'] == 4 and not dd['off'] and dd['cool'] and '202' in dd['err'] and sum(1 for e, _ in fake_web.SEARCHES if e == 'ddg') == 1,
+   'поисковик с отказом 202 уходит на отдых и до его конца не опрашивается, остальные работают', (f, dd))
+websearch.COOL = 0
 
 # все поисковики не отвечают
 finder.base().clear(); finder.seen().clear()

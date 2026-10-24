@@ -458,7 +458,7 @@ function fmtWait(sec){
 async function loadBase(){const p=new URLSearchParams({cat:tgF.cat,q:tgF.q,min:tgF.minm,sort:tgF.sort});baseData=await api('/api/find/list?'+p);S.find=baseData.find;return baseData}
 function enginesLine(F){
   const e=F.engines||[];if(!e.length)return '';
-  return 'Поисковики: '+e.map(x=>esc(x.name)+(x.off?' <span class="bad" title="'+esc(x.err||'не отвечает')+'">✗ не отвечает</span>':(x.found?' <span class="ok">'+x.found+'</span>':' …'))).join(' · ');
+  return 'Поисковики: '+e.map(x=>esc(x.name)+(x.off?' <span class="bad" title="'+esc(x.err||'не отвечает')+'">✗ не отвечает</span>':x.cool?' <span style="color:#e0b050" title="'+esc(x.err||'просит подождать')+'">⏸ отдыхает</span>':(x.found?' <span class="ok">'+x.found+'</span>':' …'))).join(' · ');
 }
 function findBoxHtml(){
   const F=S.find;
@@ -655,7 +655,7 @@ document.addEventListener('click',async e=>{
       if(!ids.length){toast('Сначала поставь галочки у тем слева (например, «Взаимопиар игр и ботов»)',5000);return}
       const F0=S.find,all=ids.reduce((a,id)=>a+((F0.queries||{})[id]||0),0),mx=F0.max_queries||60,nq=Math.min(mx,all);
       const ok=await askBox(`<h2>🔎 Искать новые чаты?</h2><ul style="padding-left:18px"><li style="margin:6px 0">Темы: <b>${ids.map(id=>esc(catName(id))).join(', ')}</b></li>
-        <li style="margin:6px 0">Слов для поиска: <b>${nq}</b>${all>nq?` (за один запуск не больше ${mx}, остальное — в следующий раз)`:''}. Ищу <b>в интернете</b>: DuckDuckGo, Bing, Mojeek и Brave. <b>Telegram и твой аккаунт для поиска не используются</b>: ничего не отправляется, аккаунту ничего не грозит.</li>
+        <li style="margin:6px 0">Слов для поиска: <b>${nq}</b>${all>nq?` (за один запуск не больше ${mx}, остальное — в следующий раз)`:''}. Ищу <b>в интернете</b>: DuckDuckGo, Bing, Mojeek, Brave и в каталоге Telegram-чатов Lyzem. <b>Telegram и твой аккаунт для поиска не используются</b>: ничего не отправляется, аккаунту ничего не грозит.</li>
         <li style="margin:6px 0">Каждую найденную ссылку открываю на публичной странице t.me/…: оттуда беру название, сколько участников и сколько сейчас онлайн. Остаются только группы; каналы, люди и боты отбрасываются.</li>
         <li style="margin:6px 0">Займёт примерно <b>${fmtWait(nq*7)}</b>. Окно можно свернуть или закрыть, поиск идёт в фоне (программа не даст Windows уснуть). Найденное сохраняется сразу, смотреть можно в любой момент.</li>
         <li style="margin:6px 0">Вступать в группы программа не будет. Можно ли писать в группе, станет видно, когда зайдёшь в неё сам.</li></ul>

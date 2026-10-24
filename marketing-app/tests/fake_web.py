@@ -104,7 +104,7 @@ def fake_fetch(url, headers=None, timeout=20):
         if blocked:
             return 429, 'Too Many Requests', 1
         return 200, tme_page(name), 0
-    for eid, name, tpl in websearch.ENGINES:
+    for eid, name, tpl, *_ in websearch.ENGINES:
         if urllib.parse.urlparse(tpl).netloc.lower() == host:
             q = urllib.parse.parse_qs(u.query).get('q', [''])[0]
             m = re.search(r'(?:site:t\.me )?(.+?) чат', q)

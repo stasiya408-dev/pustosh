@@ -9,7 +9,7 @@ import fake
 srv_fake, ST = fake.start()
 BASE = 'http://127.0.0.1:%d' % ST.port
 HOME = tempfile.mkdtemp(prefix='mkt_ui_')
-os.environ.update({'MKT_HOME': HOME, 'MKT_TG_IMPL': 'fake_tgu:FakeTg', 'MKT_IDLE_EXIT': '0', 'MKT_ANTHROPIC_URL': BASE,
+os.environ.update({'MKT_HOME': HOME, 'MKT_TG_IMPL': 'fake_tgu:FakeTg', 'MKT_IDLE_EXIT': '0', 'MKT_ANTHROPIC_URL': BASE, 'MKT_OPENAI_URL': BASE,
                    'MKT_THREADS_BASE': BASE, 'MKT_THREADS_POLL': '0.02', 'MKT_GITHUB_API': BASE, 'MKT_UPDATE_URL': BASE + '/upd', 'MKT_BASE_DEPS': 'A'})
 import cfg, server, jobs, net
 from PIL import Image, ImageDraw
@@ -82,6 +82,28 @@ with sync_playwright() as p:
     pg.click('[data-tab=post]'); pg.wait_for_selector('#drop')
     pg.set_input_files('#file', PIC); pg.wait_for_selector('#prev img')
     pg.fill('#note', 'новый босс Ногай нависает над экраном')
+    # --- «Ещё дополнительно сгенерировать» ---
+    check(pg.is_visible('[data-act=extragen]'), 'под фото есть кнопка «Ещё дополнительно сгенерировать»')
+    pg.screenshot(path=SH + '/8a_extra_button.png')
+    pg.click('[data-act=extragen]'); pg.wait_for_selector('#mo')
+    check('ключ OpenAI' in pg.inner_text('#mbox'), 'без ключа OpenAI кнопка объясняет, что нужен ключ')
+    pg.click('#mo'); pg.wait_for_selector('#s_OPENAI_API_KEY')
+    pg.screenshot(path=SH + '/8b_conn_openai.png')
+    pg.fill('#s_OPENAI_API_KEY', 'good-openai')
+    pg.click('[data-keys^="OPENAI_API_KEY"]'); pg.wait_for_timeout(500)
+    check(cfg.env('OPENAI_API_KEY') == 'good-openai', 'ключ OpenAI сохраняется из окна')
+    pg.click('[data-tab=post]'); pg.wait_for_selector('[data-act=extragen]')
+    pg.click('#x_det summary'); pg.fill('#x_idea', 'Ногай нависает над экраном, закат')
+    pg.select_option('#x_n', '2')
+    pg.click('[data-act=extragen]')
+    pg.wait_for_selector('.gtile', timeout=30000)
+    pg.wait_for_timeout(500)
+    pg.screenshot(path=SH + '/8c_extra_done.png', full_page=True)
+    check(pg.locator('.gtile').count() == 3, 'в списке исходное фото и 2 новые картинки GPT')
+    check('Ногай нависает над экраном, закат' in ST.openai_reqs[-1][1]['prompt'], 'идея из окна дошла до GPT')
+    pg.locator('[data-act=extrause]:not([disabled])').first.click(); pg.wait_for_timeout(700)
+    check('gen_' in (pg.get_attribute('#prev img', 'src') or ''), 'после «В пост» вверху показана картинка GPT')
+    pg.screenshot(path=SH + '/8d_extra_used.png', full_page=True)
     pg.check('#t_threads'); pg.wait_for_timeout(300)
     pg.click('[data-act=generate]'); pg.wait_for_selector('#x_tg'); pg.wait_for_selector('.card img[src*="card_"]')
     pg.wait_for_timeout(500)

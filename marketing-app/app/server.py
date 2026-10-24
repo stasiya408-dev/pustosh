@@ -3,7 +3,7 @@
 import json, mimetypes, os, platform, random, re, secrets, shutil, socket, subprocess, sys, threading, time, traceback, urllib.parse, webbrowser
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
-import cfg, net, gen, card, pubs, yt, cats, jobs, update, version, tgu
+import cfg, net, gen, card, pubs, yt, cats, jobs, update, version, tgu, imggen
 from cfg import env, S
 
 UI_DIR = os.path.join(cfg.CODE, 'ui')
@@ -104,7 +104,53 @@ def make_card():
         DRAFT['card_path'] = out
 
 
+# ---------- дополнительные картинки от GPT ----------
+EXTRA_LOCK = threading.RLock()
+EXTRA = {'gen': 0, 'state': 'idle', 'msg': '', 'items': [], 'base': None, 'base_name': '', 'n': 0, 'started': 0, 'model': '', 'seq': 0}
+EXTRA_MAX = 12
+
+
+def _in_media(p):
+    return bool(p) and os.path.dirname(os.path.abspath(p)) == os.path.abspath(cfg.MEDIA)
+
+
+def _rm(p):
+    if _in_media(p) and os.path.exists(p):
+        try:
+            os.remove(p)
+        except OSError:
+            pass
+
+
+def extra_reset():
+    """Новый файл (или файл убрали): картинки GPT от прошлого фото больше не нужны."""
+    with EXTRA_LOCK:
+        for it in EXTRA['items']:
+            _rm(it['path'])
+        _rm(EXTRA['base'])
+        EXTRA.update(gen=EXTRA['gen'] + 1, state='idle', msg='', items=[], base=None, base_name='', n=0, started=0, model='')
+
+
+def extra_view():
+    with EXTRA_LOCK:
+        EXTRA['items'] = [i for i in EXTRA['items'] if os.path.exists(i['path'])]
+        m = DRAFT['media']
+        cur = m['path'] if m else None
+        used = None
+        if cur and EXTRA['base'] and cur == EXTRA['base']:
+            used = 'orig'
+        for i in EXTRA['items']:
+            if cur and i['path'] == cur:
+                used = i['id']
+        return {'state': EXTRA['state'], 'msg': EXTRA['msg'], 'n': EXTRA['n'], 'started': EXTRA['started'], 'model': EXTRA['model'],
+                'ready': imggen.ready(),
+                'base': ({'url': media_url(EXTRA['base']), 'name': EXTRA['base_name']} if EXTRA['base'] and os.path.exists(EXTRA['base']) else None),
+                'items': [{'id': i['id'], 'url': media_url(i['path']), 'w': i['w'], 'h': i['h']} for i in EXTRA['items']],
+                'used': used}
+
+
 def clear_media():
+    extra_reset()
     for k in ('media', 'thumb'):
         v = DRAFT[k]
         p = v['path'] if isinstance(v, dict) else v
@@ -150,13 +196,14 @@ def state():
             'threads': {'ready': pubs.threads_ready(), 'text': pubs.threads_status(), 'app': pubs.threads_app_ready(),
                         'redirect': pubs.threads_redirect()},
             'yt': {'client': yt.has_client(), 'connected': yt.connected(), 'text': yt.status(), 'login': dict(YT_LOGIN)},
-            'host': pubs.host_ready(),
+            'host': pubs.host_ready(), 'gpt': imggen.ready(),
         },
         'settings': settings_view(),
         'cats': cats.categories(),
         'chats': chat_list(),
         'tg_today': {'sent': jobs.sent_today(), 'limit': limit, 'dmin': dmin, 'dmax': dmax},
         'draft': public_draft(),
+        'extra': extra_view(),
         'job': cur.snap() if cur else None,
     }
 
@@ -250,6 +297,107 @@ def api_generate(q, b):
         drop_card()
         warn = (warn + ' ' if warn else '') + 'Картинку с надписью сделать не вышло (%s). Пойдёт исходное фото.' % e
     return {'draft': public_draft(), 'warn': warn}
+
+
+def _extra_worker(token, ref, idea, note, n, size, quality):
+    try:
+        res, model = imggen.generate(ref, idea, note, n, size, quality, log)
+        err_msg = ''
+    except net.NetError as e:
+        res, model, err_msg = [], '', e.msg
+    except Exception as e:
+        traceback.print_exc()
+        res, model, err_msg = [], '', 'Ошибка программы: %s' % e
+    with EXTRA_LOCK:
+        if EXTRA['gen'] != token:                     # пока рисовалось, файл заменили — результат не нужен
+            for r in res:
+                _rm(r['path'])
+            return
+        for r in res:
+            EXTRA['seq'] += 1
+            EXTRA['items'].append({'id': 'g%d' % EXTRA['seq'], 'path': r['path'], 'w': r['w'], 'h': r['h']})
+        while len(EXTRA['items']) > EXTRA_MAX:       # слишком много — выбрасываем самые старые, кроме выбранной
+            cur = DRAFT['media']['path'] if DRAFT['media'] else None
+            victim = next((i for i in EXTRA['items'] if i['path'] != cur), None)
+            if not victim:
+                break
+            EXTRA['items'].remove(victim)
+            _rm(victim['path'])
+        EXTRA['model'] = model
+        EXTRA['state'] = 'error' if err_msg else 'done'
+        EXTRA['msg'] = err_msg
+
+
+def api_extra_start(q, b):
+    d = DRAFT
+    if not imggen.ready():
+        err('Нужен ключ OpenAI (вкладка «Подключения»): через него GPT рисует картинки')
+    m = d['media']
+    if m and m['kind'] == 'photo':
+        ref = EXTRA['base'] if (EXTRA['base'] and os.path.exists(EXTRA['base'])) else m['path']   # образец — всегда исходное фото
+    elif m and d['thumb']:
+        ref = d['thumb']
+    elif m:
+        err('Не получилось взять кадр из ролика. Загрузи фото из игры — GPT будет рисовать по нему.')
+    else:
+        err('Сначала добавь фото из игры — GPT нарисует новые картинки по его образцу')
+    with EXTRA_LOCK:
+        if EXTRA['state'] == 'running':
+            err('GPT уже рисует, дождись окончания')
+        if not EXTRA['base'] and m['kind'] == 'photo':
+            EXTRA['base'], EXTRA['base_name'] = m['path'], m.get('name', '')
+        try:
+            n = max(1, min(4, int(b.get('n') or 2)))
+        except (TypeError, ValueError):
+            n = 2
+        size = b.get('size') if b.get('size') in imggen.SIZES else 'tall'
+        quality = b.get('quality') if b.get('quality') in imggen.QUALITY else 'medium'
+        EXTRA.update(state='running', msg='', n=n, started=int(time.time()))
+        token = EXTRA['gen']
+    threading.Thread(target=_extra_worker, daemon=True,
+                     args=(token, ref, str(b.get('idea') or '')[:600], d['note'], n, size, quality)).start()
+    return {'extra': extra_view()}
+
+
+def api_extra_use(q, b):
+    d = DRAFT
+    if jobs.running():
+        err('Идёт публикация, дождись окончания')
+    pid = str(b.get('id') or '')
+    with EXTRA_LOCK:
+        if pid == 'orig' and EXTRA['base'] and os.path.exists(EXTRA['base']):
+            path, name, w, h = EXTRA['base'], EXTRA['base_name'] or 'Исходное фото', None, None
+        else:
+            it = next((i for i in EXTRA['items'] if i['id'] == pid and os.path.exists(i['path'])), None)
+            if not it:
+                err('Такой картинки уже нет')
+            path, name, w, h = it['path'], 'Картинка GPT', it['w'], it['h']
+        old = d['media']
+        if old and old['path'] == path:
+            return {'draft': public_draft(), 'extra': extra_view()}
+        d['media'] = {'kind': 'photo', 'path': path, 'name': name, 'w': w, 'h': h, 'dur': None}
+        if old and not any(old['path'] == x for x in [EXTRA['base']] + [i['path'] for i in EXTRA['items']]):
+            _rm(old['path'])                           # заменили ролик или чужой файл — он больше не нужен
+        if d['thumb'] and old and old['kind'] == 'video':
+            _rm(d['thumb'])
+            d['thumb'] = None
+    try:
+        make_card()
+    except Exception as e:
+        drop_card()
+        log('картинка с надписью не вышла:', e)
+    return {'draft': public_draft(), 'extra': extra_view()}
+
+
+def api_extra_drop(q, b):
+    pid = str(b.get('id') or '')
+    with EXTRA_LOCK:
+        cur = DRAFT['media']['path'] if DRAFT['media'] else None
+        it = next((i for i in EXTRA['items'] if i['id'] == pid), None)
+        if it and it['path'] != cur:
+            EXTRA['items'].remove(it)
+            _rm(it['path'])
+    return {'extra': extra_view()}
 
 
 def api_publish(q, b):
@@ -540,7 +688,7 @@ def mask(text):
 def api_report(q, b):
     ch = S['chats'].values()
     lines = ['Пустошь Маркетинг v%s' % version.VERSION, 'Система: %s, Python %s' % (platform.platform(), platform.python_version()),
-             'Claude: %s | картинки: %s | GitHub-хостинг: %s' % ('ключ есть' if gen.ai_ready() else 'нет ключа', 'да' if card.available() else 'нет', 'да' if pubs.host_ready() else 'нет'),
+             'Claude: %s | GPT-картинки: %s | картинки с надписью: %s | GitHub-хостинг: %s' % ('ключ есть' if gen.ai_ready() else 'нет ключа', 'ключ есть' if imggen.ready() else 'нет ключа', 'да' if card.available() else 'нет', 'да' if pubs.host_ready() else 'нет'),
              'Telegram: %s' % TG.status()['state'], 'Threads: %s' % pubs.threads_status(), 'YouTube: %s' % yt.status(),
              'Чатов: %d, можно писать: %d, выбрано: %d' % (len(S['chats']), sum(1 for c in ch if c.get('can_write')), len(selected_tg())),
              '--- журнал ---']
@@ -572,7 +720,8 @@ def _quit():
 ROUTES = {
     ('GET', '/api/state'): api_state, ('GET', '/api/ping'): api_ping, ('POST', '/api/settings'): api_settings,
     ('POST', '/api/draft'): api_draft, ('POST', '/api/media/meta'): api_media_meta, ('POST', '/api/media/clear'): api_media_clear,
-    ('POST', '/api/generate'): api_generate, ('POST', '/api/publish'): api_publish, ('POST', '/api/job/cancel'): api_job_cancel,
+    ('POST', '/api/generate'): api_generate, ('POST', '/api/extra/start'): api_extra_start, ('POST', '/api/extra/use'): api_extra_use,
+    ('POST', '/api/extra/drop'): api_extra_drop, ('POST', '/api/publish'): api_publish, ('POST', '/api/job/cancel'): api_job_cancel,
     ('POST', '/api/job/clear'): api_job_clear,
     ('POST', '/api/tg/phone'): api_tg_phone, ('POST', '/api/tg/code'): api_tg_code, ('POST', '/api/tg/password'): api_tg_password,
     ('POST', '/api/tg/logout'): api_tg_logout, ('POST', '/api/tg/load'): api_tg_load, ('POST', '/api/tg/chat'): api_tg_chat,

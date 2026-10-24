@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Поддельные серверы: Телеграм, Anthropic, Threads, GitHub, YouTube/Google — всё на одном порту."""
-import json, re, threading, urllib.parse
+import json, re, threading, time, urllib.parse
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 TOKEN = '123:TEST'
@@ -17,6 +17,9 @@ class State:
         self.yt_ranges = []
         self.threads_created = []
         self.anthropic_reqs = []
+        self.openai_reqs = []    # (заголовок Authorization, поля запроса)
+        self.openai_delay = 0    # сколько секунд «рисует» поддельный OpenAI
+        self.openai_fail = []    # очередь ответов-ошибок (код, тело): отдаются по одному, потом снова успех
         self.gh_puts = []
         self.fail = {}           # имя -> код ошибки, который надо вернуть один раз
         self.lock = threading.Lock()
@@ -119,6 +122,26 @@ class H(BaseHTTPRequestHandler):
                 'youtube_desc': 'Бой с боссом в казацкой игре.\n#Shorts #игра',
                 'card_title': 'Тугар вышел на тропу', 'card_sub': 'Попробуй уложить его'}, ensure_ascii=False)
             return self._send(200, {'content': [{'type': 'text', 'text': 'Вот посты:\n' + txt}]})
+        # ---- OpenAI (картинки) ----
+        if path == '/v1/images/edits':
+            ST.openai_reqs.append((self.headers.get('Authorization'), p))
+            if self.headers.get('Authorization') != 'Bearer good-openai':
+                return self._send(401, {'error': {'message': 'Incorrect API key provided', 'code': 'invalid_api_key'}})
+            if ST.openai_delay:
+                time.sleep(ST.openai_delay)
+            if ST.openai_fail:
+                code, bodyobj = ST.openai_fail.pop(0)
+                return self._send(code, bodyobj)
+            import base64, io
+            from PIL import Image
+            w, h = (int(x) for x in p.get('size', '1024x1024').split('x'))
+            outs = []
+            for i in range(int(p.get('n', 1))):
+                im = Image.new('RGB', (w // 8, h // 8), (40 + 50 * i, 90, 160 - 30 * i))
+                bio = io.BytesIO()
+                im.save(bio, 'JPEG')
+                outs.append({'b64_json': base64.b64encode(bio.getvalue()).decode()})
+            return self._send(200, {'created': 1, 'data': outs})
         # ---- Threads ----
         if path == '/oauth/access_token':
             if p.get('code') == 'BADCODE0123456789':

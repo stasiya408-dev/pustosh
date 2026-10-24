@@ -84,6 +84,13 @@ code{background:#0006;padding:1px 5px;border-radius:5px;font-size:13px}
 #modal{position:fixed;inset:0;background:#000a;display:none;align-items:center;justify-content:center;z-index:50;padding:20px}
 #modal .box{background:var(--panel);border:1px solid var(--gold);border-radius:14px;padding:20px 22px;max-width:520px;width:100%;max-height:90vh;overflow:auto}
 #toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:#000d;border:1px solid var(--gold);padding:10px 18px;border-radius:10px;display:none;z-index:60;max-width:80vw}
+a.btn{text-decoration:none;display:inline-block;color:var(--txt)}
+.xbox{margin-top:14px;padding-top:12px;border-top:1px dashed var(--line)}
+.gal{display:flex;flex-wrap:wrap;gap:14px;margin-top:12px}
+.gtile{width:215px;background:#1d140d;border:1px solid var(--line);border-radius:10px;padding:8px}
+.gtile.used{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold) inset}
+.gtile img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:7px;background:#000;display:block;margin-bottom:6px}
+.gtile .btn{padding:5px 10px;font-size:13.5px}
 .chat{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:8px 0;white-space:pre-wrap}.chat.me{background:#d6942a14}.chat.ai{background:#ffffff08}
 @media (max-width:900px){#side{width:64px}#side .lbl,#logo b,#sidefoot{display:none}#cats{width:170px}.chrow select{width:120px}}
 </style>
@@ -163,7 +170,7 @@ function paintPost(){
     ${m?`<div id="prev">${m.kind==='photo'?`<img src="${m.url}?t=${TOKEN}">`:`<video src="${m.url}?t=${TOKEN}" controls muted></video>`}
       <div><b>${esc(m.name||'')}</b><div class="hint">${m.kind==='photo'?'Фото':'Видео'}${m.dur?' · '+fmtDur(m.dur):''}${m.w?' · '+m.w+'×'+m.h:''}</div>
       ${m.kind==='video'&&m.w&&m.h&&m.w>m.h?'<div class="warn">Ролик горизонтальный — на YouTube это будет не Short. Для Shorts нужен вертикальный или квадратный.</div>':''}
-      <p><button class="btn" data-act="clearmedia">Убрать файл</button> <button class="btn" data-act="pickfile">Выбрать другой</button></p></div></div>`
+      <p><button class="btn" data-act="clearmedia">Убрать файл</button> <button class="btn" data-act="pickfile">Выбрать другой</button></p></div></div><div id="extrabox" class="xbox"></div>`
     :`<div id="drop" data-act="pickfile">${uploading?`Загружаю… ${uploading}%<div class="bar"><i style="width:${uploading}%"></i></div>`:'Перетащи сюда фото или видео<br>или нажми, чтобы выбрать файл'}</div>`}
   </div>
   <div class="card"><h2>2. О чём пост <span class="hint">(не обязательно)</span></h2>
@@ -195,6 +202,58 @@ function editor(d){
     <label class="f">Подпись</label><input type="text" id="card_sub" value="${esc(d.card_sub)}">
     <p><button class="btn" data-act="redocard">Обновить картинку</button></p></div></div></div>`:''}
   <div class="row"><button class="btn pri big" data-act="publish">🚀 Опубликовать</button><span class="hint">Перед отправкой я покажу, что именно уйдёт и куда.</span></div>`;
+}
+/* ---- «Ещё дополнительно сгенерировать»: новые картинки от GPT по образцу фото ---- */
+let xopt={idea:'',n:2,size:'tall',q:'medium',open:false}, xsig='', xPoll=null, xWas='';
+function extExt(u){const i=u.lastIndexOf('.');return i>0?u.slice(i):'.jpg'}
+function paintExtra(){
+  const box=$('#extrabox');if(!box||!S)return;
+  const x=S.extra,m=S.draft.media;
+  if(!m){box.innerHTML='';return}
+  const sig=JSON.stringify([x,m.url,S.conn.gpt]);
+  if(sig===xsig&&box.firstChild)return;xsig=sig;
+  const run=x.state==='running';
+  const tile=(id,url,label,used,del)=>`<div class="gtile ${used?'used':''}"><img src="${url}?t=${TOKEN}" alt=""><div class="hint" style="margin-bottom:6px">${label}${used?' · <b class="ok">в посте</b>':''}</div>
+    <div class="row" style="gap:6px"><button class="btn ${used?'':'pri'}" data-act="extrause" data-id="${id}" ${used?'disabled':''}>${used?'Выбрана':'В пост'}</button><a class="btn" href="${url}?t=${TOKEN}" download="pustosh_${id}${extExt(url)}">Сохранить</a>${del&&!used?`<button class="btn" data-act="extradel" data-id="${id}" title="Убрать из списка">✕</button>`:''}</div></div>`;
+  const sel=(id,opts,v)=>`<select id="${id}">${opts.map(o=>`<option value="${o[0]}" ${String(o[0])===String(v)?'selected':''}>${o[1]}</option>`).join('')}</select>`;
+  const tiles=[];
+  if(x.items.length&&x.base)tiles.push(tile('orig',x.base.url,'Исходное фото',x.used==='orig',false));
+  x.items.slice().reverse().forEach((i,k)=>tiles.push(tile(i.id,i.url,'Картинка GPT',x.used===i.id,true)));
+  box.innerHTML=`<div class="row"><button class="btn pri" data-act="extragen" ${run?'disabled':''}>${run?'<span class="spin">⏳</span> GPT рисует…':'🎨 Ещё дополнительно сгенерировать'}</button>
+      <span class="hint">${S.conn.gpt?'GPT (OpenAI) нарисует новые картинки в стиле этого фото.':'<span class="warn">Нужен ключ OpenAI — вкладка «Подключения».</span>'}</span></div>
+    <details id="x_det" ${xopt.open?'open':''}><summary>Настроить: что нарисовать, сколько, формат</summary>
+      <label class="f">Что должно быть на картинке <span class="hint">(не обязательно: если пусто, возьму заметку из шага 2, а если и её нет — GPT придумает сам)</span></label>
+      <textarea id="x_idea" rows="2" placeholder="Например: Ногай с саблей на фоне заката, вид снизу">${esc(xopt.idea)}</textarea>
+      <div class="row"><div class="grow"><label class="f">Сколько картинок</label>${sel('x_n',[[1,'1'],[2,'2'],[3,'3'],[4,'4']],xopt.n)}</div>
+      <div class="grow"><label class="f">Формат</label>${sel('x_size',[['tall','Вертикальная'],['square','Квадрат'],['wide','Горизонтальная']],xopt.size)}</div>
+      <div class="grow"><label class="f">Качество</label>${sel('x_q',[['low','Быстро и дёшево'],['medium','Обычное'],['high','Лучшее (дороже)']],xopt.q)}</div></div>
+      <div class="hint" style="margin-top:6px">Каждая картинка — несколько центов с баланса OpenAI, чем лучше качество, тем дороже.</div></details>
+    ${run?`<div class="hint" style="margin-top:8px">⏳ Рисую ${x.n} шт. Обычно это 30–90 секунд, можно переключаться на другие вкладки.</div>`:''}
+    ${x.state==='error'?`<div class="bad" style="margin-top:8px">⚠ ${esc(x.msg)}</div>`:''}
+    ${tiles.length?`<div class="gal">${tiles.join('')}</div><div class="hint" style="margin-top:6px">Нажми «В пост», чтобы эта картинка ушла вместо исходной (надпись на ней можно сделать ниже, в блоке «Картинка с надписью»).</div>`:''}`;
+}
+async function doExtra(){
+  if(!S.conn.gpt){
+    if(await askBox('<h2>Нужен ключ OpenAI</h2><div class="hint">Картинки рисует GPT от OpenAI, для этого нужен отдельный ключ (подписка ChatGPT для него не подходит). Как его получить — написано во вкладке «Подключения», блок «GPT от OpenAI».</div>','Открыть «Подключения»'))go('conn');
+    return;
+  }
+  const o=xopt;
+  const r=await act(()=>api('/api/extra/start',{idea:o.idea,n:+o.n,size:o.size,quality:o.q}));
+  if(r){S.extra=r.extra;xWas='running';paintExtra();pollExtra()}
+}
+function pollExtra(){
+  clearTimeout(xPoll);
+  if(!S||!S.extra)return;
+  if(S.extra.state==='running'){xPoll=setTimeout(async()=>{try{await load()}catch(e){}paintExtra();pollExtra()},2000);return}
+  if(xWas==='running'){xWas='';
+    if(S.extra.state==='error')toast('⚠ '+S.extra.msg,9000);
+    else{toast('Готово: GPT нарисовал картинки'+(S.extra.items.length?' (всего '+S.extra.items.length+')':''),5000);const g=$('#extrabox .gal');if(g&&tab==='post')g.scrollIntoView({behavior:'smooth',block:'center'})}}
+}
+async function doExtraUse(id){
+  const m=S.draft.media;
+  if(m&&m.kind==='video'&&!(await askBox('<h2>Заменить ролик картинкой?</h2><div class="hint">Ролик уберётся из поста, вместо него пойдёт эта картинка. На YouTube Shorts картинка не подойдёт — туда нужен ролик.</div>','Заменить')))return;
+  const r=await act(()=>api('/api/extra/use',{id}));
+  if(r){toast('Эта картинка пойдёт в пост');refresh(true)}
 }
 let saveT=null;
 function bindPost(){
@@ -244,6 +303,7 @@ async function doPublish(){
 }
 const ICON={wait:'⏳',run:'<span class="spin">🔄</span>',ok:'✅',err:'❌',skip:'⏭'};
 function paintJob(){
+  paintExtra();
   const box=$('#jobbox');if(!box)return;const j=S&&S.job;
   if(!j){box.innerHTML='';return}
   box.innerHTML=`<div class="card"><h2>${j.state==='running'?'Идёт отправка…':(j.state==='cancelled'?'Остановлено':'Готово')}</h2>
@@ -328,6 +388,16 @@ function paintConn(){
     <details><summary>Что ИИ знает про игру (можно править)</summary><textarea id="s_GAME_INFO" rows="9" placeholder="Если оставить пусто — берётся встроенное описание игры">${esc(s.GAME_INFO)}</textarea><div class="hint">ИИ пишет только то, что здесь есть. Пустое поле = встроенное описание «Пустоши».</div></details>
     <p><button class="btn pri" data-act="savegroup" data-keys="ANTHROPIC_API_KEY,GAME_BOT_LINK,POST_LANG,GAME_INFO">Сохранить</button></p></div>
 
+  <div class="card"><h2>🎨 GPT от OpenAI (рисует дополнительные картинки) ${c.gpt?'<span class="tag g">подключён</span>':'<span class="tag y">нужен ключ</span>'}</h2>
+    <p class="hint">Кнопка «Ещё дополнительно сгенерировать» на вкладке «Новый пост» отправляет твоё фото в GPT и получает новые картинки в том же стиле. Нужен отдельный ключ OpenAI: подписка ChatGPT для этого не подходит, API оплачивается отдельно.</p>
+    <details ${c.gpt?'':'open'}><summary>Где взять ключ</summary><ol><li>Открой <a href="https://platform.openai.com/api-keys" target="_blank">platform.openai.com</a> и войди тем же аккаунтом, что и в ChatGPT (или зарегистрируйся).</li>
+      <li><b>Settings → Billing</b> → пополни баланс (хватит $5–10: одна картинка обычно стоит несколько центов).</li>
+      <li><b>API keys → Create new secret key</b>, скопируй ключ (начинается с <code>sk-</code>) сюда.</li>
+      <li>Если при рисовании программа напишет про «подтверждение организации» — зайди в <b>Settings → Organization → General → Verify Organization</b> (OpenAI может попросить документ, обычно это несколько минут).</li></ol></details>
+    ${secretField('OPENAI_API_KEY','Ключ OpenAI','sk-…')}
+    <details><summary>Модель картинок (если не знаешь — не трогай)</summary>${plainField('OPENAI_IMAGE_MODEL','Модель','gpt-image-2')}<div class="hint">Пусто = программа сама попробует gpt-image-2, потом gpt-image-1.5 и gpt-image-1.</div></details>
+    <p><button class="btn pri" data-act="savegroup" data-keys="OPENAI_API_KEY,OPENAI_IMAGE_MODEL">Сохранить</button></p></div>
+
   <div class="card"><h2>🧵 Threads ${c.threads.ready?'<span class="tag g">подключён</span>':'<span class="tag y">не подключён</span>'}</h2>
     ${c.threads.ready?`<p>${esc(c.threads.text)}</p><p><button class="btn" data-act="thout">Отключить</button></p>`:''}
     <details ${c.threads.ready?'':'open'}><summary>Как подключить (самое длинное, ~15 минут один раз)</summary><ol>
@@ -396,6 +466,9 @@ document.addEventListener('click',async e=>{
     pickfile:()=>$('#file').click(),
     clearmedia:async()=>{await act(()=>api('/api/media/clear',{}));refresh(true)},
     generate:()=>doGenerate(),
+    extragen:()=>doExtra(),
+    extrause:()=>doExtraUse(t.dataset.id),
+    extradel:async()=>{await act(()=>api('/api/extra/drop',{id:t.dataset.id}));await load();paintExtra()},
     redocard:async()=>{await act(()=>api('/api/draft',{card_title:$('#card_title').value,card_sub:$('#card_sub').value,redo_card:true}));refresh(true)},
     publish:()=>doPublish(),
     jobcancel:async()=>{await act(()=>api('/api/job/cancel',{}));refresh(false)},
@@ -429,8 +502,11 @@ document.addEventListener('click',async e=>{
   if(A[a])A[a]();
 });
 function visibleIds(){return [...document.querySelectorAll('[data-sel]:not(:disabled)')].map(e=>e.dataset.sel)}
+document.addEventListener('input',e=>{const t=e.target;if(t.id==='x_idea')xopt.idea=t.value});
+document.addEventListener('toggle',e=>{if(e.target.id==='x_det')xopt.open=e.target.open},true);
 document.addEventListener('change',async e=>{
   const t=e.target;
+  if(t.id==='x_n'){xopt.n=+t.value;return}if(t.id==='x_size'){xopt.size=t.value;return}if(t.id==='x_q'){xopt.q=t.value;return}
   if(t.dataset.sel){await act(()=>api('/api/tg/chat',{id:t.dataset.sel,sel:t.checked}));await load();const k=$('#main').scrollTop;paintTg();$('#main').scrollTop=k;return}
   if(t.dataset.catsel){await act(()=>api('/api/tg/chat',{id:t.dataset.catsel,cat:t.value}));await load();const k=$('#main').scrollTop;paintTg();$('#main').scrollTop=k}
 });
@@ -440,7 +516,7 @@ document.addEventListener('drop',e=>{e.preventDefault();if(tab==='post'&&!$('#dr
 document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='clq')document.querySelector('[data-act=clask]').click();if(e.key==='Enter'&&e.target.id==='tg_code')document.querySelector('[data-act=tgcode]').click();if(e.key==='Enter'&&e.target.id==='tg_pw')document.querySelector('[data-act=tgpw]').click();if(e.key==='Enter'&&e.target.id==='tg_phone')document.querySelector('[data-act=tgphone]').click()});
 /* жив ли экран: сигнал программе, чтобы она не выключалась */
 setInterval(()=>fetch('/api/ping',{headers:{'X-Token':TOKEN}}).catch(()=>{}),4000);
-load().then(()=>{paint();if(S.job&&S.job.state==='running')pollJob();if(!S.update&&!S.update_error)api('/api/update/check').then(()=>load()).catch(()=>{})});
+load().then(()=>{paint();if(S.job&&S.job.state==='running')pollJob();if(S.extra&&S.extra.state==='running'){xWas='running';pollExtra()};if(!S.update&&!S.update_error)api('/api/update/check').then(()=>load()).catch(()=>{})});
 </script>
 </body>
 </html>

@@ -12,11 +12,11 @@ BASE = 'http://127.0.0.1:%d' % ST.port
 HOME = tempfile.mkdtemp(prefix='mkt_test_')
 os.environ.update({
     'MKT_HOME': HOME, 'MKT_TG_IMPL': 'fake_tgu:FakeTg', 'MKT_IDLE_EXIT': '0',
-    'MKT_ANTHROPIC_URL': BASE, 'MKT_THREADS_BASE': BASE, 'MKT_THREADS_AUTH_URL': BASE + '/oauth/authorize', 'MKT_THREADS_POLL': '0.02',
+    'MKT_ANTHROPIC_URL': BASE, 'MKT_OPENAI_URL': BASE, 'MKT_THREADS_BASE': BASE, 'MKT_THREADS_AUTH_URL': BASE + '/oauth/authorize', 'MKT_THREADS_POLL': '0.02',
     'MKT_GITHUB_API': BASE, 'MKT_YT_AUTH_URL': BASE + '/auth', 'MKT_YT_TOKEN_URL': BASE + '/token', 'MKT_YT_UPLOAD_URL': BASE + '/upload/youtube/v3/videos',
     'MKT_UPDATE_URL': BASE + '/upd', 'MKT_BASE_DEPS': 'deps-A',
 })
-import cfg, net, server, jobs, update, version, tgu, cats, yt, gen, card  # noqa
+import cfg, net, server, jobs, update, version, tgu, cats, yt, gen, card, imggen  # noqa
 from PIL import Image
 
 httpd = server.bind(0)
@@ -75,6 +75,20 @@ def wait_job(timeout=60):
             return j
         time.sleep(0.1)
     return state()['job']
+
+
+def wait_extra(timeout=30):
+    t0 = time.time()
+    while time.time() - t0 < timeout:
+        x = state()['extra']
+        if x['state'] != 'running':
+            return x
+        time.sleep(0.1)
+    return state()['extra']
+
+
+def gen_files():
+    return [f for f in os.listdir(cfg.MEDIA) if f.startswith(('gen_', 'ref_'))]
 
 
 def by(job, key):
@@ -213,6 +227,118 @@ r = api('/api/generate', {})
 ok(r['ok'] and 'ключ Claude не подошёл' in r['warn'].lower() or 'не подошёл' in r['warn'], 'неверный ключ: понятное предупреждение', r.get('warn'))
 ok(r['draft']['texts']['telegram'], 'при ошибке ИИ всё равно есть простой вариант текста')
 api('/api/settings', {'ANTHROPIC_API_KEY': 'good-key'})
+api('/api/generate', {})
+
+print('\n[6б] Ещё дополнительно сгенерировать (GPT / OpenAI)')
+x = state()['extra']
+ok(not state()['conn']['gpt'] and x['state'] == 'idle' and x['items'] == [], 'до ввода ключа OpenAI: картинок нет, подключения нет')
+r = api('/api/extra/start', {})
+ok(r['ok'] is False and 'ключ openai' in r['error'].lower(), 'без ключа OpenAI кнопка просит ключ', r)
+api('/api/settings', {'OPENAI_API_KEY': 'bad-openai'})
+ok(state()['conn']['gpt'], 'ключ OpenAI виден в подключениях')
+r = api('/api/extra/start', {'n': 2})
+x = wait_extra()
+ok(r['ok'] and x['state'] == 'error' and 'ключ openai не подошёл' in x['msg'].lower(), 'неверный ключ OpenAI: понятная ошибка', x)
+api('/api/settings', {'OPENAI_API_KEY': 'good-openai'})
+n0 = len(ST.openai_reqs)
+r = api('/api/extra/start', {'idea': 'Ногай с саблей на закате', 'n': 3, 'size': 'square', 'quality': 'high'})
+ok(r['ok'] and r['extra']['state'] == 'running', 'рисование запущено в фоне', r)
+x = wait_extra()
+ok(x['state'] == 'done' and len(x['items']) == 3, 'GPT нарисовал 3 картинки', x)
+auth, f = ST.openai_reqs[-1]
+ok(auth == 'Bearer good-openai' and f['model'] == 'gpt-image-2' and f['n'] == '3' and f['size'] == '1024x1024' and f['quality'] == 'high', 'в OpenAI ушли модель, число, формат и качество', f)
+ok(f['image[]'].startswith('FILE:reference.jpg:') and 'Ногай с саблей на закате' in f['prompt'] and 'no text' in f['prompt'].lower(), 'фото ушло как образец, идея автора в описании', f['prompt'][:200])
+ok(f['output_format'] == 'jpeg' and 'input_fidelity' not in f and 'response_format' not in f, 'лишних параметров нет')
+ok(len(ST.openai_reqs) - n0 == 1, 'один запрос на все картинки')
+ok(not [g for g in gen_files() if g.startswith('ref_')], 'временная копия фото удалена')
+it = x['items'][0]
+st, b = call('GET', it['url'])
+im = Image.open(io.BytesIO(b))
+ok(st == 200 and im.size == (128, 128), 'картинка GPT открывается и отдаётся окну', (st, im.size))
+# «ещё» — добавляется к уже нарисованным; образец — всегда исходное фото
+api('/api/extra/start', {'n': 1, 'idea': ''})
+x = wait_extra()
+ok(len(x['items']) == 4 and x['base'] and x['base']['name'] == 'shot.jpg', 'повторное нажатие добавляет ещё картинку', x)
+ok('показываю босса Тугара' in ST.openai_reqs[-1][1]['prompt'], 'без идеи берётся заметка автора')
+# нельзя запускать второй раз, пока рисует
+ST.openai_delay = 0.8
+api('/api/extra/start', {'n': 1})
+r2 = api('/api/extra/start', {'n': 1})
+ok(r2['ok'] is False and 'уже рисует' in r2['error'], 'пока GPT рисует, второй запуск не стартует')
+ok(state()['extra']['state'] == 'running', 'состояние «рисует» видно окну')
+x = wait_extra()
+ST.openai_delay = 0
+ok(len(x['items']) == 5, 'после ожидания картинка добавилась', len(x['items']))
+# ошибки OpenAI
+ST.openai_fail = [(404, {'error': {'message': 'The model `gpt-image-2` does not exist or you do not have access to it.', 'code': 'model_not_found'}})]
+api('/api/extra/start', {'n': 1})
+x = wait_extra()
+ok(x['state'] == 'done' and x['model'] == 'gpt-image-1.5' and [q[1]['model'] for q in ST.openai_reqs[-2:]] == ['gpt-image-2', 'gpt-image-1.5'], 'нет доступа к новой модели: пробуется следующая', (x['state'], x['model']))
+ST.openai_fail = [(429, {'error': {'message': 'You exceeded your current quota, please check your plan and billing details.', 'code': 'insufficient_quota'}})]
+api('/api/extra/start', {'n': 1})
+x = wait_extra()
+ok(x['state'] == 'error' and 'нет денег' in x['msg'] and 'Billing' in x['msg'], 'закончились деньги на OpenAI: понятный совет', x['msg'])
+ST.openai_fail = [(400, {'error': {'message': 'Your request was rejected by the safety system.', 'code': 'moderation_blocked'}})]
+api('/api/extra/start', {'n': 1})
+x = wait_extra()
+ok(x['state'] == 'error' and 'фильтр' in x['msg'], 'фильтр безопасности OpenAI: понятный совет', x['msg'])
+ST.openai_fail = [(403, {'error': {'message': 'Your organization must be verified to use the model `%s`.' % m, 'code': 'invalid_request_error'}}) for m in ('gpt-image-2', 'gpt-image-1.5', 'gpt-image-1')]
+api('/api/extra/start', {'n': 1})
+x = wait_extra()
+ok(x['state'] == 'error' and 'подтвердить организацию' in x['msg'] and not ST.openai_fail, 'нужна проверка организации: пробует все модели и подсказывает', x['msg'])
+ok(len(x['items']) == 6, 'после ошибок уже нарисованное не пропало', len(x['items']))
+# своя модель из настроек
+api('/api/settings', {'OPENAI_IMAGE_MODEL': 'gpt-image-1'})
+api('/api/extra/start', {'n': 1})
+x = wait_extra()
+ok(ST.openai_reqs[-1][1]['model'] == 'gpt-image-1' and x['model'] == 'gpt-image-1', 'модель из настроек используется как есть')
+api('/api/settings', {'clear': ['OPENAI_IMAGE_MODEL']})
+# выбор картинки для поста
+x = state()['extra']
+first = x['items'][0]
+r = api('/api/extra/use', {'id': first['id']})
+m = r['draft']['media']
+ok(m['kind'] == 'photo' and m['url'] == first['url'] and m['name'] == 'Картинка GPT' and r['extra']['used'] == first['id'], 'картинка GPT выбрана для поста')
+ok(r['draft']['card_url'].startswith('/media/card_'), 'надпись на картинке пересобралась по новой картинке')
+r = api('/api/extra/drop', {'id': first['id']})
+ok(any(i['id'] == first['id'] for i in r['extra']['items']), 'выбранную для поста картинку из списка не убрать')
+other = x['items'][1]
+r = api('/api/extra/drop', {'id': other['id']})
+ok(not any(i['id'] == other['id'] for i in r['extra']['items']) and not os.path.exists(os.path.join(cfg.MEDIA, os.path.basename(other['url']))), 'лишнюю картинку можно убрать, файл удаляется')
+r = api('/api/extra/use', {'id': 'orig'})
+ok(r['draft']['media']['name'] == 'shot.jpg' and r['extra']['used'] == 'orig', 'можно вернуть исходное фото')
+r = api('/api/extra/use', {'id': 'nope'})
+ok(r['ok'] is False and 'нет' in r['error'], 'несуществующая картинка отклоняется')
+ok('good-openai' not in json.dumps(api('/api/settings', {})) and 'good-openai' not in api('/api/report')['text'], 'ключ OpenAI не светится в окне и отчёте')
+# новый файл -> прошлые картинки GPT не нужны
+files_before = gen_files()
+ok(len(files_before) >= 4, 'картинки GPT лежат на диске', files_before)
+st, j = call('PUT', '/api/upload?name=other.jpg', raw=png)
+ok(state()['extra']['items'] == [] and state()['extra']['base'] is None and not gen_files(), 'при смене фото прошлые картинки GPT удаляются')
+# пока рисует — убрали файл: результат выбрасывается
+ST.openai_delay = 0.6
+api('/api/extra/start', {'n': 2})
+api('/api/media/clear', {})
+time.sleep(1.4)
+ST.openai_delay = 0
+x = state()['extra']
+ok(x['items'] == [] and not gen_files(), 'если фото убрали во время рисования, лишнего не остаётся', (x['state'], gen_files()))
+r = api('/api/extra/start', {})
+ok(r['ok'] is False and 'фото' in r['error'].lower(), 'без фото картинки не рисуются')
+# видео: образец — кадр из ролика, «в пост» заменяет ролик
+st, j = call('PUT', '/api/upload?name=v.mp4', raw=os.urandom(5000))
+r = api('/api/extra/start', {})
+ok(r['ok'] is False and 'кадр' in r['error'].lower(), 'у видео без кадра-превью просим фото')
+call('PUT', '/api/upload?role=thumb&name=t.jpg', raw=jpg(320, 180))
+vpath = server.DRAFT['media']['path']
+api('/api/extra/start', {'n': 1})
+x = wait_extra()
+ok(x['state'] == 'done' and len(x['items']) == 1 and x['base'] is None, 'для видео образцом служит кадр из ролика', x)
+r = api('/api/extra/use', {'id': x['items'][0]['id']})
+ok(r['draft']['media']['kind'] == 'photo' and not r['draft']['has_thumb'] and not os.path.exists(vpath), 'картинка заменила ролик, ролик и кадр убраны')
+api('/api/media/clear', {})
+st, j = call('PUT', '/api/upload?name=shot.jpg', raw=png)
+api('/api/draft', {'note': 'показываю босса Тугара'})
 api('/api/generate', {})
 
 print('\n[7] Подключение Threads и YouTube')
@@ -371,6 +497,7 @@ def mkzip(ver):
         z.writestr('version.py', "VERSION = '%s'\n" % ver)
         z.writestr('ui/index.html', '<html>new</html>')
     return b.getvalue()
+version.VERSION = '1.0.0'                  # тест обновления не должен зависеть от текущей версии программы
 z = mkzip('1.0.1')
 ST.upd_json = {'version': '1.0.1', 'zip': 'app-1.0.1.zip', 'sha256': hashlib.sha256(z).hexdigest(), 'notes': 'тест', 'deps_hash': 'deps-A'}
 ST.upd_files = {'app-1.0.1.zip': z}

@@ -1,0 +1,30 @@
+name: probe
+on:
+  push:
+    branches: [ci-probe]
+permissions:
+  contents: write
+jobs:
+  probe:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: collect
+        shell: pwsh
+        run: |
+          $o = @()
+          $o += "python: " + (python --version 2>&1)
+          $o += "pip: " + (pip --version 2>&1)
+          $o += "iscc1: " + (Test-Path 'C:\Program Files (x86)\Inno Setup 6\ISCC.exe')
+          $o += "choco: " + (choco --version 2>&1)
+          $o += "os: " + [System.Environment]::OSVersion.VersionString
+          $o | Out-File -Encoding utf8 probe.txt
+      - name: publish result
+        shell: bash
+        run: |
+          mkdir out && cp probe.txt out/
+          cd out
+          git init -q -b ci-probe-out
+          git config user.name ci && git config user.email ci@example.com
+          git add . && git commit -qm "probe result"
+          git push -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" ci-probe-out

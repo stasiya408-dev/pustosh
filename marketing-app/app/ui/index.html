@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Пустошь Маркетинг</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+:root{--bg:#1a110a;--bg2:#241811;--panel:#2d1f15;--panel2:#382818;--line:#4a3320;--txt:#f3e6c8;--dim:#b9a47f;--gold:#d6942a;--gold2:#f0b84a;--red:#b8392f;--green:#5a9a42;--blue:#4a86b8;--r:12px}
+@media (prefers-color-scheme:light){:root{--bg:#1a110a}}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--txt);font:15px/1.45 "Segoe UI",system-ui,Arial,sans-serif;display:flex;overflow:hidden}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:var(--gold2)}
+#side{width:220px;flex:none;background:linear-gradient(180deg,#2a1b10,#1d130b);border-right:1px solid var(--line);display:flex;flex-direction:column;padding:16px 12px}
+#logo{display:flex;align-items:center;gap:10px;margin:2px 6px 18px}
+#logo i{width:38px;height:38px;border-radius:10px;background:radial-gradient(circle at 30% 25%,#e8a93a,#8d4a12);display:grid;place-items:center;font-style:normal;font-weight:800;font-size:22px;color:#2a1306;box-shadow:0 2px 8px #0008}
+#logo b{font-size:15px;line-height:1.15}
+#logo small{display:block;color:var(--dim);font-weight:400;font-size:12px}
+.nav{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:none;border:0;color:var(--dim);padding:11px 12px;border-radius:10px;cursor:pointer;font-size:15px}
+.nav:hover{background:#ffffff0d;color:var(--txt)}
+.nav.on{background:#d6942a26;color:var(--gold2);box-shadow:inset 3px 0 0 var(--gold)}
+.nav .em{font-size:18px;width:24px;text-align:center}
+.nav .dot{margin-left:auto;width:9px;height:9px;border-radius:50%;background:#665;flex:none}
+.nav .dot.ok{background:var(--green)}.nav .dot.warn{background:var(--gold)}
+#sidefoot{margin-top:auto;color:var(--dim);font-size:12px;padding:8px}
+#sidefoot button{margin-top:8px}
+#mainwrap{flex:1;min-width:0;display:flex;flex-direction:column}
+#banner{display:none;background:#d6942a;color:#2a1306;padding:9px 18px;font-weight:600;align-items:center;gap:12px}
+#banner button{margin-left:auto}
+#main{flex:1;overflow:auto;padding:22px 28px 60px}
+h1{font-size:22px;margin:0 0 4px}h2{font-size:17px;margin:0 0 10px;color:var(--gold2)}
+.sub{color:var(--dim);margin:0 0 18px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;margin-bottom:16px}
+.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.grow{flex:1;min-width:160px}
+.btn{background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:8px 14px;cursor:pointer;color:var(--txt)}
+.btn:hover{border-color:var(--gold)}
+.btn.pri{background:linear-gradient(180deg,#e0a03a,#b87414);border-color:#f0b84a;color:#2a1306;font-weight:700}
+.btn.pri:hover{filter:brightness(1.08)}
+.btn.red{background:#7a2a22;border-color:#b8392f}
+.btn.big{padding:12px 22px;font-size:16px}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+input[type=text],input[type=password],input[type=number],input[type=search],textarea,select{width:100%;background:#1a110a;border:1px solid var(--line);border-radius:9px;padding:9px 11px;outline:none}
+input:focus,textarea:focus,select:focus{border-color:var(--gold)}
+textarea{resize:vertical;min-height:80px}
+label.f{display:block;color:var(--dim);font-size:13px;margin:10px 0 4px}
+.hint{color:var(--dim);font-size:13px}
+.ok{color:#8fd27a}.bad{color:#ff8f84}.warn{color:var(--gold2)}
+.tag{display:inline-block;font-size:11.5px;padding:1px 7px;border-radius:20px;background:#ffffff14;color:var(--dim);margin-left:6px;white-space:nowrap}
+.tag.g{background:#5a9a4230;color:#9be07f}.tag.y{background:#d6942a30;color:var(--gold2)}.tag.r{background:#b8392f33;color:#ff9a90}
+details{background:#1d140d;border:1px solid var(--line);border-radius:9px;padding:8px 12px;margin:10px 0}
+summary{cursor:pointer;color:var(--gold2)}
+details ol{margin:8px 0 4px;padding-left:20px}details li{margin:5px 0}
+code{background:#0006;padding:1px 5px;border-radius:5px;font-size:13px}
+#drop{border:2px dashed var(--line);border-radius:var(--r);padding:26px;text-align:center;color:var(--dim);cursor:pointer;transition:.15s}
+#drop:hover,#drop.over{border-color:var(--gold);background:#d6942a12;color:var(--txt)}
+#prev{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap}
+#prev img,#prev video{max-width:260px;max-height:300px;border-radius:10px;border:1px solid var(--line);background:#000}
+.bar{height:8px;border-radius:5px;background:#0006;overflow:hidden;margin-top:8px}.bar i{display:block;height:100%;background:var(--gold);width:0}
+.chk{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--line)}.chk:first-of-type{border-top:0}
+.chk input{width:18px;height:18px;accent-color:var(--gold)}
+/* телеграм */
+#tgwrap{display:flex;gap:16px;align-items:flex-start}
+#cats{width:230px;flex:none;position:sticky;top:0;max-height:calc(100vh - 150px);overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:8px}
+.cat{display:flex;align-items:center;gap:6px;width:100%;background:none;border:0;text-align:left;padding:8px 10px;border-radius:8px;cursor:pointer;color:var(--txt)}
+.cat:hover{background:#ffffff0d}.cat.on{background:#d6942a26;color:var(--gold2)}
+.cat span.n{margin-left:auto;color:var(--dim);font-size:12.5px;white-space:nowrap}
+.cat span.n b{color:var(--gold2);font-weight:600}
+#chats{flex:1;min-width:0}
+.chrow{display:flex;align-items:center;gap:12px;padding:8px 12px;border-bottom:1px solid var(--line)}
+.chrow:hover{background:#ffffff08}
+.chrow input[type=checkbox]{width:18px;height:18px;accent-color:var(--gold);flex:none}
+.chrow .t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chrow select{width:170px;flex:none;padding:5px 8px}
+.chrow.off{opacity:.5}
+.list{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.stat{display:flex;gap:18px;flex-wrap:wrap;color:var(--dim);font-size:13.5px;margin:10px 0}.stat b{color:var(--txt)}
+/* публикация */
+.job{display:flex;gap:10px;padding:9px 0;border-top:1px solid var(--line);align-items:flex-start}.job:first-child{border-top:0}
+.job .ic{width:26px;text-align:center;flex:none}
+.job .m{color:var(--dim);font-size:13px}
+.spin{display:inline-block;animation:sp 1s linear infinite}@keyframes sp{to{transform:rotate(360deg)}}
+#modal{position:fixed;inset:0;background:#000a;display:none;align-items:center;justify-content:center;z-index:50;padding:20px}
+#modal .box{background:var(--panel);border:1px solid var(--gold);border-radius:14px;padding:20px 22px;max-width:520px;width:100%;max-height:90vh;overflow:auto}
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:#000d;border:1px solid var(--gold);padding:10px 18px;border-radius:10px;display:none;z-index:60;max-width:80vw}
+.chat{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:8px 0;white-space:pre-wrap}.chat.me{background:#d6942a14}.chat.ai{background:#ffffff08}
+@media (max-width:900px){#side{width:64px}#side .lbl,#logo b,#sidefoot{display:none}#cats{width:170px}.chrow select{width:120px}}
+</style>
+</head>
+<body>
+<aside id="side">
+  <div id="logo"><i>П</i><b>Пустошь<br>Маркетинг<small>v__VERSION__</small></b></div>
+  <button class="nav on" data-tab="post"><span class="em">✍</span><span class="lbl">Новый пост</span></button>
+  <button class="nav" data-tab="tg"><span class="em">✈</span><span class="lbl">Telegram</span><span class="dot" id="d_tg"></span></button>
+  <button class="nav" data-tab="conn"><span class="em">🔌</span><span class="lbl">Подключения</span><span class="dot" id="d_conn"></span></button>
+  <button class="nav" data-tab="claude"><span class="em">🤖</span><span class="lbl">Claude и обновления</span><span class="dot" id="d_cl"></span></button>
+  <div id="sidefoot">Окно можно закрыть: программа сама выключится через пару минут.<br><button class="btn" data-act="quit">Выключить сейчас</button></div>
+</aside>
+<div id="mainwrap">
+  <div id="banner"><span id="bantxt"></span><button class="btn" data-act="goupdate">Обновить</button></div>
+  <main id="main"></main>
+</div>
+<div id="modal"><div class="box" id="mbox"></div></div>
+<div id="toast"></div>
+<input type="file" id="file" accept="image/*,video/*" style="display:none">
+<script>
+'use strict';
+const TOKEN='__TOKEN__';
+let S=null, tab='post', tgF={cat:'all',q:'',blocked:false}, chatHist=[], uploading=null, pollT=null, busy={};
+
+/* ---------- помощники ---------- */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function toast(t,ms=3500){const e=$('#toast');e.textContent=t;e.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>e.style.display='none',ms)}
+async function api(path,body,method){
+  method=method||(body===undefined?'GET':'POST');
+  let r;
+  try{r=await fetch(path,{method,headers:{'X-Token':TOKEN,'Content-Type':'application/json'},body:body===undefined?undefined:JSON.stringify(body)})}
+  catch(e){throw new Error('Программа не отвечает. Открой её заново значком на рабочем столе.')}
+  let j={};try{j=await r.json()}catch(e){}
+  if(!r.ok||j.ok===false)throw new Error(j.error||('Ошибка '+r.status));
+  return j;
+}
+async function act(fn,okMsg){try{const r=await fn();if(okMsg)toast(okMsg);return r}catch(e){toast('⚠ '+e.message,6000)}}
+function askText(title,val,ph){return new Promise(res=>{
+  $('#mbox').innerHTML=`<h2>${esc(title)}</h2><input type="text" id="mi" value="${esc(val||'')}" placeholder="${esc(ph||'')}"><div class="row" style="margin-top:14px;justify-content:flex-end"><button class="btn" id="mc">Отмена</button><button class="btn pri" id="mo">Готово</button></div>`;
+  $('#modal').style.display='flex';const i=$('#mi');i.focus();i.select();
+  const done=v=>{$('#modal').style.display='none';res(v)};
+  $('#mc').onclick=()=>done(null);$('#mo').onclick=()=>done(i.value);i.onkeydown=e=>{if(e.key==='Enter')done(i.value);if(e.key==='Escape')done(null)};
+})}
+function askBox(html,okText,cancel){return new Promise(res=>{
+  $('#mbox').innerHTML=html+`<div class="row" style="margin-top:16px;justify-content:flex-end">${cancel===false?'':'<button class="btn" id="mc">Отмена</button>'}<button class="btn pri" id="mo">${esc(okText||'Ок')}</button></div>`;
+  $('#modal').style.display='flex';const done=v=>{$('#modal').style.display='none';res(v)};
+  if($('#mc'))$('#mc').onclick=()=>done(false);$('#mo').onclick=()=>done(true);
+})}
+const fmtDur=s=>s?Math.floor(s/60)+':'+String(s%60).padStart(2,'0'):'';
+function mins(n){n=Math.round(n);return n<1?'меньше минуты':n+' мин'}
+
+/* ---------- состояние ---------- */
+async function load(){S=await api('/api/state');paintShell();return S}
+function paintShell(){
+  const c=S.conn;
+  $('#d_tg').className='dot '+(c.tg.state==='ready'?'ok':'warn');
+  $('#d_conn').className='dot '+((c.ai&&(c.threads.ready||c.yt.connected))?'ok':'warn');
+  $('#d_cl').className='dot '+(S.update&&S.update.newer?'warn':(c.ai?'ok':''));
+  const b=$('#banner');
+  if(S.update&&S.update.newer){b.style.display='flex';$('#bantxt').textContent='Вышла новая версия '+S.update.latest+(S.update.notes?': '+S.update.notes:'')}
+  else b.style.display='none';
+}
+function focusInMain(){const a=document.activeElement;return a&&$('#main').contains(a)&&/INPUT|TEXTAREA|SELECT/.test(a.tagName)&&a.type!=='checkbox'}
+async function refresh(force){await load();if(force||!focusInMain())paint();else paintJob()}
+function go(t){tab=t;document.querySelectorAll('.nav').forEach(n=>n.classList.toggle('on',n.dataset.tab===t));paint();$('#main').scrollTop=0}
+function paint(){const m=$('#main'),k=m.scrollTop;({post:paintPost,tg:paintTg,conn:paintConn,claude:paintClaude})[tab]();m.scrollTop=k;paintJob()}
+
+/* ======================= НОВЫЙ ПОСТ ======================= */
+function paintPost(){
+  const d=S.draft,c=S.conn,m=d.media,t=d.texts;
+  const nTg=d.tg_ids.length;
+  $('#main').innerHTML=`
+  <h1>Новый пост</h1><p class="sub">Файл из игры → ИИ пишет завлекающий текст → выбираешь, куда отправить → одна кнопка.</p>
+  <div class="card"><h2>1. Фото или видео из игры</h2>
+    ${m?`<div id="prev">${m.kind==='photo'?`<img src="${m.url}?t=${TOKEN}">`:`<video src="${m.url}?t=${TOKEN}" controls muted></video>`}
+      <div><b>${esc(m.name||'')}</b><div class="hint">${m.kind==='photo'?'Фото':'Видео'}${m.dur?' · '+fmtDur(m.dur):''}${m.w?' · '+m.w+'×'+m.h:''}</div>
+      ${m.kind==='video'&&m.w&&m.h&&m.w>m.h?'<div class="warn">Ролик горизонтальный — на YouTube это будет не Short. Для Shorts нужен вертикальный или квадратный.</div>':''}
+      <p><button class="btn" data-act="clearmedia">Убрать файл</button> <button class="btn" data-act="pickfile">Выбрать другой</button></p></div></div>`
+    :`<div id="drop" data-act="pickfile">${uploading?`Загружаю… ${uploading}%<div class="bar"><i style="width:${uploading}%"></i></div>`:'Перетащи сюда фото или видео<br>или нажми, чтобы выбрать файл'}</div>`}
+  </div>
+  <div class="card"><h2>2. О чём пост <span class="hint">(не обязательно)</span></h2>
+    <textarea id="note" placeholder="Например: показываю нового босса Ногая, он теперь нависает над экраном. Если пусто — ИИ посмотрит на картинку сам.">${esc(d.note)}</textarea></div>
+  <div class="card"><h2>3. Куда публикуем</h2>
+    <div class="chk"><span style="width:26px;text-align:center">✈</span><div class="grow"><b>Telegram-чаты</b><div class="hint">${c.tg.state!=='ready'?'Сначала войди в Telegram (вкладка «Telegram»).':(nTg?`Выбрано чатов: <b>${nTg}</b> · сегодня отправлено ${S.tg_today.sent} из ${S.tg_today.limit}`:'Пока ни одного чата не выбрано.')}</div></div><button class="btn" data-tab-go="tg">${nTg?'Изменить выбор':'Выбрать чаты'}</button></div>
+    <label class="chk"><input type="checkbox" id="t_threads" ${d.threads?'checked':''} ${c.threads.ready?'':'disabled'}><span style="width:16px;text-align:center">🧵</span><div class="grow"><b>Threads</b><div class="hint">${c.threads.ready?esc(c.threads.text):'Не подключён (вкладка «Подключения»).'}</div></div></label>
+    <label class="chk"><input type="checkbox" id="t_yt" ${d.yt?'checked':''} ${c.yt.connected?'':'disabled'}><span style="width:16px;text-align:center">▶</span><div class="grow"><b>YouTube Shorts</b><div class="hint">${c.yt.connected?'Нужен вертикальный ролик до 3 минут.':'Не подключён (вкладка «Подключения»).'}</div></div></label>
+  </div>
+  <div class="row" style="margin-bottom:18px"><button class="btn pri big" data-act="generate" ${busy.gen?'disabled':''}>${busy.gen?'<span class="spin">⏳</span> Пишу пост…':(t?'🔄 Написать заново':'✨ Сгенерировать пост')}</button>
+    <span class="hint">${c.ai?'ИИ Claude подключён.':'<span class="warn">Ключ Claude не введён — будет простой текст без ИИ (вкладка «Подключения»).</span>'}</span></div>
+  ${t?editor(d):''}
+  <div id="jobbox"></div>`;
+  bindPost();
+}
+function editor(d){
+  const t=d.texts,m=d.media;
+  return `<div class="card"><h2>Проверь и поправь текст</h2>
+    <label class="f">Telegram</label><textarea id="x_tg" rows="6">${esc(t.telegram)}</textarea>
+    <label class="f">Threads <span id="thc" class="hint">${t.threads.length}/500</span></label><textarea id="x_th" rows="4">${esc(t.threads)}</textarea>
+    <label class="f">YouTube: название</label><input type="text" id="x_yt" value="${esc(t.youtube_title)}">
+    <label class="f">YouTube: описание</label><textarea id="x_yd" rows="4">${esc(t.youtube_desc)}</textarea>
+  </div>
+  ${m&&m.kind==='photo'?`<div class="card"><h2>Картинка с надписью</h2><div class="row" style="align-items:flex-start">
+    ${d.card_url?`<img src="${d.card_url}?t=${TOKEN}&r=${Date.now()}" style="max-width:240px;border-radius:10px;border:1px solid var(--line)">`:''}
+    <div class="grow"><label class="chk" style="border:0"><input type="checkbox" id="card_on" ${d.card_on?'checked':''} ${S.conn.card?'':'disabled'}> Добавить заголовок и плашку «Играть» на фото</label>
+    ${S.conn.card?'':'<div class="warn">В этой сборке нет модуля картинок.</div>'}
+    <label class="f">Заголовок</label><input type="text" id="card_title" value="${esc(d.card_title)}">
+    <label class="f">Подпись</label><input type="text" id="card_sub" value="${esc(d.card_sub)}">
+    <p><button class="btn" data-act="redocard">Обновить картинку</button></p></div></div></div>`:''}
+  <div class="row"><button class="btn pri big" data-act="publish">🚀 Опубликовать</button><span class="hint">Перед отправкой я покажу, что именно уйдёт и куда.</span></div>`;
+}
+let saveT=null;
+function bindPost(){
+  const note=$('#note');if(note)note.oninput=()=>{S.draft.note=note.value;clearTimeout(saveT);saveT=setTimeout(()=>api('/api/draft',{note:note.value}),400)};
+  const sendTexts=()=>{clearTimeout(saveT);saveT=setTimeout(()=>api('/api/draft',{texts:{telegram:$('#x_tg').value,threads:$('#x_th').value,youtube_title:$('#x_yt').value,youtube_desc:$('#x_yd').value}}),400)};
+  ['x_tg','x_th','x_yt','x_yd'].forEach(id=>{const e=$('#'+id);if(e)e.oninput=()=>{if(id==='x_th')$('#thc').textContent=e.value.length+'/500';S.draft.texts={...S.draft.texts,telegram:$('#x_tg').value,threads:$('#x_th').value,youtube_title:$('#x_yt').value,youtube_desc:$('#x_yd').value};sendTexts()}});
+  ['t_threads','t_yt'].forEach(id=>{const e=$('#'+id);if(e)e.onchange=()=>api('/api/draft',{[id==='t_yt'?'yt':'threads']:e.checked})});
+  const co=$('#card_on');if(co)co.onchange=async()=>{await act(()=>api('/api/draft',{card_on:co.checked}));await refresh(true)};
+  const dr=$('#drop');if(dr){['dragover','dragenter'].forEach(ev=>dr.addEventListener(ev,e=>{e.preventDefault();dr.classList.add('over')}));['dragleave','drop'].forEach(ev=>dr.addEventListener(ev,e=>{e.preventDefault();dr.classList.remove('over')}));dr.addEventListener('drop',e=>{if(e.dataTransfer.files[0])upload(e.dataTransfer.files[0])})}
+}
+function upload(f){
+  if(!/^(image|video)\//.test(f.type)&&!/\.(jpe?g|png|webp|mp4|mov|m4v|webm)$/i.test(f.name)){toast('Нужна картинка или видео');return}
+  uploading=0;paintPost();
+  const x=new XMLHttpRequest();x.open('PUT','/api/upload?name='+encodeURIComponent(f.name));x.setRequestHeader('X-Token',TOKEN);
+  x.upload.onprogress=e=>{if(e.lengthComputable){uploading=Math.round(e.loaded*100/e.total);const i=$('#drop .bar i');if(i)i.style.width=uploading+'%';if($('#drop'))$('#drop').firstChild.textContent='Загружаю… '+uploading+'%'}};
+  x.onload=async()=>{uploading=null;let j={};try{j=JSON.parse(x.responseText)}catch(e){}
+    if(x.status!==200||j.ok===false){toast('⚠ '+(j.error||'Не удалось загрузить файл'),6000);await refresh(true);return}
+    await refresh(true);if(j.draft&&j.draft.media&&j.draft.media.kind==='video')videoMeta(j.draft.media.url)};
+  x.onerror=()=>{uploading=null;toast('⚠ Не удалось загрузить файл');refresh(true)};
+  x.send(f);
+}
+function videoMeta(url){
+  const v=document.createElement('video');v.muted=true;v.preload='auto';v.src=url+'?t='+TOKEN;
+  v.onloadedmetadata=()=>{api('/api/media/meta',{w:v.videoWidth,h:v.videoHeight,dur:v.duration}).then(()=>refresh(true));v.currentTime=Math.min(1,(v.duration||2)/2)};
+  v.onseeked=()=>{try{const k=Math.min(1,640/Math.max(v.videoWidth,v.videoHeight)),c=document.createElement('canvas');c.width=Math.round(v.videoWidth*k);c.height=Math.round(v.videoHeight*k);c.getContext('2d').drawImage(v,0,0,c.width,c.height);
+    c.toBlob(b=>{if(b)fetch('/api/upload?role=thumb&name=t.jpg',{method:'PUT',headers:{'X-Token':TOKEN},body:b})},'image/jpeg',.82)}catch(e){}};
+}
+async function doGenerate(){
+  busy.gen=true;paintPost();
+  try{const r=await api('/api/generate',{});if(r.warn)toast('⚠ '+r.warn,8000)}catch(e){toast('⚠ '+e.message,7000)}
+  busy.gen=false;await refresh(true);
+  const e=$('#x_tg');if(e)e.scrollIntoView({behavior:'smooth',block:'start'});
+}
+async function doPublish(){
+  const d=S.draft,c=S.conn;
+  const items=[];let left=S.tg_today.limit-S.tg_today.sent;
+  if(d.yt)items.push('▶ YouTube Shorts'+(d.media&&d.media.kind==='video'?'':' <span class="bad">(нет видео!)</span>'));
+  if(d.threads)items.push('🧵 Threads');
+  const n=d.tg_ids.length;
+  if(n){const go=Math.min(n,Math.max(0,left));const avg=(S.tg_today.dmin+S.tg_today.dmax)/2;
+    items.push(`✈ Telegram: <b>${go}</b> из ${n} выбранных чатов (между чатами пауза ${S.tg_today.dmin}–${S.tg_today.dmax} сек, займёт примерно ${mins(go*avg/60)})`+(go<n?`<div class="warn">Дневной лимит ${S.tg_today.limit}: остальные ${n-go} уйдут завтра.</div>`:''))}
+  if(!items.length){toast('Выбери, куда публиковать');return}
+  const ok=await askBox(`<h2>🚀 Публикуем?</h2><ul style="padding-left:18px">${items.map(i=>'<li style="margin:6px 0">'+i+'</li>').join('')}</ul><div class="hint">${d.media?(d.media.kind==='photo'&&d.card_url?'С картинкой с надписью.':(d.media.kind==='photo'?'С исходным фото.':'С видео.')):'Только текст.'} Следить за отправкой можно здесь же, остановить — кнопкой «Остановить».</div>`,'Да, публиковать');
+  if(!ok)return;
+  const r=await act(()=>api('/api/publish',{texts:{telegram:$('#x_tg').value,threads:$('#x_th').value,youtube_title:$('#x_yt').value,youtube_desc:$('#x_yd').value}}));
+  if(r){await load();paintJob();pollJob();$('#jobbox').scrollIntoView({behavior:'smooth'})}
+}
+const ICON={wait:'⏳',run:'<span class="spin">🔄</span>',ok:'✅',err:'❌',skip:'⏭'};
+function paintJob(){
+  const box=$('#jobbox');if(!box)return;const j=S&&S.job;
+  if(!j){box.innerHTML='';return}
+  box.innerHTML=`<div class="card"><h2>${j.state==='running'?'Идёт отправка…':(j.state==='cancelled'?'Остановлено':'Готово')}</h2>
+  ${j.items.map(i=>`<div class="job"><div class="ic">${ICON[i.status]||''}</div><div class="grow"><div>${esc(i.label)}</div>${i.msg?`<div class="m ${i.status==='err'?'bad':''}">${esc(i.msg)}</div>`:''}${i.link?`<div class="m"><a href="${esc(i.link)}" target="_blank">${esc(i.link)}</a></div>`:''}</div></div>`).join('')}
+  ${j.note?`<div class="hint" style="margin-top:8px">⏳ ${esc(j.note)}</div>`:''}
+  <div class="row" style="margin-top:12px">${j.state==='running'?'<button class="btn red" data-act="jobcancel">Остановить</button>':'<button class="btn" data-act="jobclear">Закрыть</button>'}</div></div>`;
+}
+function pollJob(){clearTimeout(pollT);if(S.job&&S.job.state==='running'){pollT=setTimeout(async()=>{await load();paintJob();pollJob()},1500)}else if(S.job){refresh(false).then(()=>{const b=$('#jobbox');if(b&&tab==='post')b.scrollIntoView({behavior:'smooth',block:'center'})})}}
+
+/* ======================= TELEGRAM ======================= */
+function catName(id){const c=S.cats.find(c=>c.id===id);return c?c.name:'Другое'}
+function paintTg(){
+  const t=S.conn.tg,s=S.settings;
+  if(t.state!=='ready'){
+    $('#main').innerHTML=`<h1>Telegram</h1><p class="sub">Программа заходит в твой Telegram как ты сам: сама находит все группы и каналы, куда ты можешь писать.</p>
+    <div class="card"><h2>Шаг 1. Ключи приложения</h2>
+      <details ${t.creds?'':'open'}><summary>Где их взять (2 минуты)</summary><ol>
+        <li>Открой <a href="https://my.telegram.org" target="_blank">my.telegram.org</a> и войди своим номером (код придёт в Telegram).</li>
+        <li>Нажми <b>API development tools</b>. Если приложения нет — заполни «App title» (любое, например <code>Pustosh</code>) и «Short name», остальное можно не трогать, нажми <b>Create application</b>.</li>
+        <li>Скопируй <b>App api_id</b> (число) и <b>App api_hash</b> (длинная строка) сюда.</li></ol></details>
+      <div class="row"><div class="grow"><label class="f">api_id</label><input type="text" id="s_TG_API_ID" value="${esc(s.TG_API_ID)}" placeholder="например 1234567"></div>
+      <div class="grow"><label class="f">api_hash</label><input type="password" id="s_TG_API_HASH" placeholder="${s.TG_API_HASH.set?'сохранён '+esc(s.TG_API_HASH.hint)+' (оставь пустым, чтобы не менять)':'длинная строка из 32 символов'}"></div></div>
+      <p><button class="btn" data-act="savetgkeys">Сохранить ключи</button></p></div>
+    <div class="card"><h2>Шаг 2. Вход</h2>
+      ${!t.creds?'<p class="hint">Сначала сохрани ключи.</p>':''}
+      ${t.state==='need_code'?`<p>Telegram прислал код в чат «Telegram» на твоём телефоне или в приложении на номер <b>${esc(t.phone)}</b>.</p><div class="row"><input type="text" id="tg_code" placeholder="Код из Telegram" style="max-width:240px"><button class="btn pri" data-act="tgcode">Войти</button><button class="btn" data-act="tgback">Другой номер</button></div>`
+       :t.state==='need_password'?`<p>У тебя включена двухэтапная защита. Введи свой пароль от неё.</p><div class="row"><input type="password" id="tg_pw" placeholder="Пароль" style="max-width:240px"><button class="btn pri" data-act="tgpw">Войти</button></div>`
+       :`<div class="row"><input type="text" id="tg_phone" placeholder="+380501234567" style="max-width:240px" value="${esc(t.phone||'')}"><button class="btn pri" data-act="tgphone" ${t.creds?'':'disabled'}>Получить код</button></div><p class="hint">Номер того аккаунта, от имени которого будут уходить посты. Пароль от Telegram программа не видит и не хранит: после входа остаётся только ключ сессии на этом компьютере.</p>`}
+    </div>`;
+    return;
+  }
+  const all=S.chats,wr=all.filter(c=>c.can_write),sel=wr.filter(c=>c.sel);
+  const counts={},selc={};S.cats.forEach(c=>{counts[c.id]=0;selc[c.id]=0});
+  all.forEach(c=>{if(!tgF.blocked&&!c.can_write)return;counts[c.cat]=(counts[c.cat]||0)+1;if(c.sel&&c.can_write)selc[c.cat]=(selc[c.cat]||0)+1});
+  const vis=all.filter(c=>(tgF.blocked||c.can_write)&&(tgF.cat==='all'||c.cat===tgF.cat)&&(!tgF.q||(c.title+' '+(c.username||'')).toLowerCase().includes(tgF.q.toLowerCase())));
+  const visW=vis.filter(c=>c.can_write);
+  const cur=S.cats.find(c=>c.id===tgF.cat);
+  $('#main').innerHTML=`<div class="row" style="justify-content:space-between"><div><h1>Telegram</h1><p class="sub" style="margin:0">Вошёл как <b>${esc(t.me)}</b> · <a href="#" data-act="tgout">выйти</a></p></div>
+    <button class="btn pri big" data-act="tgload" ${busy.load?'disabled':''}>${busy.load?'<span class="spin">⏳</span> Загружаю…':'⟳ Загрузить чаты из Telegram'}</button></div>
+  <div class="stat"><span>Найдено: <b>${all.length}</b></span><span>Можно писать: <b>${wr.length}</b></span><span>Выбрано для поста: <b>${sel.length}</b></span><span>Сегодня отправлено: <b>${S.tg_today.sent}</b> из ${S.tg_today.limit}</span></div>
+  ${all.length?'':'<div class="card">Список пуст. Нажми <b>«Загрузить чаты из Telegram»</b>: программа найдёт все группы и каналы, где ты состоишь и можешь писать, и сама разложит их по категориям.</div>'}
+  <div id="tgwrap"><div id="cats">
+     <button class="cat ${tgF.cat==='all'?'on':''}" data-cat="all">📂 Все чаты<span class="n"><b>${Object.values(selc).reduce((a,b)=>a+b,0)||''}</b> ${Object.values(counts).reduce((a,b)=>a+b,0)}</span></button>
+     ${S.cats.map(c=>`<button class="cat ${tgF.cat===c.id?'on':''}" data-cat="${c.id}">${esc(c.name)}<span class="n">${selc[c.id]?'<b>'+selc[c.id]+'</b> / ':''}${counts[c.id]||0}</span></button>`).join('')}
+     <div class="row" style="padding:8px 4px"><button class="btn" data-act="catadd">＋ Своя категория</button>${cur&&cur.id!=='other'?'<button class="btn" data-act="catren" title="Переименовать">✎</button><button class="btn" data-act="catdel" title="Удалить">🗑</button>':''}</div>
+   </div>
+   <div id="chats"><div class="row" style="margin-bottom:10px"><input type="search" id="q" class="grow" placeholder="Поиск по названию" value="${esc(tgF.q)}">
+      <button class="btn" data-act="selvis">☑ Выбрать все в списке (${visW.length})</button><button class="btn" data-act="unselvis">☐ Снять</button></div>
+     <label class="hint" style="display:block;margin-bottom:8px"><input type="checkbox" id="blk" ${tgF.blocked?'checked':''}> показывать и те, где писать нельзя</label>
+     <div class="list">${vis.map(rowChat).join('')||'<div class="chrow hint">В этой категории пока пусто</div>'}</div>
+     <details><summary>Безопасность отправки (рекомендую не менять)</summary>
+       <p class="hint">Телеграм следит за рассылками: если слать одно и то же в десятки чатов подряд, аккаунт могут ограничить. Поэтому программа ждёт между чатами и не отправляет больше лимита в день. Лучше начинать с 3–5 чатов, где реклама игр разрешена правилами.</p>
+       <div class="row"><div class="grow"><label class="f">Пауза между чатами, от (сек)</label><input type="number" id="s_TG_DELAY_MIN" min="15" value="${esc(S.tg_today.dmin)}"></div><div class="grow"><label class="f">до (сек)</label><input type="number" id="s_TG_DELAY_MAX" min="15" value="${esc(S.tg_today.dmax)}"></div><div class="grow"><label class="f">Не больше чатов в день</label><input type="number" id="s_TG_DAILY_LIMIT" min="1" max="100" value="${esc(S.tg_today.limit)}"></div></div>
+       <p><button class="btn" data-act="savelimits">Сохранить</button></p></details>
+   </div></div>`;
+  const q=$('#q');q.oninput=()=>{tgF.q=q.value;const p=q.selectionStart;paintTg();const n=$('#q');n.focus();n.setSelectionRange(p,p)};
+  $('#blk').onchange=e=>{tgF.blocked=e.target.checked;paintTg()};
+}
+function rowChat(c){
+  const tags=[c.kind==='channel'?'<span class="tag">канал</span>':'<span class="tag">группа</span>'];
+  if(c.members)tags.push(`<span class="tag">👥 ${c.members}</span>`);
+  if(c.slow)tags.push('<span class="tag y" title="В чате медленный режим: можно писать раз в N секунд">⏱ медленный режим</span>');
+  if(c.forum)tags.push('<span class="tag y" title="Группа с темами: пост уйдёт в общую тему">темы</span>');
+  if(!c.can_write)tags.push('<span class="tag r">писать нельзя</span>');
+  if(c.archived)tags.push('<span class="tag">архив</span>');
+  return `<div class="chrow ${c.can_write?'':'off'}"><input type="checkbox" data-sel="${esc(c.id)}" ${c.sel&&c.can_write?'checked':''} ${c.can_write?'':'disabled'}>
+    <div class="t" title="${esc(c.title)}">${esc(c.title)}${c.username?' <span class="hint">@'+esc(c.username)+'</span>':''} ${tags.join('')}</div>
+    <select data-catsel="${esc(c.id)}">${S.cats.map(k=>`<option value="${k.id}" ${k.id===c.cat?'selected':''}>${esc(k.name)}</option>`).join('')}</select></div>`;
+}
+
+/* ======================= ПОДКЛЮЧЕНИЯ ======================= */
+function secretField(k,label,ph){const v=S.settings[k];return `<label class="f">${label}</label><input type="password" id="s_${k}" placeholder="${v.set?'сохранён '+esc(v.hint)+' (оставь пустым, чтобы не менять)':esc(ph||'')}">`}
+function plainField(k,label,ph){return `<label class="f">${label}</label><input type="text" id="s_${k}" value="${esc(S.settings[k])}" placeholder="${esc(ph||'')}">`}
+function paintConn(){
+  const c=S.conn,s=S.settings,y=c.yt;
+  $('#main').innerHTML=`<h1>Подключения</h1><p class="sub">Один раз настроил — дальше только нажимаешь кнопки. Подключать можно по очереди, всё необязательное можно пропустить.</p>
+  <div class="card"><h2>🤖 ИИ Claude (пишет посты) ${c.ai?'<span class="tag g">подключён</span>':'<span class="tag y">нужен ключ</span>'}</h2>
+    <details ${c.ai?'':'open'}><summary>Где взять ключ</summary><ol><li>Открой <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a>, зарегистрируйся.</li><li><b>Plans &amp; Billing</b> → пополни баланс (хватит $5: один пост стоит копейки; это отдельно от подписки Claude).</li><li><b>API Keys → Create Key</b>, скопируй ключ (начинается с <code>sk-ant-</code>) сюда.</li></ol></details>
+    ${secretField('ANTHROPIC_API_KEY','Ключ Claude','sk-ant-…')}
+    ${plainField('GAME_BOT_LINK','Ссылка на твою игру (бот)','https://t.me/твой_бот')}
+    <label class="f">Язык постов</label><select id="s_POST_LANG"><option value="ru" ${s.POST_LANG!=='uk'?'selected':''}>Русский</option><option value="uk" ${s.POST_LANG==='uk'?'selected':''}>Українська</option></select>
+    <details><summary>Что ИИ знает про игру (можно править)</summary><textarea id="s_GAME_INFO" rows="9" placeholder="Если оставить пусто — берётся встроенное описание игры">${esc(s.GAME_INFO)}</textarea><div class="hint">ИИ пишет только то, что здесь есть. Пустое поле = встроенное описание «Пустоши».</div></details>
+    <p><button class="btn pri" data-act="savegroup" data-keys="ANTHROPIC_API_KEY,GAME_BOT_LINK,POST_LANG,GAME_INFO">Сохранить</button></p></div>
+
+  <div class="card"><h2>🧵 Threads ${c.threads.ready?'<span class="tag g">подключён</span>':'<span class="tag y">не подключён</span>'}</h2>
+    ${c.threads.ready?`<p>${esc(c.threads.text)}</p><p><button class="btn" data-act="thout">Отключить</button></p>`:''}
+    <details ${c.threads.ready?'':'open'}><summary>Как подключить (самое длинное, ~15 минут один раз)</summary><ol>
+      <li>Открой <a href="https://developers.facebook.com/apps" target="_blank">developers.facebook.com/apps</a> → <b>Создать приложение</b>. Выбери вариант с <b>Threads API</b> («Доступ к Threads API»).</li>
+      <li>В настройках Threads API найди поле <b>Redirect Callback URL</b> и впиши туда: <code>${esc(c.threads.redirect)}</code></li>
+      <li>Скопируй <b>ID приложения Threads</b> и <b>Секрет приложения Threads</b> в поля ниже и нажми «Сохранить».</li>
+      <li>В приложении: <b>Роли → Тестировщики Threads</b> → добавь свой аккаунт Threads. Потом в самом Threads: Настройки → Аккаунт → Разрешения сайтов → Приглашения → прими.</li>
+      <li>Нажми «Получить ссылку для входа», разреши доступ. Откроется страница игры — скопируй <b>весь адрес</b> из строки браузера и вставь в поле «Адрес после входа».</li></ol>
+      <div class="hint">Meta иногда переименовывает кнопки, но порядок такой.</div></details>
+    <div class="row">${plainField('THREADS_APP_ID','ID приложения Threads')}${secretField('THREADS_APP_SECRET','Секрет приложения')}</div>
+    <p><button class="btn" data-act="savegroup" data-keys="THREADS_APP_ID,THREADS_APP_SECRET">Сохранить</button> <button class="btn pri" data-act="thlink" ${c.threads.app?'':'disabled'}>Получить ссылку для входа</button></p>
+    <label class="f">Адрес после входа (или готовый ключ доступа)</label><div class="row"><input type="text" id="th_code" class="grow" placeholder="https://…?code=…"><button class="btn pri" data-act="thcode">Подключить</button></div></div>
+
+  <div class="card"><h2>🗂 Хранилище картинок для Threads ${c.host?'<span class="tag g">настроено</span>':'<span class="tag y">нужно для картинок</span>'}</h2>
+    <p class="hint">Threads умеет брать картинки и видео только по публичной ссылке. Без этого блока в Threads уйдёт только текст.</p>
+    <details><summary>Как настроить</summary><ol><li>На <a href="https://github.com/new" target="_blank">github.com/new</a> создай репозиторий с именем <code>media</code>, тип <b>Public</b>.</li>
+      <li>Открой <a href="https://github.com/settings/personal-access-tokens/new" target="_blank">создание токена</a>: Repository access → <b>Only select repositories</b> → <code>media</code>; Permissions → Repository permissions → <b>Contents: Read and write</b>. Создай и скопируй токен.</li>
+      <li>Впиши ниже <code>твойник/media</code> и токен.</li></ol></details>
+    <div class="row">${plainField('GITHUB_MEDIA_REPO','Репозиторий','твойник/media')}${secretField('GITHUB_TOKEN','Токен GitHub','github_pat_…')}</div>
+    <p><button class="btn" data-act="savegroup" data-keys="GITHUB_MEDIA_REPO,GITHUB_TOKEN">Сохранить</button></p></div>
+
+  <div class="card"><h2>▶ YouTube Shorts ${y.connected?'<span class="tag g">подключён</span>':'<span class="tag y">не подключён</span>'}</h2>
+    ${y.connected?'<p><button class="btn" data-act="ytout">Отключить</button></p>':''}
+    <details ${y.connected?'':'open'}><summary>Как подключить</summary><ol>
+      <li>Открой <a href="https://console.cloud.google.com/projectcreate" target="_blank">console.cloud.google.com</a> и создай проект (любое имя).</li>
+      <li><b>APIs &amp; Services → Library</b> → найди <b>YouTube Data API v3</b> → <b>Enable</b>.</li>
+      <li><b>OAuth consent screen</b>: тип <b>External</b>, заполни название и почту, на шаге Test users добавь свою почту. Потом нажми <b>Publish app</b> (иначе вход слетает через 7 дней; предупреждение «приложение не проверено» нормально — это твоё приложение).</li>
+      <li><b>Credentials → Create credentials → OAuth client ID</b>, тип <b>Desktop app</b>, потом <b>Download JSON</b>.</li>
+      <li>Открой скачанный файл Блокнотом, скопируй всё содержимое, вставь в поле ниже, нажми «Сохранить файл», затем «Войти в YouTube».</li></ol></details>
+    <textarea id="yt_json" rows="4" placeholder='{"installed":{"client_id":"…"}}'></textarea>
+    <p class="row"><button class="btn" data-act="ytsave">Сохранить файл</button><button class="btn pri" data-act="ytlogin" ${y.client?'':'disabled'}>Войти в YouTube</button>
+    <span class="hint">${y.login.state==='wait'?'Открылось окно браузера — разреши доступ… ':''}${y.login.state==='err'?'<span class="bad">'+esc(y.login.msg)+'</span>':''}${y.login.state==='ok'?'<span class="ok">Готово</span>':''}</span></p>
+    <div class="row"><div class="grow"><label class="f">Кто увидит ролик</label><select id="s_YT_PRIVACY"><option value="public" ${s.YT_PRIVACY!=='unlisted'&&s.YT_PRIVACY!=='private'?'selected':''}>Все (публично)</option><option value="unlisted" ${s.YT_PRIVACY==='unlisted'?'selected':''}>По ссылке</option><option value="private" ${s.YT_PRIVACY==='private'?'selected':''}>Только я</option></select></div></div>
+    <p><button class="btn" data-act="savegroup" data-keys="YT_PRIVACY">Сохранить</button></p></div>`;
+  if(y.login.state==='wait'){clearTimeout(pollT);pollT=setTimeout(()=>refresh(false),2000)}
+}
+
+/* ======================= CLAUDE И ОБНОВЛЕНИЯ ======================= */
+function paintClaude(){
+  const u=S.update,c=S.conn;
+  $('#main').innerHTML=`<h1>Claude и обновления</h1><p class="sub">Связь с Claude и новые версии программы.</p>
+  <div class="card"><h2>🤖 Связь с Claude ${c.ai?'<span class="tag g">есть ключ</span>':'<span class="tag y">нет ключа</span>'}</h2>
+    <p class="hint">Через эту связь программа просит Claude писать посты. Проверка отправляет Claude одно короткое сообщение.</p>
+    <p><button class="btn pri" data-act="cltest" ${c.ai?'':'disabled'}>Проверить связь</button> <span id="cltres" class="hint">${c.ai?'':'Сначала введи ключ во вкладке «Подключения».'}</span></p>
+    <div id="chatlog">${chatHist.map(m=>`<div class="chat ${m.role==='user'?'me':'ai'}">${esc(m.content)}</div>`).join('')}</div>
+    <div class="row"><input type="text" id="clq" class="grow" placeholder="Спросить Claude, например: придумай 5 идей для постов про босса Ногая" ${c.ai?'':'disabled'}><button class="btn" data-act="clask" ${c.ai?'':'disabled'}>Спросить</button></div></div>
+  <div class="card"><h2>⬆ Обновления <span class="tag">версия ${esc(S.version)}</span></h2>
+    <p>${u?(u.newer?`Доступна версия <b>${esc(u.latest)}</b>${u.notes?': '+esc(u.notes):''}`:'У тебя последняя версия.'):(S.update_error?'<span class="warn">'+esc(S.update_error)+'</span>':'Ещё не проверялось.')}</p>
+    ${u&&u.need_installer?`<p class="warn">Это обновление нужно ставить новым установщиком: <a href="${esc(u.installer_url)}" target="_blank">скачать установщик</a>.</p>`:''}
+    <p class="row"><button class="btn" data-act="upcheck">Проверить обновления</button>${u&&u.newer&&!u.need_installer?'<button class="btn pri" data-act="upinstall">Обновить и перезапустить</button>':''}</p>
+    <div class="hint">Все новые функции приходят сюда: я меняю программу в нашем чате, ты нажимаешь «Обновить». Ничего скачивать вручную не нужно.</div></div>
+  <div class="card"><h2>🛠 Если что-то сломалось</h2><p class="hint">Нажми кнопку, она скопирует служебный отчёт (без паролей и ключей). Вставь его мне в чат — я увижу, что пошло не так, и исправлю.</p>
+    <p><button class="btn" data-act="report">Скопировать отчёт для Claude</button></p><textarea id="repbox" rows="6" style="display:none" readonly></textarea></div>`;
+}
+
+/* ======================= действия ======================= */
+document.addEventListener('click',async e=>{
+  const t=e.target.closest('[data-act],[data-tab],[data-tab-go],[data-cat]');if(!t)return;
+  if(t.dataset.tab)return go(t.dataset.tab);
+  if(t.dataset.tabGo)return go(t.dataset.tabGo);
+  if(t.dataset.cat){tgF.cat=t.dataset.cat;return paintTg()}
+  const a=t.dataset.act;e.preventDefault();
+  const A={
+    quit:async()=>{if(await askBox('<h2>Выключить программу?</h2><div class="hint">Идущая отправка будет прервана.</div>','Выключить'))await api('/api/quit',{}).catch(()=>{});document.body.innerHTML='<p style="padding:40px">Программа выключена. Закрой это окно.</p>'},
+    goupdate:()=>go('claude'),
+    pickfile:()=>$('#file').click(),
+    clearmedia:async()=>{await act(()=>api('/api/media/clear',{}));refresh(true)},
+    generate:()=>doGenerate(),
+    redocard:async()=>{await act(()=>api('/api/draft',{card_title:$('#card_title').value,card_sub:$('#card_sub').value,redo_card:true}));refresh(true)},
+    publish:()=>doPublish(),
+    jobcancel:async()=>{await act(()=>api('/api/job/cancel',{}));refresh(false)},
+    jobclear:async()=>{await act(()=>api('/api/job/clear',{}));refresh(false)},
+    savetgkeys:async()=>{const b={TG_API_ID:$('#s_TG_API_ID').value};const h=$('#s_TG_API_HASH').value;if(h)b.TG_API_HASH=h;await act(()=>api('/api/settings',b),'Сохранено');refresh(true)},
+    tgphone:async()=>{if(await act(()=>api('/api/tg/phone',{phone:$('#tg_phone').value})))refresh(true)},
+    tgcode:async()=>{if(await act(()=>api('/api/tg/code',{code:$('#tg_code').value})))refresh(true)},
+    tgpw:async()=>{if(await act(()=>api('/api/tg/password',{password:$('#tg_pw').value})))refresh(true)},
+    tgback:async()=>{await act(()=>api('/api/tg/logout',{}));refresh(true)},
+    tgout:async()=>{if(await askBox('<h2>Выйти из Telegram?</h2><div class="hint">Список чатов останется, но чтобы отправлять, нужно будет войти снова.</div>','Выйти')){await act(()=>api('/api/tg/logout',{}));refresh(true)}},
+    tgload:async()=>{busy.load=true;paintTg();const r=await act(()=>api('/api/tg/load',{}));busy.load=false;if(r)toast('Найдено чатов: '+r.total+', писать можно в '+r.can_write,6000);refresh(true)},
+    selvis:async()=>{const ids=visibleIds();await act(()=>api('/api/tg/bulk',{ids,sel:true}));refresh(true)},
+    unselvis:async()=>{const ids=visibleIds();await act(()=>api('/api/tg/bulk',{ids,sel:false}));refresh(true)},
+    catadd:async()=>{const n=await askText('Новая категория','','Например: Мото и байкеры');if(n){await act(()=>api('/api/cats',{op:'add',name:n}));refresh(true)}},
+    catren:async()=>{const c=S.cats.find(c=>c.id===tgF.cat);const n=await askText('Новое название',c&&c.name);if(n){await act(()=>api('/api/cats',{op:'rename',id:tgF.cat,name:n}));refresh(true)}},
+    catdel:async()=>{const c=S.cats.find(c=>c.id===tgF.cat);if(await askBox('<h2>Удалить категорию «'+esc(c&&c.name)+'»?</h2><div class="hint">Её чаты переедут в «Другое».</div>','Удалить')){await act(()=>api('/api/cats',{op:'delete',id:tgF.cat}));tgF.cat='all';refresh(true)}},
+    savelimits:async()=>{await act(()=>api('/api/settings',{TG_DELAY_MIN:$('#s_TG_DELAY_MIN').value,TG_DELAY_MAX:$('#s_TG_DELAY_MAX').value,TG_DAILY_LIMIT:$('#s_TG_DAILY_LIMIT').value}),'Сохранено');refresh(true)},
+    savegroup:async()=>{const b={};t.dataset.keys.split(',').forEach(k=>{const el=$('#s_'+k);if(el&&!(S.settings[k]&&S.settings[k].set!==undefined&&el.value===''))b[k]=el.value});await act(()=>api('/api/settings',b),'Сохранено');refresh(true)},
+    thlink:async()=>{const r=await act(()=>api('/api/threads/link'));if(r)window.open(r.url,'_blank')},
+    thcode:async()=>{const v=$('#th_code').value.trim();const r=await act(()=>/code=|^https?:/.test(v)||v.length<60?api('/api/threads/code',{text:v}):api('/api/threads/token',{token:v}));if(r){toast('Threads подключён: '+r.who);refresh(true)}},
+    thout:async()=>{await act(()=>api('/api/threads/logout',{}));refresh(true)},
+    ytsave:async()=>{const r=await act(()=>api('/api/yt/secret',{text:$('#yt_json').value}),'Файл сохранён');if(r)refresh(true)},
+    ytlogin:async()=>{const r=await act(()=>api('/api/yt/login',{}));if(r){toast('Открылось окно браузера: разреши доступ к YouTube',6000);refresh(true)}},
+    ytout:async()=>{await act(()=>api('/api/yt/logout',{}));refresh(true)},
+    cltest:async()=>{$('#cltres').textContent='Спрашиваю…';try{const r=await api('/api/claude/test',{});$('#cltres').innerHTML='<span class="ok">✔ '+esc(r.answer)+'</span>'}catch(e){$('#cltres').innerHTML='<span class="bad">'+esc(e.message)+'</span>'}},
+    clask:async()=>{const i=$('#clq'),v=i.value.trim();if(!v)return;chatHist.push({role:'user',content:v});i.value='';paintClaude();try{const r=await api('/api/claude/ask',{text:v,history:chatHist.slice(0,-1)});chatHist.push({role:'assistant',content:r.answer})}catch(e){chatHist.push({role:'assistant',content:'⚠ '+e.message})}paintClaude()},
+    upcheck:async()=>{await act(()=>api('/api/update/check'));refresh(true)},
+    upinstall:async()=>{const r=await act(()=>api('/api/update/install',{}));if(r){document.body.innerHTML='<p style="padding:40px;font-size:18px">Обновление установлено. Программа перезапускается, окно откроется само через несколько секунд…</p>'}},
+    report:async()=>{const r=await act(()=>api('/api/report'));if(r){const b=$('#repbox');b.style.display='block';b.value=r.text;b.select();try{await navigator.clipboard.writeText(r.text);toast('Скопировано. Вставь отчёт мне в чат.')}catch(e){toast('Выдели текст и скопируй (Ctrl+C)')}}},
+  };
+  if(A[a])A[a]();
+});
+function visibleIds(){return [...document.querySelectorAll('[data-sel]:not(:disabled)')].map(e=>e.dataset.sel)}
+document.addEventListener('change',async e=>{
+  const t=e.target;
+  if(t.dataset.sel){await act(()=>api('/api/tg/chat',{id:t.dataset.sel,sel:t.checked}));await load();const k=$('#main').scrollTop;paintTg();$('#main').scrollTop=k;return}
+  if(t.dataset.catsel){await act(()=>api('/api/tg/chat',{id:t.dataset.catsel,cat:t.value}));await load();const k=$('#main').scrollTop;paintTg();$('#main').scrollTop=k}
+});
+$('#file').onchange=e=>{if(e.target.files[0])upload(e.target.files[0]);e.target.value=''};
+document.addEventListener('dragover',e=>e.preventDefault());
+document.addEventListener('drop',e=>{e.preventDefault();if(tab==='post'&&!$('#drop')&&0)return});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='clq')document.querySelector('[data-act=clask]').click();if(e.key==='Enter'&&e.target.id==='tg_code')document.querySelector('[data-act=tgcode]').click();if(e.key==='Enter'&&e.target.id==='tg_pw')document.querySelector('[data-act=tgpw]').click();if(e.key==='Enter'&&e.target.id==='tg_phone')document.querySelector('[data-act=tgphone]').click()});
+/* жив ли экран: сигнал программе, чтобы она не выключалась */
+setInterval(()=>fetch('/api/ping',{headers:{'X-Token':TOKEN}}).catch(()=>{}),4000);
+load().then(()=>{paint();if(S.job&&S.job.state==='running')pollJob();if(!S.update&&!S.update_error)api('/api/update/check').then(()=>load()).catch(()=>{})});
+</script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+data/
+tests/shots/
+tests/card_preview.jpg
+build/_deps_stub.py
+app/build_info.json
+dist/
+setup_out/
+build/*.spec

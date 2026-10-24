@@ -1,0 +1,108 @@
+name: marketing-app
+# Собирает установщик «Пустошь Маркетинг» для Windows и пакет обновления.
+# Результат: ветка mkt-build (установщик + latest.json + архив обновления, только если ВСЕ проверки прошли),
+# ветка mkt-log (журналы сборки, всегда).
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'marketing-app/**'
+      - '.github/workflows/marketing-app.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: marketing-app
+  cancel-in-progress: true
+env:
+  PYTHONUTF8: '1'
+  PYTHONIOENCODING: utf-8
+  MSYS_NO_PATHCONV: '1'
+jobs:
+  build:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: marketing-app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install
+        id: install
+        continue-on-error: true
+        run: |
+          mkdir -p ../out
+          python -m pip install --upgrade pip > ../out/pip.log 2>&1
+          pip install telethon pillow pyinstaller >> ../out/pip.log 2>&1
+          pip list 2>/dev/null | grep -i -E "telethon|pillow|pyinstaller|pyaes|rsa|pyasn1" > ../out/versions.txt || true
+      - name: Tests
+        id: tests
+        continue-on-error: true
+        run: python tests/test_app.py > ../out/tests.txt 2>&1
+      - name: Prepare
+        id: prep
+        continue-on-error: true
+        run: |
+          find app -name __pycache__ -prune -exec rm -rf {} + || true
+          python build/make_update.py prepare > ../out/prepare.txt 2>&1
+      - name: PyInstaller
+        id: pyi
+        continue-on-error: true
+        run: python -m PyInstaller --noconfirm --clean --windowed --name PustoshMarketing --icon build/app.ico --add-data "app;app" --paths build --collect-submodules telethon launcher.py > ../out/pyinstaller.txt 2>&1
+      - name: Selftest of built program
+        id: self
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          $p = Start-Process -FilePath "$PWD\dist\PustoshMarketing\PustoshMarketing.exe" -ArgumentList @('--selftest', "$PWD\..\out\selftest.txt", '--live') -Wait -PassThru
+          "exit=$($p.ExitCode)" | Out-File -Encoding utf8 ..\out\selftest_exit.txt
+          if (Test-Path "$env:APPDATA\PustoshMarketing\app.log") { Copy-Item "$env:APPDATA\PustoshMarketing\app.log" ..\out\app_log.txt }
+          if ($p.ExitCode -ne 0) { exit 1 }
+      - name: Installer (Inno Setup)
+        id: inno
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          $ver = (Select-String -Path app/version.py -Pattern "VERSION = '([^']+)'").Matches[0].Groups[1].Value
+          $env:MKT_VERSION = $ver
+          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" "build\setup.iss" *> ..\out\inno.txt
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+      - name: Update package
+        id: pack
+        continue-on-error: true
+        run: |
+          mkdir -p ../pub
+          python build/make_update.py pack ../pub > ../out/pack.txt 2>&1
+          cp setup_out/PustoshMarketing-Setup.exe ../pub/
+      - name: Publish
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd "$GITHUB_WORKSPACE"
+          {
+            echo "commit: $GITHUB_SHA"
+            echo "time: $(date -u)"
+            echo "install: ${{ steps.install.outcome }}"
+            echo "tests: ${{ steps.tests.outcome }}"
+            echo "prepare: ${{ steps.prep.outcome }}"
+            echo "pyinstaller: ${{ steps.pyi.outcome }}"
+            echo "selftest: ${{ steps.self.outcome }}"
+            echo "installer: ${{ steps.inno.outcome }}"
+            echo "pack: ${{ steps.pack.outcome }}"
+          } > out/STATUS.txt
+          push_branch() {
+            (cd "$1" && rm -rf .git && git init -q -b "$2" && git config user.name "mkt-build" && git config user.email "mkt-build@users.noreply.github.com" \
+              && git add -A && git commit -qm "$3" && git push -q -f "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "$2")
+          }
+          push_branch out mkt-log "log ${GITHUB_SHA:0:8}"
+          if [ "${{ steps.install.outcome }}${{ steps.tests.outcome }}${{ steps.prep.outcome }}${{ steps.pyi.outcome }}${{ steps.self.outcome }}${{ steps.inno.outcome }}${{ steps.pack.outcome }}" = "successsuccesssuccesssuccesssuccesssuccesssuccess" ]; then
+            cp out/STATUS.txt pub/
+            push_branch pub mkt-build "build ${GITHUB_SHA:0:8}"
+            echo "published"
+          else
+            echo "not published: some step failed"
+          fi

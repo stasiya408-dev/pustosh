@@ -199,7 +199,7 @@ def state():
             'host': pubs.host_ready(), 'gpt': imggen.ready(),
         },
         'settings': settings_view(),
-        'cats': cats.categories(),
+        'cats': cats.view(),
         'chats': chat_list(),
         'tg_today': {'sent': jobs.sent_today(), 'limit': limit, 'dmin': dmin, 'dmax': dmax},
         'draft': public_draft(),
@@ -545,7 +545,7 @@ def api_cats(q, b):
             err('Неизвестное действие')
     except ValueError as e:
         err(str(e))
-    return {'cats': cats.categories(), 'chats': chat_list()}
+    return {'cats': cats.view(), 'chats': chat_list()}
 
 
 # ---------- Threads ----------

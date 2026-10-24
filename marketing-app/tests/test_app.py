@@ -175,6 +175,7 @@ r = api('/api/tg/recat', {'all': True})
 ok(r['ok'], 'автоопределение категорий заново')
 
 print('\n[4б] Поиск новых групп по всему Telegram и база найденных')
+REAL_PAUSE = finder.random_pause
 finder.random_pause = lambda a, b: 0.02
 
 
@@ -231,6 +232,16 @@ f = state()['find']
 ok(f['queries']['fishing'] == 10 and f['queries']['other'] == 0 and f['total_base'] == 0, 'для каждой темы известно число запросов, база пока пуста', f)
 ok(len(finder.plan(['fishing', 'games'])) == 23 and finder.plan(['fishing', 'games'])[:2][0][0] != finder.plan(['fishing', 'games'])[:2][1][0],
    'запросы разных тем идут вперемешку (поровну на каждую)')
+
+ok(finder.PAUSE == (300.0, 900.0) and f['pause'] == [300.0, 900.0], 'пауза между запросами поиска: случайная от 5 до 15 минут', f['pause'])
+ok(f['max_queries'] == 60, 'за один запуск не больше 60 запросов', f['max_queries'])
+t0 = [REAL_PAUSE(*finder.PAUSE) for _ in range(300)]
+ok(min(t0) >= 300 and max(t0) <= 900 and max(t0) - min(t0) > 300, 'паузы действительно случайные в пределах 5–15 минут')
+try:
+    finder._keep_awake(True); finder._keep_awake(False)
+    ok(True, 'защита от сна Windows не ломает работу вне Windows')
+except Exception as e:
+    ok(False, 'защита от сна Windows не ломает работу вне Windows', e)
 
 f = new_run(['fishing', 'games'])
 ok(f['state'] == 'done' and f['done'] == 23 and f['total'] == 23, 'поиск прошёл все 23 запроса', f)
@@ -297,6 +308,9 @@ finder.random_pause = lambda a, b: 0.5
 fake_tgu.FakeTg.searches = []
 r = api('/api/find/start', {'cats': ['fishing', 'games']})
 ok(r['ok'] and r['find']['state'] == 'running', 'поиск запускается и идёт в фоне', r)
+time.sleep(0.3)
+fw = state()['find']
+ok(fw['state'] == 'running' and fw['wait_until'] > time.time() and fw['next'] and fw['done'] == 1, 'пока идёт пауза, окну известно, когда следующий запрос и какой', fw)
 r2 = api('/api/find/start', {'cats': ['fishing']})
 ok(r2['ok'] is False and 'уже идёт' in r2['error'], 'второй поиск параллельно не запускается')
 r3 = api('/api/publish', {})
@@ -313,6 +327,38 @@ finder.base()['-100500001'] = dict(finder.base()['-100500002'], id='-100500001',
 finder.base()['-100500009'] = dict(finder.base()['-100500002'], id='-100500009', saved=False)
 r = api('/api/find/drop', {'unsaved': True})
 ok(r['dropped'] == 2 and len(finder.base()) == 6 and all(x['saved'] for x in finder.base().values()), '«Убрать несохранённые» не трогает сохранённое')
+
+ok(state()['find']['wait_until'] == 0 and state()['find']['next'] == '', 'после остановки таймер паузы сброшен')
+
+# темы для игры «Пустошь»: стоят в начале списка, помечены, у каждой есть слова для поиска и для определения
+cl = state()['cats']
+ids = [c['id'] for c in cl]
+ok(ids[:5] == ['promo', 'showcase', 'gamedev', 'tgdev', 'feedback'] and all(c['hot'] for c in cl[:5]) and not any(c['hot'] for c in cl[5:]),
+   'пять новых тем для игры стоят в самом верху списка и помечены', ids[:7])
+ok(all(len(cats.queries(i)) >= 6 for i in cats.HOT), 'у каждой новой темы есть слова для поиска по всему Telegram', {i: len(cats.queries(i)) for i in cats.HOT})
+exp = {'Взаимопиар игр и ботов': 'promo', 'Делимся своими играми': 'showcase', 'Разработчики игр Украины': 'gamedev', 'Telegram Mini Apps разработка': 'tgdev',
+       'Тестеры игр — плейтест': 'feedback', 'Помощь в играх': 'feedback', 'Гайды по Dota': 'games', 'Hamster Kombat mini app': 'tggames', 'Новости игр': 'games'}
+bad = {t: (cats.guess(t), v) for t, v in exp.items() if cats.guess(t) != v}
+ok(not bad, 'чаты по названию попадают в новые темы, а обычные игровые остаются в «Игры»', bad)
+f = new_run(['promo', 'tgdev'])
+ok(f['state'] == 'done' and f['total'] == 13 and len(fake_tgu.FakeTg.searches) == 13 and fake_tgu.FakeTg.searches[0] == 'взаимопиар', 'поиск по новым темам идёт по их словам', f)
+
+# перенос новых тем в уже сохранённый список (у тех, кто пользовался до обновления)
+import copy
+orig = copy.deepcopy(cfg.S['cats'])
+old = [c for c in orig if c['id'] not in cats.HOT]
+old.insert(0, {'id': 'cMy', 'name': 'Мои друзья', 'words': ''})
+old.insert(1, {'id': 'cDup', 'name': 'Тест и помощь по играм', 'words': ''})      # такое же название уже занято своей темой
+cfg.S['cats'] = old
+cfg.S.pop('cats_v2', None)
+ids = [c['id'] for c in cats.categories()]
+ok(ids[:4] == ['promo', 'showcase', 'gamedev', 'tgdev'] and 'feedback' not in ids and ids[4:6] == ['cMy', 'cDup'] and cfg.S.get('cats_v2'),
+   'в старый список новые темы добавляются в начало, свои темы не трогаются, одноимённая не дублируется', ids[:8])
+api('/api/cats', {'op': 'delete', 'id': 'promo'})
+ok('promo' not in [c['id'] for c in cats.categories()], 'удалённая тема не возвращается сама')
+cfg.S['cats'] = orig
+cfg.S['cats_v2'] = 1
+cfg.save()
 
 # таблица
 h = {'X-Token': server.TOKEN}

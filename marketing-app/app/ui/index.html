@@ -76,6 +76,7 @@ code{background:#0006;padding:1px 5px;border-radius:5px;font-size:13px}
 .chrow .t.wrap{white-space:normal;overflow:visible;line-height:1.7}
 .chrow.off{opacity:.5}
 .catrow{display:flex;align-items:center;gap:2px}
+.railgrp{padding:8px 10px 2px;font-weight:700;color:var(--gold2)}
 .catrow .ck{width:17px;height:17px;accent-color:var(--gold);margin:0 2px 0 6px;flex:none;cursor:pointer}
 .catrow span.ck{display:inline-block;cursor:default}
 .catrow .cat{flex:1;min-width:0}
@@ -114,7 +115,7 @@ a.btn{text-decoration:none;display:inline-block;color:var(--txt)}
   <button class="nav" data-tab="tg"><span class="em">✈</span><span class="lbl">Telegram</span><span class="dot" id="d_tg"></span></button>
   <button class="nav" data-tab="conn"><span class="em">🔌</span><span class="lbl">Подключения</span><span class="dot" id="d_conn"></span></button>
   <button class="nav" data-tab="claude"><span class="em">🤖</span><span class="lbl">Claude и обновления</span><span class="dot" id="d_cl"></span></button>
-  <div id="sidefoot">Окно можно закрыть: программа сама выключится через пару минут.<br><button class="btn" data-act="quit">Выключить сейчас</button></div>
+  <div id="sidefoot">Окно можно закрыть: программа сама выключится через пару минут (во время поиска чатов она продолжает работать).<br><button class="btn" data-act="quit">Выключить сейчас</button></div>
 </aside>
 <div id="mainwrap">
   <div id="banner"><span id="bantxt"></span><button class="btn" data-act="goupdate">Обновить</button></div>
@@ -349,6 +350,7 @@ function paintTg(){
     return;
   }
   const all=S.chats,wr=all.filter(c=>c.can_write),sel=wr.filter(c=>c.sel);
+  syncFindDefaults();
   const F=S.find,base=tgF.view==='base',run=F.state==='running';
   const fs=findSel.filter(id=>id!=='other'&&S.cats.some(c=>c.id===id));
   const counts={},selc={};S.cats.forEach(c=>{counts[c.id]=0;selc[c.id]=0});
@@ -376,7 +378,7 @@ function paintTg(){
   ${(base&&!F.total_base)?'<div class="card">База пуста. Поставь галочки у тем слева и нажми <b>«Найти новые чаты»</b>: программа поищет по всему Telegram группы с открытым чатом, где тебя ещё нет, и сложит их сюда по темам.</div>':''}
   <div id="tgwrap"><div id="cats">
      <div class="catrow"><span class="ck"></span><button class="cat ${tgF.cat==='all'?'on':''}" data-cat="all">📂 Все чаты<span class="n">${(!base&&nSel)?'<b>'+nSel+'</b> / ':''}${nAll}</span></button></div>
-     ${S.cats.map(c=>`<div class="catrow">${c.id==='other'?'<span class="ck"></span>':`<input type="checkbox" class="ck" data-fcat="${c.id}" ${fs.includes(c.id)?'checked':''} title="Искать новые чаты по этой теме">`}<button class="cat ${tgF.cat===c.id?'on':''}" data-cat="${c.id}">${esc(c.name)}<span class="n">${(!base&&selc[c.id])?'<b>'+selc[c.id]+'</b> / ':''}${counts[c.id]||0}</span></button></div>`).join('')}
+     ${S.cats.map((c,i)=>(c.hot&&(i===0||!S.cats[i-1].hot)?'<div class="hint railgrp">⭐ Для твоей игры</div>':'')+(!c.hot&&i>0&&S.cats[i-1].hot?'<div class="hint railgrp">Другие темы</div>':'')+`<div class="catrow">${c.id==='other'?'<span class="ck"></span>':`<input type="checkbox" class="ck" data-fcat="${c.id}" ${fs.includes(c.id)?'checked':''} title="Искать новые чаты по этой теме">`}<button class="cat ${tgF.cat===c.id?'on':''}" data-cat="${c.id}">${esc(c.name)}<span class="n">${(!base&&selc[c.id])?'<b>'+selc[c.id]+'</b> / ':''}${counts[c.id]||0}</span></button></div>`).join('')}
      <div class="hint" style="padding:6px 10px">☑ галочка = искать по теме: <a href="#" data-act="fcatall">все</a> · <a href="#" data-act="fcatnone">снять</a></div>
      <div class="row" style="padding:8px 4px"><button class="btn" data-act="catadd">＋ Своя категория</button>${cur&&cur.id!=='other'?'<button class="btn" data-act="catren" title="Переименовать">✎</button><button class="btn" data-act="catdel" title="Удалить">🗑</button>':''}</div>
    </div>
@@ -400,13 +402,28 @@ function paintTg(){
 let findSel=[],baseData={items:[],counts:{},shown:0,matched:0},findPoll=null,findWas=false,findDismiss=0,qT=null;
 try{findSel=JSON.parse(localStorage.getItem('findSel')||'[]')}catch(e){}
 function saveFindSel(){try{localStorage.setItem('findSel',JSON.stringify(findSel))}catch(e){}}
+let findSeen=[];try{findSeen=JSON.parse(localStorage.getItem('findSeen')||'[]')}catch(e){}
+/* темы «для твоей игры» (hot) отмечаются для поиска один раз, дальше выбор за тобой */
+function syncFindDefaults(){
+  let ch=false;
+  (S.cats||[]).forEach(c=>{if(c.hot&&!findSeen.includes(c.id)){findSeen.push(c.id);if(!findSel.includes(c.id))findSel.push(c.id);ch=true}});
+  if(ch){saveFindSel();try{localStorage.setItem('findSeen',JSON.stringify(findSeen))}catch(e){}}
+}
+function fmtWait(sec){
+  sec=Math.max(0,Math.round(sec));const m=Math.round(sec/60);
+  if(m<1)return 'меньше минуты';
+  if(m<60)return m+' мин';
+  const h=Math.floor(m/60),r=m%60;return h+' ч'+(r?' '+r+' мин':'');
+}
+function pauseAvg(F){const p=F.pause||[300,900];return (p[0]+p[1])/2}
 async function loadBase(){const p=new URLSearchParams({cat:tgF.cat,q:tgF.q,min:tgF.minm});baseData=await api('/api/find/list?'+p);S.find=baseData.find;return baseData}
 function findBoxHtml(){
   const F=S.find;
   if(F.state==='running'){const pct=F.total?Math.round(F.done*100/F.total):0;
     return `<div class="card"><h2><span class="spin">🔎</span> Ищу новые группы по всему Telegram…</h2><div class="bar"><i style="width:${pct}%"></i></div>
-      <div class="hint" style="margin-top:8px">Запрос ${F.done} из ${F.total}${F.cur?' · сейчас: '+esc(F.cur):''} · найдено новых: <b>${F.new}</b></div>
-      <div class="hint">Между запросами пауза несколько секунд: так Телеграм не ограничит аккаунт. Окно можно не закрывать.</div>
+      <div class="hint" style="margin-top:8px">Сделано запросов: ${F.done} из ${F.total} · найдено новых: <b>${F.new}</b></div>
+      <div class="hint">${F.wait_until?'Следующий запрос через <b>'+fmtWait(F.wait_until-Date.now()/1000)+'</b>: '+esc(F.next):(F.cur?'Сейчас спрашиваю: '+esc(F.cur):'')}</div>
+      <div class="hint">Осталось примерно <b>${fmtWait(Math.max(0,F.wait_until-Date.now()/1000)+Math.max(0,F.total-F.done-1)*pauseAvg(F))}</b>. Пауза между запросами случайная, 5–15 минут: так Телеграм не ограничит аккаунт. Окно можно свернуть или закрыть, поиск идёт в фоне.</div>
       <p><button class="btn red" data-act="findcancel">Остановить</button></p></div>`}
   if(F.state==='idle'||!F.started||findDismiss===F.started)return '';
   const head=F.state==='error'?`<div class="bad">⚠ ${esc(F.msg)}</div>`:`<b>${F.state==='cancelled'?'Поиск остановлен':'Поиск закончен'}:</b> просмотрено запросов ${F.done} из ${F.total}, найдено новых чатов: <b>${F.new}</b>.`;
@@ -537,7 +554,7 @@ document.addEventListener('click',async e=>{
   if(t.dataset.cat){tgF.cat=t.dataset.cat;if(tgF.view==='base'){try{await loadBase()}catch(e){}}return paintTg()}
   const a=t.dataset.act;e.preventDefault();
   const A={
-    quit:async()=>{if(await askBox('<h2>Выключить программу?</h2><div class="hint">Идущая отправка будет прервана.</div>','Выключить'))await api('/api/quit',{}).catch(()=>{});document.body.innerHTML='<p style="padding:40px">Программа выключена. Закрой это окно.</p>'},
+    quit:async()=>{if(await askBox(`<h2>Выключить программу?</h2><div class="hint">Идущая отправка${S.find&&S.find.state==='running'?' и поиск новых чатов (найденное сохранится)':''} будет прервана.</div>`,'Выключить'))await api('/api/quit',{}).catch(()=>{});document.body.innerHTML='<p style="padding:40px">Программа выключена. Закрой это окно.</p>'},
     goupdate:()=>go('claude'),
     pickfile:()=>$('#file').click(),
     clearmedia:async()=>{await act(()=>api('/api/media/clear',{}));refresh(true)},
@@ -562,10 +579,11 @@ document.addEventListener('click',async e=>{
     fcatnone:()=>{findSel=[];saveFindSel();paintTg()},
     findstart:async()=>{
       const ids=findSel.filter(id=>id!=='other'&&S.cats.some(c=>c.id===id));
-      if(!ids.length){toast('Сначала поставь галочки у тем слева (например, Игры или Рыбалка и охота)',5000);return}
-      const nq=Math.min(120,ids.reduce((a,id)=>a+((S.find.queries||{})[id]||0),0)),mins=Math.max(1,Math.round(nq*6.5/60));
+      if(!ids.length){toast('Сначала поставь галочки у тем слева (например, «Взаимопиар игр и ботов»)',5000);return}
+      const F0=S.find,all=ids.reduce((a,id)=>a+((F0.queries||{})[id]||0),0),mx=F0.max_queries||60,nq=Math.min(mx,all),p=F0.pause||[300,900];
       const ok=await askBox(`<h2>🔎 Искать новые чаты?</h2><ul style="padding-left:18px"><li style="margin:6px 0">Темы: <b>${ids.map(id=>esc(catName(id))).join(', ')}</b></li>
-        <li style="margin:6px 0">Запросов к Telegram: <b>${nq}</b>, займёт примерно <b>${mins} мин</b> (пауза 4–8 секунд между запросами, чтобы Телеграм не ограничил аккаунт).</li>
+        <li style="margin:6px 0">Запросов к Telegram: <b>${nq}</b>${all>nq?` (за один запуск не больше ${mx}, остальное — в следующий раз)`:''}. Между запросами пауза <b>случайная, от ${Math.round(p[0]/60)} до ${Math.round(p[1]/60)} минут</b>, чтобы Телеграм не ограничил аккаунт.</li>
+        <li style="margin:6px 0">Поиск получается долгим: примерно <b>${fmtWait(Math.max(0,nq-1)*pauseAvg(F0))}</b>. Окно можно свернуть или закрыть, поиск идёт в фоне, пока включён компьютер (программа не даст Windows уснуть). Найденное сохраняется сразу, смотреть можно в любой момент.</li>
         <li style="margin:6px 0">Ищу по всему Telegram только <b>публичные группы с открытым чатом, где тебя ещё нет</b>. Вступать в них программа не будет.</li></ul>
         ${S.chats.length?'':'<div class="warn">Сначала лучше нажать «Загрузить чаты»: тогда я точно знаю, в каких группах ты уже состоишь, и не покажу их заново.</div>'}`,'Начать поиск');
       if(!ok)return;

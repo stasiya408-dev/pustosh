@@ -17,7 +17,7 @@ httpd = server.bind(0)
 PORT = httpd.server_port
 threading.Thread(target=httpd.serve_forever, daemon=True).start()
 jobs.random_pause = lambda a, b: 0.3
-finder.random_pause = lambda a, b: 0.05
+finder.random_pause = lambda a, b: 0.4
 SH = os.path.join(HERE, 'shots'); os.makedirs(SH, exist_ok=True)
 cfg.set_settings({'ANTHROPIC_API_KEY': 'good-key', 'GAME_BOT_LINK': 'https://t.me/pustosh_bot', 'GITHUB_TOKEN': 'x', 'GITHUB_MEDIA_REPO': 'a/b',
                   'THREADS_APP_ID': 'A', 'THREADS_APP_SECRET': 'B', 'TG_API_ID': '1234567', 'TG_API_HASH': 'a' * 32})
@@ -74,10 +74,16 @@ with sync_playwright() as p:
     check(pg.locator('.chrow').count() >= 1, 'поиск по названию')
     pg.fill('#q', '')
     # --- поиск новых групп по всему Telegram + база ---
-    check(pg.locator('[data-fcat]').count() == 13, 'у 13 тем слева есть галочки для поиска (у «Другое» нет)')
+    check(pg.locator('[data-fcat]').count() == 18, 'у 18 тем слева есть галочки для поиска (у «Другое» нет)')
+    cats_rail = pg.locator('#cats .cat').all_inner_texts()
+    check('Взаимопиар' in cats_rail[1] and 'Делимся' in cats_rail[2] and 'Разработчики' in cats_rail[3], 'новые темы для игры стоят в самом верху списка')
+    check('Для твоей игры' in pg.inner_text('#cats') and 'Другие темы' in pg.inner_text('#cats'), 'в списке есть подписи «Для твоей игры» и «Другие темы»')
+    check(pg.locator('.chip').count() == 5 and pg.is_checked('[data-fcat=promo]') and not pg.is_checked('[data-fcat=games]'), 'темы для игры отмечены для поиска сразу')
+    pg.screenshot(path=SH + '/4a0_hot_default.png')
     check(pg.is_visible('[data-act=findstart]') and pg.is_visible('[data-act=basesave]') and pg.is_visible('[data-act=tgload]'),
           'видны кнопки: «Найти новые чаты», «Сохранить базу» и «Загрузить чаты»')
     pg.screenshot(path=SH + '/4a_find_ui.png')
+    pg.click('[data-act=fcatnone]'); pg.wait_for_timeout(200)
     pg.click('[data-act=findstart]'); pg.wait_for_timeout(300)
     check('галочки' in pg.inner_text('#toast') and pg.locator('#mo').count() == 0, 'без галочек поиск просит их поставить')
     pg.check('[data-fcat=fishing]'); pg.check('[data-fcat=games]'); pg.wait_for_timeout(200)
@@ -85,10 +91,15 @@ with sync_playwright() as p:
     pg.screenshot(path=SH + '/4b_find_checked.png')
     pg.click('[data-act=findstart]'); pg.wait_for_selector('#mo')
     check('23' in pg.inner_text('#mbox') and 'Рыбалка' in pg.inner_text('#mbox'), 'перед поиском показано, сколько запросов и по каким темам')
+    check('от 5 до 15 минут' in pg.inner_text('#mbox') and '3 ч 40 мин' in pg.inner_text('#mbox'), 'перед поиском честно сказано: пауза 5–15 минут, всего около 3 ч 40 мин')
+    pg.screenshot(path=SH + '/4b2_find_confirm.png')
     pg.click('#mo')
     pg.wait_for_selector('#findbox .bar', timeout=10000)
     pg.screenshot(path=SH + '/4c_find_running.png')
     check(pg.is_visible('[data-act=findcancel]'), 'во время поиска есть кнопка «Остановить»')
+    pg.wait_for_function("document.querySelector('#findbox').innerText.includes('Следующий запрос через')", timeout=15000)
+    check('Осталось примерно' in pg.inner_text('#findbox'), 'в окне видно, через сколько следующий запрос и сколько осталось')
+    pg.screenshot(path=SH + '/4c2_find_wait.png')
     pg.wait_for_selector('[data-act=basedrop]', timeout=40000); pg.wait_for_timeout(500)
     pg.screenshot(path=SH + '/4d_find_base.png')
     check(pg.locator('.chrow').count() == 7, 'после поиска сразу открылась база: 7 групп')

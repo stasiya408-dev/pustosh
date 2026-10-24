@@ -1,19 +1,31 @@
 # -*- coding: utf-8 -*-
 """Поиск НОВЫХ групп по всему Телеграму (по темам) и база найденных чатов.
 Ищем только публичные группы с открытым чатом, где тебя ещё нет. Вступать в них программа не пытается."""
-import csv, io, itertools, random, threading, time, traceback
+import csv, io, itertools, random, sys, threading, time, traceback
 import cfg, cats, tgu
 from cfg import S
 
 LOCK = threading.RLock()
 CANCEL = [False]
-PAUSE = (4.0, 8.0)         # секунд между запросами: Телеграм ограничивает частый глобальный поиск
-MAX_QUERIES = 120          # за один запуск
-ST = {'state': 'idle', 'msg': '', 'warn': '', 'cats': [], 'done': 0, 'total': 0, 'new': 0, 'cur': '', 'errors': 0, 'started': 0, 'truncated': False}
+PAUSE = (300.0, 900.0)     # секунд между запросами: от 5 до 15 минут, случайно (Телеграм жёстко ограничивает частый глобальный поиск)
+MAX_QUERIES = 60           # за один запуск (при паузе 5–15 минут это около 10 часов)
+ST = {'state': 'idle', 'msg': '', 'warn': '', 'cats': [], 'done': 0, 'total': 0, 'new': 0, 'cur': '', 'errors': 0, 'started': 0, 'truncated': False,
+      'wait_until': 0, 'next': ''}
 
 
 def random_pause(a, b):
     return random.uniform(a, b)
+
+
+def _keep_awake(on):
+    """Пока идёт долгий поиск, Windows не должен уходить в сон (экран может гаснуть). Вне Windows ничего не делает."""
+    if sys.platform != 'win32':
+        return
+    try:
+        import ctypes
+        ctypes.windll.kernel32.SetThreadExecutionState(0x80000000 | (0x00000001 if on else 0))      # ES_CONTINUOUS [| ES_SYSTEM_REQUIRED]
+    except Exception:
+        pass
 
 
 def base():
@@ -45,7 +57,7 @@ def start(tg, cat_ids):
         qs = qs[:MAX_QUERIES]
         CANCEL[0] = False
         ST.update(state='running', msg='', warn='', cats=sorted({c for c, _ in qs}), done=0, total=len(qs), new=0, cur='', errors=0,
-                  started=cfg.now(), truncated=trunc)
+                  started=cfg.now(), truncated=trunc, wait_until=0, next='')
     threading.Thread(target=_run, args=(tg, qs), daemon=True, name='find').start()
     return view()
 
@@ -91,13 +103,21 @@ def _run(tg, qs):
     selected = {c for c, _ in qs}
     bad = 0
     stop_msg, warn = '', ''
+    names = {c['id']: c['name'] for c in cats.categories()}
+    _keep_awake(True)
     try:
         for i, (cid, q) in enumerate(qs):
             if CANCEL[0]:
                 break
-            if i and not _sleep(random_pause(*PAUSE)):
-                break
-            ST['cur'] = '%s: «%s»' % (next((c['name'] for c in cats.categories() if c['id'] == cid), cid), q)
+            label = '%s: «%s»' % (names.get(cid, cid), q)
+            if i:
+                pause = random_pause(*PAUSE)
+                ST.update(wait_until=time.time() + pause, next=label)
+                ok = _sleep(pause)
+                ST.update(wait_until=0, next='')
+                if not ok:
+                    break
+            ST['cur'] = label
             try:
                 found = tg.search(q)
                 bad = 0
@@ -127,7 +147,8 @@ def _run(tg, qs):
                 ST.update(state='error', msg=stop_msg)
             else:
                 ST.update(state='cancelled' if CANCEL[0] else 'done', warn=warn)
-            ST['cur'] = ''
+            ST.update(cur='', wait_until=0, next='')
+            _keep_awake(False)
             try:
                 cfg.save()
             except Exception:
@@ -147,6 +168,8 @@ def view():
         d['total_base'] = len(v)
         d['unsaved'] = sum(1 for x in v if not x.get('saved'))
         d['queries'] = {c['id']: len(cats.queries(c['id'])) for c in cats.categories()}
+        d['pause'] = list(PAUSE)
+        d['max_queries'] = MAX_QUERIES
         return d
 
 

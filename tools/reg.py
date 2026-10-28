@@ -15,7 +15,7 @@ with sync_playwright() as p:
     pg=b.new_page(viewport={'width':390,'height':700},has_touch=True,is_mobile=True)
     pg.on('pageerror',lambda e:errs.append(str(e)))
     pg.route('**/telegram-web-app.js',lambda r:r.fulfill(body=stub,content_type='application/javascript'))
-    pg.goto('file:///mnt/user-data/outputs/index.html'); pg.wait_for_timeout(700)
+    pg.goto('file:///mnt/user-data/outputs/index.html'); pg.wait_for_timeout(700); pg.add_style_tag(content='#tqw,#tqx{display:none!important}')
     print('версия:',pg.inner_text('#hver'),'| случайные походы:',pg.evaluate(RUN))
     pg.evaluate('S.en=50;S.sv=1000;draw()')
     for i,nm in enumerate(['Поход','Майдан','Курень']):

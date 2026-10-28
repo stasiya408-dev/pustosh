@@ -14,7 +14,7 @@ function img(url){var d=row("Картинка "+url);var im=new Image();var t=pe
 function fet(url){var d=row("Файл "+url);var t=performance.now();
  fetch(url+"?t="+Date.now()).then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.arrayBuffer()}).then(function(b){var ms=Math.round(performance.now()-t);d.innerHTML+='<span class="ok">✔ '+(b.byteLength/1024).toFixed(0)+' КБ, '+ms+' мс (≈'+(b.byteLength*8/1000/Math.max(ms,1)).toFixed(1)+' Мбіт/с)</span>'}).catch(function(e){d.innerHTML+='<span class="bad">✖ '+e.message+'</span>'})}
 img("assets/icons/taler.png");img("assets/icons/silver.png");img("assets/icons/key.png");
-var list=["assets/boss/ost.webp","assets/boss/kos.webp","assets/boss/nag.webp"];
+var list=["assets/icons/boss_outfit.png","assets/icons/boss_chest.png","assets/icons/ring_skull.png"];
 list.forEach(img);
 fet("index.html");
 var e=document.getElementById("env");

@@ -1,0 +1,22 @@
+<!doctype html><html lang="uk"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Перевірка завантаження</title>
+<style>body{margin:0;padding:16px;background:#1a0f08;color:#f3e6c4;font:16px/1.5 Georgia,serif}h1{font-size:20px}.r{padding:8px 10px;margin:6px 0;border-radius:8px;background:#2b1a0e;border:1px solid #6b4a20}.ok{color:#8fe36b}.bad{color:#ff7a5a}img{height:40px;vertical-align:middle;margin-left:8px}</style></head><body>
+<h1>Перевірка: чи вантажаться зовнішні файли</h1>
+<p>Відкрийте цю сторінку в Telegram на телефоні тим самим способом, що й гру. Потім надішліть мені скріншот.</p>
+<div id="o"></div><div class="r" id="env"></div>
+<script>
+var o=document.getElementById("o");
+function row(t){var d=document.createElement("div");d.className="r";d.textContent=t+" … ";o.appendChild(d);return d}
+var T0=performance.now();
+function img(url){var d=row("Картинка "+url);var im=new Image();var t=performance.now();
+ im.onload=function(){d.innerHTML+='<span class="ok">✔ '+im.naturalWidth+'×'+im.naturalHeight+', '+Math.round(performance.now()-t)+' мс</span>';d.appendChild(im)};
+ im.onerror=function(){d.innerHTML+='<span class="bad">✖ НЕ ЗАВАНТАЖИЛАСЬ</span>'};im.src=url+"?t="+Date.now()}
+function fet(url){var d=row("Файл "+url);var t=performance.now();
+ fetch(url+"?t="+Date.now()).then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.arrayBuffer()}).then(function(b){var ms=Math.round(performance.now()-t);d.innerHTML+='<span class="ok">✔ '+(b.byteLength/1024).toFixed(0)+' КБ, '+ms+' мс (≈'+(b.byteLength*8/1000/Math.max(ms,1)).toFixed(1)+' Мбіт/с)</span>'}).catch(function(e){d.innerHTML+='<span class="bad">✖ '+e.message+'</span>'})}
+img("assets/icons/taler.png");img("assets/icons/silver.png");img("assets/icons/key.png");
+var list=["assets/boss/ost.webp","assets/boss/kos.webp","assets/boss/nag.webp"];
+list.forEach(img);
+fet("index.html");
+var e=document.getElementById("env");
+e.textContent="Адреса: "+location.href+" | Telegram: "+(window.Telegram&&Telegram.WebApp&&Telegram.WebApp.platform||"немає")+" | екран "+innerWidth+"×"+innerHeight+" ×"+devicePixelRatio;
+</script></body></html>

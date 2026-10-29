@@ -121,6 +121,15 @@ def finish(args):
     return base64.b64encode(bio.getvalue()).decode()
 
 
+# 30.10: по просьбе пользователя пиксельным делаем ТОЛЬКО ФОНЫ (хата, фоны похода, события, налёта, таверна,
+# маршрут, фоны боссов-новичков); казак, кот, иконки, интерфейс, боссы остаются как в основной игре.
+BG_SIZES = {(540, 960), (576, 1024), (720, 1268), (941, 1672), (600, 893), (900, 604)}
+
+
+def is_bg(w, h):
+    return (w, h) in BG_SIZES or (w == 640 and 1130 <= h <= 1380)
+
+
 def build_palette(smalls):
     rng = np.random.RandomState(7)
     pts = []
@@ -161,10 +170,9 @@ def font_css():
 
 HEAD = r'''<script>/* kozak2: отдельные сохранения и пиксели */
 try{if(!localStorage.getItem("kozak3px")&&localStorage.getItem("kozak3"))localStorage.setItem("kozak3px",localStorage.getItem("kozak3"))}catch(e){}
-(function(){var g=HTMLCanvasElement.prototype.getContext;HTMLCanvasElement.prototype.getContext=function(t,o){var c=g.call(this,t,o);try{if(c&&t==="2d")c.imageSmoothingEnabled=false}catch(e){}return c}})();
 </script>
 <style id="pxcss">%s
-*{image-rendering:pixelated;font-synthesis:none}
+#hut,#hfb .al,#hart .al,.rdbg,#dice,.tvimg,.rtw .bgi,[class*="i-gb_"],[class*="i-gbf_"]{image-rendering:pixelated}
 html.pxbig .pxh{font-family:'PXA','PXB',monospace!important}
 </style>
 <script>/* kozak2: пиксельный шрифт только для КРУПНЫХ надписей (>=PXMIN px на экране), мелкий текст остаётся обычным: так его можно читать */
@@ -213,7 +221,8 @@ def main():
     keys = list(uniq)
     with Pool(8) as p:
         sm = p.map(small, [uniq[k] for k in keys], chunksize=4)
-    okk = [(k, r) for k, r in zip(keys, sm) if r and r[0] == 'ok']
+    okk = [(k, r) for k, r in zip(keys, sm) if r and r[0] == 'ok' and is_bg(r[1], r[2])]
+    print('из них фоны (пикселизуются):', len(okk))
     skipped = [(k, r) for k, r in zip(keys, sm) if r and r[0] == 'skip']
     errs = [(k, r) for k, r in zip(keys, sm) if r and r[0] == 'err']
     print('уникальных', len(keys), 'пикселизовано', len(okk), 'пропущено масок', len(skipped), 'ошибок', len(errs), 'прочее', len(keys) - len(okk) - len(skipped) - len(errs))

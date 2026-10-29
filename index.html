@@ -36,9 +36,9 @@
 html.gfx-low #ldr .lsun,html.gfx-low #ldr .ldw,html.gfx-low #ldr .lgr,html.gfx-low #ldr .lem,html.gfx-low #ldr .lr1,html.gfx-low #ldr .lr2{animation:none}
 html.gfx-low #ldr .lem{display:none}
 @media (prefers-reduced-motion:reduce){#ldr *{animation:none!important}}
-</style><meta charset="UTF-8"><meta name="ver" content="324">
+</style><meta charset="UTF-8"><meta name="ver" content="325">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<script>var VER=324;(function(){try{fetch(location.pathname+"?c="+Date.now(),{headers:{Range:"bytes=0-600"},cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="ver" content="(\d+)"/);if(m&&+m[1]>VER&&sessionStorage.getItem("upd")!==m[1]){sessionStorage.setItem("upd",m[1]);location.replace(location.pathname+"?v="+m[1]+"&r="+Date.now())}}).catch(function(){})}catch(e){}})()</script>
+<script>var VER=325;(function(){try{fetch(location.pathname+"?c="+Date.now(),{headers:{Range:"bytes=0-600"},cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="ver" content="(\d+)"/);if(m&&+m[1]>VER&&sessionStorage.getItem("upd")!==m[1]){sessionStorage.setItem("upd",m[1]);location.replace(location.pathname+"?v="+m[1]+"&r="+Date.now())}}).catch(function(){})}catch(e){}})()</script>
 <script id="gfxhead">(function(){var L="high";try{var v=localStorage.getItem("gfx");if(v==="mid"||v==="low")L=v}catch(e){}
 var PR={high:{iv:0,dpr:99,strip:3,hI:30,hA:30,pq:1},mid:{iv:40,dpr:1.5,strip:4,hI:45,hA:36,pq:.75},low:{iv:50,dpr:1,strip:6,hI:60,hA:45,pq:.65}}[L];
 window.GFX={lvl:L,low:L==="low",mid:L==="mid",iv:PR.iv,strip:PR.strip,heroI:PR.hI,heroA:PR.hA,pq:PR.pq};
@@ -773,7 +773,7 @@ setTimeout(function(){if(L.boot)L.done()},20000)})();
 <div id="hud2"><div id="hbar"><div class="lau"></div><div id="hlv"><b id="lv"></b></div><div id="hname"><span id="nm"></span></div>
 <div class="hr"><i>⚡</i><span class="ho hv" id="en"></span><button class="hp" onclick="soon()" aria-label="Пополнить">+</button></div><div class="hr"><i class="cs"></i><span class="ho hv" id="sv"></span><button class="hp" onclick="soon()" aria-label="Пополнить">+</button></div><div class="hr"><i>💰</i><span class="ho hv" id="tl"></span><button class="hp" onclick="testTalers()" aria-label="Пополнить">+</button></div><div class="hr"><i>💪</i><span class="ho hv" id="pw"></span><button class="hp" onclick="soon()" aria-label="Пополнить">+</button></div>
 <div class="xpt"><i id="xp"></i></div></div>
-<button id="hgear" onclick="gearTap()" aria-label="Настройки" aria-expanded="false">⚙</button><div class="ho" id="el"></div><div class="ho" id="hver">v324</div></div>
+<button id="hgear" onclick="gearTap()" aria-label="Настройки" aria-expanded="false">⚙</button><div class="ho" id="el"></div><div class="ho" id="hver">v325</div></div>
 <div id="scene">
 
 <div id="hut"><img id="campbg" draggable="false" alt="" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 50%;z-index:0" src="data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=">
@@ -1745,6 +1745,8 @@ function roomY(yi){var g=geo();return g.oy+yi*FYS*g.k}
 function floorAt(x){var g=geo(),xi=(x-g.ox)/(g.k*FXS);var yi=xi>=265?590+(xi-265)*.313:640-xi*.19;return roomY(yi+16)}
 var SILL={xi:120,yi:397};
 function sillPt(){return{x:roomX(SILL.xi),y:roomY(SILL.yi)}}
+function hamPt(){var h=document.getElementById("trHam"),cr=cB.getBoundingClientRect(),hu=document.getElementById("hut"),r=h&&h.offsetWidth?h.getBoundingClientRect():null;if(!r&&hu){var u=hu.getBoundingClientRect();r={left:u.left+u.width*.805,width:u.width*.19,bottom:u.bottom-u.height*.195}}
+ if(!r)return{x:W*.86,y:floorAt(W*.86)+30,w:W*.19};return{x:r.left-cr.left+r.width*.1,y:r.bottom-cr.top-3,w:r.width}}
 var PANES=[[54,109],[124,167]],PROWS=[[110,181],[197,268],[284,364]];
 function inRoom(){return window._bgMode=="room"}
 /* ---------- плавная смена поз: кроссфейд + якорь по центру массы ---------- */
@@ -1924,9 +1926,11 @@ function update(dt){
  else if(st=="vdown"){var a2=S.ja,u2=clamp((T-a2.t0)/1000/a2.dur,0,1),e2=u2*u2*.6+u2*.4;S.x=a2.x0+(a2.x1-a2.x0)*u2;S.y=a2.y0+(a2.y1-a2.y0)*e2;S.yy=-a2.h*4*u2*(1-u2);
   var np3=u2<.3?"j_r2b":u2<.82?"leap2":"j_crouch";if(np3!=S.pose){S.pose=np3;S.bd=0}S.rot=.08*u2;S.dir=1;
   if(u2>=1){S.state="vland";S.t0=T;S.pose="j_crouch";S.rot=0;S.yy=0;S.sqV+=4}}
- else if(st=="vland"){S.y=floorAt(S.x);if(T-S.t0>300){S.state="vexit";S.pose="walk";S.bd=240;S.gait=0;S.vx=0;S.dir=1}}
- else if(st=="vexit"){walkStep(dt,96*W/443);S.x+=S.vx*dt;S.y=floorAt(S.x);S.dir=1;
-  if(S.x>W+FR.walk[1]*kb){startAway(rnd(10,17))}}
+ else if(st=="vland"){S.y=floorAt(S.x);if(T-S.t0>300){S.state="vexit";S.pose="walk";S.bd=240;S.gait=0;S.vx=0;S.dir=1;S.rx0=S.x;S.ry0=S.y;S.rh=hamPt()}}
+ else if(st=="vexit"){walkStep(dt,96*W/443);S.x+=S.vx*dt;S.dir=1;
+  var rh=S.rh||hamPt(),pr=clamp((S.x-S.rx0)/Math.max(40,rh.x-S.rx0),0,1),pe=pr*pr*(3-2*pr),big=window._catEnd||1.4;
+  S.y=S.ry0+(rh.y-S.ry0)*pe;S.sc=.8+(big-.8)*pe;
+  if(S.x>W+FR.walk[1]*kb*S.sc){S.sc=.8;startAway(rnd(10,17))}}
  stepFlies(dt);stepKids(dt);stepRig(dt)}
 function render(){
  xF.setTransform(dpr,0,0,dpr,0,0);xB.setTransform(dpr,0,0,dpr,0,0);

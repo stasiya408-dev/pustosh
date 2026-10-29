@@ -36,9 +36,9 @@
 html.gfx-low #ldr .lsun,html.gfx-low #ldr .ldw,html.gfx-low #ldr .lgr,html.gfx-low #ldr .lem,html.gfx-low #ldr .lr1,html.gfx-low #ldr .lr2{animation:none}
 html.gfx-low #ldr .lem{display:none}
 @media (prefers-reduced-motion:reduce){#ldr *{animation:none!important}}
-</style><meta charset="UTF-8"><meta name="ver" content="328">
+</style><meta charset="UTF-8"><meta name="ver" content="329">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<script>var VER=328;(function(){try{fetch(location.pathname+"?c="+Date.now(),{headers:{Range:"bytes=0-600"},cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="ver" content="(\d+)"/);if(m&&+m[1]>VER&&sessionStorage.getItem("upd")!==m[1]){sessionStorage.setItem("upd",m[1]);location.replace(location.pathname+"?v="+m[1]+"&r="+Date.now())}}).catch(function(){})}catch(e){}})()</script>
+<script>var VER=329;(function(){try{fetch(location.pathname+"?c="+Date.now(),{headers:{Range:"bytes=0-600"},cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="ver" content="(\d+)"/);if(m&&+m[1]>VER&&sessionStorage.getItem("upd")!==m[1]){sessionStorage.setItem("upd",m[1]);location.replace(location.pathname+"?v="+m[1]+"&r="+Date.now())}}).catch(function(){})}catch(e){}})()</script>
 <script id="gfxhead">(function(){var L="high";try{var v=localStorage.getItem("gfx");if(v==="mid"||v==="low")L=v}catch(e){}
 var PR={high:{fps:60,dpr:99,strip:3,hI:30,hA:30,pq:1},mid:{fps:45,dpr:1.5,strip:4,hI:45,hA:36,pq:.75},low:{fps:30,dpr:1,strip:6,hI:60,hA:45,pq:.65}}[L];
 window.GFX={lvl:L,low:L==="low",mid:L==="mid",hres:L==="low"?.5:L==="mid"?.65:1,fps:PR.fps,iv:1000/PR.fps,strip:PR.strip,heroI:PR.hI,heroA:PR.hA,pq:PR.pq,real:0,min:0};
@@ -60,7 +60,9 @@ for(var k=0;k<cur.length;k++){var e=cur[k];if(e.x)continue;delete IDS[e.id];try{
 if(Q.length)go()}
 function go(){if(!sched){sched=1;raf0(pump)}}
 window.requestAnimationFrame=function(cb){var id=++nid,e={cb:cb,id:id,x:0};IDS[id]=e;Q.push(e);go();return id};
-window.cancelAnimationFrame=function(id){var e=IDS[id];if(e){e.x=1;delete IDS[id]}}}catch(e){}
+window.cancelAnimationFrame=function(id){var e=IDS[id];if(e){e.x=1;delete IDS[id]}};
+/* временно поднять частоту кадров (n к/с); 0 = вернуть по уровню графики. Нужно для сцен налёта со стрелкой */
+GFX.setFps=function(n){FPS=n>0?n:PR.fps;GFX.fps=FPS}}catch(e){}
 })();</script>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
@@ -784,7 +786,7 @@ setTimeout(function(){if(L.boot)L.done()},20000)})();
 <div id="hud2"><div id="hbar"><div class="lau"></div><div id="hlv"><b id="lv"></b></div><div id="hname"><span id="nm"></span></div>
 <div class="hr"><i>⚡</i><span class="ho hv" id="en"></span><button class="hp" onclick="soon()" aria-label="Пополнить">+</button></div><div class="hr"><i class="cs"></i><span class="ho hv" id="sv"></span><button class="hp" onclick="soon()" aria-label="Пополнить">+</button></div><div class="hr"><i>💰</i><span class="ho hv" id="tl"></span><button class="hp" onclick="testTalers()" aria-label="Пополнить">+</button></div><div class="hr"><i>💪</i><span class="ho hv" id="pw"></span><button class="hp" onclick="soon()" aria-label="Пополнить">+</button></div>
 <div class="xpt"><i id="xp"></i></div></div>
-<button id="hgear" onclick="gearTap()" aria-label="Настройки" aria-expanded="false">⚙</button><div class="ho" id="el"></div><div class="ho" id="hver">v328</div></div>
+<button id="hgear" onclick="gearTap()" aria-label="Настройки" aria-expanded="false">⚙</button><div class="ho" id="el"></div><div class="ho" id="hver">v329</div></div>
 <div id="scene">
 
 <div id="hut"><img id="campbg" draggable="false" alt="" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 50%;z-index:0" src="data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=">
@@ -6436,7 +6438,7 @@ html.gfx-low #rdbtn.pls .ic svg,html.gfx-low .rdwh,html.gfx-low .rdbn{animation:
 @keyframes rdkb{from{transform:scale(1) translate(0,0)}to{transform:scale(1.08) translate(-1.4%,-1%)}}
 .rdmist{position:absolute;left:-30%;right:-30%;bottom:6%;height:34%;pointer-events:none;background:radial-gradient(ellipse at 20% 60%,rgba(230,225,215,.22),transparent 55%),radial-gradient(ellipse at 70% 40%,rgba(230,225,215,.18),transparent 50%),radial-gradient(ellipse at 45% 80%,rgba(230,225,215,.16),transparent 55%);animation:rdmist 22s linear infinite alternate;z-index:1}
 @keyframes rdmist{from{transform:translateX(-6%)}to{transform:translateX(6%)}}
-html.gfx-low .rdbg,html.gfx-low .rdmist{animation:none}
+html.gfx-low .rdbg,html.gfx-low .rdmist{animation:none}.rdmist{display:none!important}
 .rdsc{animation:rdin .45s ease-out}
 @keyframes rdin{from{opacity:0}to{opacity:1}}
 /* цели на подводах и ящиках */
@@ -6611,7 +6613,7 @@ function showScreen(){var x=$("rdx");if(!x){x=document.createElement("div");x.id
 x.addEventListener("click",onClick);document.body.appendChild(x)}
 x.addEventListener("pointerdown",pdown);x.addEventListener("pointermove",pmove);x.addEventListener("pointerup",pup);x.addEventListener("pointercancel",pup);
 x.classList.add("on");vis=true;bindSt()}
-function exitRaid(){vis=false;MG=null;cancelAnimationFrame(raf);raf=0;clearLater();var x=$("rdx");if(x)x.classList.remove("on");run=null;tickBtn()}
+function exitRaid(){vis=false;MG=null;try{fpsSet(0)}catch(e){}cancelAnimationFrame(raf);raf=0;clearLater();var x=$("rdx");if(x)x.classList.remove("on");run=null;tickBtn()}
 /* ---------- переходы ---------- */
 function go(n){if(!run||ROUTES[run.scene].indexOf(n)<0){try{console.warn("raid: переход запрещён",run&&run.scene,n)}catch(e){}return false}
 MG=null;LK=0;FXK0=performance.now();run.scene=n;ev("go "+n);cp();enter();return true}
@@ -6629,7 +6631,7 @@ var snap={id:id,final:rr.result.final.slice(),at:nowMs()};r.claimed[id]=snap;rr.
 snap.final.forEach(function(f){applyReward(f.id,f.qty)});r.run=null;r.last=snap;save();try{if(window.draw)window.draw()}catch(e){}return snap}
 /* ---------- рисование ---------- */
 function esc(t){return String(t).replace(/[&<>]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;"}[c]})}
-function bgHTML(sc,cls,decor){var a=C.art[sc],kb=-((performance.now()-FXK0)/1000%36);if(a)return '<div class="rdbg" style="background-image:url(\''+a+'\');animation-delay:'+kb.toFixed(2)+'s"></div>'+(LOWG?"":'<div class="rdmist"></div>')+(decor||"");return '<div class="rdph '+cls+'"><div class="sky"></div><div class="riv"></div><div class="gr"></div>'+(decor||"")+'<div class="rdlab">заглушка фону '+sc+' — потрібен 9:16 арт</div></div>'}
+function bgHTML(sc,cls,decor){var a=C.art[sc],kb=-((performance.now()-FXK0)/1000%36);if(a)return '<div class="rdbg" style="background-image:url(\''+a+'\');animation-delay:'+kb.toFixed(2)+'s"></div>'+""+(decor||"");return '<div class="rdph '+cls+'"><div class="sky"></div><div class="riv"></div><div class="gr"></div>'+(decor||"")+'<div class="rdlab">заглушка фону '+sc+' — потрібен 9:16 арт</div></div>'}
 function em(e,x,y,s,extra){return '<div class="rdem" style="left:'+x+'%;top:'+y+'%;font-size:'+s+'px;transform:translate(-50%,-50%);'+(extra||"")+'">'+e+"</div>"}
 function wagonSvg(w,h){return '<svg width="'+w+'" height="'+h+'" viewBox="0 0 100 70"><path d="M12 38 Q50 -4 88 38Z" fill="#e2c88a" stroke="#6b4a1c" stroke-width="3"/><rect x="10" y="38" width="80" height="14" rx="3" fill="#8a5a2a" stroke="#4a2c10" stroke-width="3"/><circle cx="28" cy="56" r="10" fill="#c79a45" stroke="#4a2c10" stroke-width="3"/><circle cx="72" cy="56" r="10" fill="#c79a45" stroke="#4a2c10" stroke-width="3"/><path d="M28 46V66M18 56H38M72 46V66M62 56H82" stroke="#4a2c10" stroke-width="2.4"/></svg>'}
 function setTop(){$("rdet").textContent="Етап "+Number(run.scene.slice(1))+"/10";$("rdav").textContent=run.alert<34?"· спокійно":run.alert<67?"· насторожені":"· погоня";$("rdab").style.width=run.alert+"%";$("rdcv").textContent=Math.round(run.condition);$("rdcb").style.width=run.condition+"%";$("rdbg").innerHTML=gi("backpack",24)+" "+used()+"/"+run.cargoCapacity}
@@ -7024,9 +7026,10 @@ function fxLand(){var a=pp(18,72);pSplash(a.x,a.y,10,240);pRing(a.x,a.y,6,60,"22
 function fxFinish(out){var s=$("rdst");if(!s)return;var x=s.clientWidth/2,y=s.clientHeight*.3;if(out=="completed"||out=="partial"){pCoin(x,y+40,out=="completed"?30:14);pSpark(x,y,26,"255,226,140",360);pGlow(x,y,200,"255,226,140",.7);sfx("win");later(function(){sfx("coin")},200);later(function(){sfx("coin")},420)}else sfx("fail")}
 
 /* ---------- главный цикл ---------- */
-function loop(ts){raf=0;if(!vis||!run)return;var dt=lastT?Math.min(.08,(ts-lastT)/1000):0;lastT=ts;
+var fpsB=0;function fpsSet(n){if(n!==fpsB){fpsB=n;try{window.GFX&&GFX.setFps&&GFX.setFps(n)}catch(e){}}}
+function loop(ts){raf=0;if(!vis||!run){fpsSet(0);return}var dt=lastT?Math.min(.08,(ts-lastT)/1000):0;lastT=ts;
 if(run.status=="active"||run.status=="escaping")run.elapsedActiveMs+=dt*1000;
-var M=MG;if(M){if(M.k=="time"){M.t+=dt;var p=tri(M.t*M.rate),mk=$("rdmk");if(mk)mk.style.transform="rotate("+((p-.5)*180).toFixed(1)+"deg)"}
+var M=MG;fpsSet(M&&M.k=="time"?60:0);if(M){if(M.k=="time"){M.t+=dt;var p=tri(M.t*M.rate),mk=$("rdmk");if(mk)mk.style.transform="rotate("+((p-.5)*180).toFixed(1)+"deg)"}
 else if(M.k=="duel")duelTick(M,dt);else if(M.k=="esc")escTick(M,dt)}
 try{fxStep(dt)}catch(e){}
 raf=requestAnimationFrame(loop)}

@@ -230,7 +230,7 @@ def main():
     # нарисованные вручную замены: kozak2_art/<имя>.png (сейчас: hut = фон хаты 600x893, tools/art/hut.py)
     art = os.path.join(ROOT, 'kozak2_art')
     mh = re.search(r'--hut:url\("data:image/jpeg;base64,([^"]+)"', s)
-    if mh and os.path.exists(os.path.join(art, 'hut.png')):
+    if mh and os.environ.get('PX_HAND') == '1' and os.path.exists(os.path.join(art, 'hut.png')):  # по умолчанию ВЫКЛ: пользователь выбрал автопиксели
         im = Image.open(os.path.join(art, 'hut.png')).convert('RGB')
         o = Image.open(io.BytesIO(base64.b64decode(mh.group(1))))
         if im.size != o.size:

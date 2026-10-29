@@ -227,6 +227,17 @@ def main():
     with Pool(8, initializer=init, initargs=(pal,)) as p:
         done = p.map(finish, [(uniq[k][0], r) for k, r in okk], chunksize=2)
     new = {k: d for (k, _), d in zip(okk, done)}
+    # нарисованные вручную замены: kozak2_art/<имя>.png (сейчас: hut = фон хаты 600x893, tools/art/hut.py)
+    art = os.path.join(ROOT, 'kozak2_art')
+    mh = re.search(r'--hut:url\("data:image/jpeg;base64,([^"]+)"', s)
+    if mh and os.path.exists(os.path.join(art, 'hut.png')):
+        im = Image.open(os.path.join(art, 'hut.png')).convert('RGB')
+        o = Image.open(io.BytesIO(base64.b64decode(mh.group(1))))
+        if im.size != o.size:
+            im = im.resize(o.size, Image.NEAREST)
+        bio = io.BytesIO(); im.save(bio, 'JPEG', quality=95, subsampling=0)
+        new[hashlib.md5(mh.group(1).encode()).hexdigest()] = base64.b64encode(bio.getvalue()).decode()
+        print('hut: нарисованная замена')
     res = []
     last = 0
     for st, en, kd, txt in items:

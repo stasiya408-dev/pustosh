@@ -36,9 +36,9 @@
 html.gfx-low #ldr .lsun,html.gfx-low #ldr .ldw,html.gfx-low #ldr .lgr,html.gfx-low #ldr .lem,html.gfx-low #ldr .lr1,html.gfx-low #ldr .lr2{animation:none}
 html.gfx-low #ldr .lem{display:none}
 @media (prefers-reduced-motion:reduce){#ldr *{animation:none!important}}
-</style><meta charset="UTF-8"><meta name="ver" content="323">
+</style><meta charset="UTF-8"><meta name="ver" content="324">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<script>var VER=323;(function(){try{fetch(location.pathname+"?c="+Date.now(),{headers:{Range:"bytes=0-600"},cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="ver" content="(\d+)"/);if(m&&+m[1]>VER&&sessionStorage.getItem("upd")!==m[1]){sessionStorage.setItem("upd",m[1]);location.replace(location.pathname+"?v="+m[1]+"&r="+Date.now())}}).catch(function(){})}catch(e){}})()</script>
+<script>var VER=324;(function(){try{fetch(location.pathname+"?c="+Date.now(),{headers:{Range:"bytes=0-600"},cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="ver" content="(\d+)"/);if(m&&+m[1]>VER&&sessionStorage.getItem("upd")!==m[1]){sessionStorage.setItem("upd",m[1]);location.replace(location.pathname+"?v="+m[1]+"&r="+Date.now())}}).catch(function(){})}catch(e){}})()</script>
 <script id="gfxhead">(function(){var L="high";try{var v=localStorage.getItem("gfx");if(v==="mid"||v==="low")L=v}catch(e){}
 var PR={high:{iv:0,dpr:99,strip:3,hI:30,hA:30,pq:1},mid:{iv:40,dpr:1.5,strip:4,hI:45,hA:36,pq:.75},low:{iv:50,dpr:1,strip:6,hI:60,hA:45,pq:.65}}[L];
 window.GFX={lvl:L,low:L==="low",mid:L==="mid",iv:PR.iv,strip:PR.strip,heroI:PR.hI,heroA:PR.hA,pq:PR.pq};
@@ -773,7 +773,7 @@ setTimeout(function(){if(L.boot)L.done()},20000)})();
 <div id="hud2"><div id="hbar"><div class="lau"></div><div id="hlv"><b id="lv"></b></div><div id="hname"><span id="nm"></span></div>
 <div class="hr"><i>⚡</i><span class="ho hv" id="en"></span><button class="hp" onclick="soon()" aria-label="Пополнить">+</button></div><div class="hr"><i class="cs"></i><span class="ho hv" id="sv"></span><button class="hp" onclick="soon()" aria-label="Пополнить">+</button></div><div class="hr"><i>💰</i><span class="ho hv" id="tl"></span><button class="hp" onclick="testTalers()" aria-label="Пополнить">+</button></div><div class="hr"><i>💪</i><span class="ho hv" id="pw"></span><button class="hp" onclick="soon()" aria-label="Пополнить">+</button></div>
 <div class="xpt"><i id="xp"></i></div></div>
-<button id="hgear" onclick="gearTap()" aria-label="Настройки" aria-expanded="false">⚙</button><div class="ho" id="el"></div><div class="ho" id="hver">v323</div></div>
+<button id="hgear" onclick="gearTap()" aria-label="Настройки" aria-expanded="false">⚙</button><div class="ho" id="el"></div><div class="ho" id="hver">v324</div></div>
 <div id="scene">
 
 <div id="hut"><img id="campbg" draggable="false" alt="" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 50%;z-index:0" src="data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=">
@@ -7445,8 +7445,9 @@ window.BAL={
 (function(){
 if(window.JUNK)return;
 var C=window.JUNK_CFG={status:"draft",
- cap:20,                                   /* максимум заработанного хлама в сутки */
- buyCap:70,                                /* максимум КУПЛЕННОГО за талеры в сутки (защита от «пройти всё за день») */
+ cap:1e9,                                  /* v324: лимита заработка больше нет */
+ max:1000,                                 /* v324: число закупов торговца */
+ buyCap:1e9,                                /* максимум КУПЛЕННОГО за талеры в сутки (защита от «пройти всё за день») */
  packs:[{n:10,t:20},{n:30,t:54},{n:70,t:119}],   /* пачки за талеры (1,7–2 талера за хлам) */
  boss:[[1,6],[3,8],[5,10]],                /* хлам за победу над боссом по ярости (обычная/усиленная/эпичная) */
  flee:1,                                   /* босс убежал по времени: утешительный хлам */
@@ -7459,6 +7460,13 @@ var C=window.JUNK_CFG={status:"draft",
   {p:50,r:[["w","cannon",3],["gs","nahai",150]]},{p:60,r:[["tl",50],["w","cannon",5],["cos","nahai"]]}],
  comod:[{w:30,r:["sv",500,1500]},{w:25,r:["fz",1,3]},{w:15,r:["w","dagger",2,5]},{w:10,r:["w","rifle",1,3]},{w:10,r:["rs","any",10,30]},{w:6,r:["gs","any",10,25]},{w:3,r:["w","cannon",1,2]},{w:1,r:["tl",1,3]}]
 };
+/* v324: закупы 11..1000 строятся по кругу из 10 наград, с ростом каждые 10 уровней на 25% */
+function lvAt(i){if(i<C.lv.length)return C.lv[i];var n=i+1,t=Math.floor((n-11)/10),m=1+t*.25,k=(n-11)%10,r,B=["petro","ostap","nahai"][t%3];
+ function q(x){return Math.max(1,Math.round(x*m))}
+ if(k==0)r=[["sv",q(3000)],["fz",q(3)]];else if(k==1)r=[["w","dagger",q(5)]];else if(k==2)r=[["w","rifle",q(5)]];
+ else if(k==3)r=[["rs","all",q(30)]];else if(k==4)r=[["w","volley",q(4)]];else if(k==5)r=[["rs",B,q(100)]];
+ else if(k==6)r=[["tl",10+t]];else if(k==7)r=[["w","cannon",q(3)]];else if(k==8)r=[["gs",B,q(100)]];else r=[["key","nahai",1],["sv",q(5000)]];
+ return{p:60+Math.round((n-10)*2.5),r:r}}
 window.JUNK_DEV={always:true};              /* ТЕСТ: торговец всегда в селе + кнопки теста; убрать перед релизом */
 var WN={dagger:"Кинджал",rifle:"Рушниця",cannon:"Гармата",volley:"Залп стріл"};
 var WI={dagger:"w_dagger",rifle:"w_rifle",cannon:"w_cannon",volley:"w_volley"};
@@ -7475,11 +7483,11 @@ function open3(){var o=[];try{BOSSES.slice(0,3).forEach(function(b){o.push(b.id)
 /* расписание торговца */
 function sched(){var s=C.sched,d=Math.floor((Date.parse(today()+"T00:00:00Z")-Date.parse(s.epoch+"T00:00:00Z"))/864e5),pos=((d%s.cycle)+s.cycle)%s.cycle;
  var inn=pos<s.open;return{open:inn,left:inn?s.open-pos:0,wait:inn?0:s.cycle-pos}}
-function here(){return !!(window.JUNK_DEV&&JUNK_DEV.always)||sched().open}
+function here(){return true}
 /* выдача хлама с учётом дневного лимита */
 function grant(n,src){var j=J();n=Math.max(0,n|0);if(!n)return{got:0,cut:0,n:0};var room=Math.max(0,C.cap-j.en),got=Math.min(n,room);
  j.en+=got;j.bal+=got;j.tot+=got;save();refreshBtn();return{got:got,cut:n-got,n:n,src:src}}
-function rowFor(g){if(!g)return null;var v=g.got>0?"+"+g.got:"0";if(g.cut>0)v+=" (ліміт дня: "+J().en+"/"+C.cap+")";else v+=" · сьогодні "+J().en+"/"+C.cap;return["🔩 Хлам",v]}
+function rowFor(g){if(!g)return null;return["🔩 Хлам",g.got>0?"+"+g.got:"0"]}
 /* применение награды */
 function wa(id,q){S.wa=S.wa||{};S.wa[id]=(S.wa[id]||0)+q}
 function giveR(r){var t=r[0];
@@ -7499,44 +7507,43 @@ function rewText(rs){return rs.map(function(r){var t=r[0];
  if(t=="rs")return"<span>🧩 "+r[2]+(r[1]=="all"?" ×3 босам":" "+bn(r[1]))+"</span>";
  if(t=="gs")return"<span>🔷 "+r[2]+" "+bn(r[1])+"</span>";if(t=="cos")return"<span>🏆 трофей «"+bn(r[1])+"»</span>";return""}).join("")}
 /* покупка уровня */
-function buyLv(){var j=J(),i=j.lvl,L=C.lv[i];if(!L)return{ok:false,why:"done"};if(!here())return{ok:false,why:"away"};if(j.bal<L.p)return{ok:false,why:"junk",need:L.p-j.bal};
+function buyLv(){var j=J(),i=j.lvl,L=i<C.max?lvAt(i):null;if(!L)return{ok:false,why:"done"};if(!here())return{ok:false,why:"away"};if(j.bal<L.p)return{ok:false,why:"junk",need:L.p-j.bal};
  j.bal-=L.p;j.lvl++;var txt=L.r.map(giveR);save();try{if(window.draw)draw()}catch(e){}return{ok:true,lv:i+1,txt:txt}}
 /* покупка хлама за талеры */
 function buyPack(k){var j=J(),P=C.packs[k];if(!P)return{ok:false};if(!here())return{ok:false,why:"away"};if(j.bn+P.n>C.buyCap)return{ok:false,why:"cap",left:C.buyCap-j.bn};
  if((S.tl||0)<P.t)return{ok:false,why:"tl",need:P.t-(S.tl||0)};S.tl-=P.t;j.bal+=P.n;j.bn+=P.n;j.tot+=P.n;save();try{if(window.draw)draw()}catch(e){}refreshBtn();return{ok:true,n:P.n}}
 /* комод раз в сутки */
-function comod(){var j=J();if(!here())return{ok:false,why:"away"};if(j.cd===today())return{ok:false,why:"used"};if(j.bal<C.comodCost)return{ok:false,why:"junk",need:C.comodCost-j.bal};
+function comod(){var j=J();if(!here())return{ok:false,why:"away"};if(j.bal<C.comodCost)return{ok:false,why:"junk",need:C.comodCost-j.bal};
  var tw=0;C.comod.forEach(function(c){tw+=c.w});var x=Math.random()*tw,e=C.comod[0];for(var i=0;i<C.comod.length;i++){x-=C.comod[i].w;if(x<=0){e=C.comod[i];break}}
  var r=e.r.slice(),q=r.length==3?ri(r[1],r[2]):ri(r[2],r[3]);var rr;
  if(r[0]=="w")rr=["w",r[1],q];else if(r[0]=="rs"||r[0]=="gs")rr=[r[0],r[1],q];else rr=[r[0],q];
- j.bal-=C.comodCost;j.cd=today();var t=giveR(rr);save();try{if(window.draw)draw()}catch(e2){}refreshBtn();return{ok:true,txt:t}}
+ j.bal-=C.comodCost;var t=giveR(rr);save();try{if(window.draw)draw()}catch(e2){}refreshBtn();return{ok:true,txt:t}}
 /* ---------- экран ---------- */
 var ov=null,mt=0;
 function msg(t){var m=$("jkm");if(!m)return;m.innerHTML=t;m.classList.add("on");clearTimeout(mt);mt=setTimeout(function(){m.classList.remove("on")},3200)}
 var SCENE='<svg viewBox="0 0 150 140" xmlns="http://www.w3.org/2000/svg"><rect x="8" y="112" width="134" height="6" rx="3" fill="#1a0e05" opacity=".6"/><path d="M20 58L75 14l55 44z" fill="#b83a22"/><path d="M20 58l18-10 17 10-17 10z M55 58l20-14 20 14-20 12z M95 58l17-10 18 10-18 10z" fill="#f0dcae" opacity=".92"/><path d="M20 58h110v7H20z" fill="#7a2410"/><rect x="26" y="65" width="5" height="48" fill="#4a2a12"/><rect x="119" y="65" width="5" height="48" fill="#4a2a12"/><rect x="26" y="88" width="98" height="24" rx="3" fill="#6b4524"/><rect x="26" y="88" width="98" height="5" fill="#8a5a2c"/><g fill="#8a8a8a"><path d="M40 84c0-8 14-8 14 0z"/><rect x="60" y="76" width="5" height="12" rx="1"/><rect x="68" y="72" width="5" height="16" rx="1" fill="#a08a5a"/><circle cx="95" cy="82" r="6" fill="#b08a40"/><path d="M104 88l10-16 5 4-7 12z" fill="#7a7a82"/></g><circle cx="38" cy="116" r="11" fill="none" stroke="#2b1608" stroke-width="4"/><circle cx="112" cy="116" r="11" fill="none" stroke="#2b1608" stroke-width="4"/><path d="M122 36l8-6 2 9z" fill="#ffd878"/></svg>';
 function build(){if(ov)return;var s=document.createElement("div");ov=s;s.id="jkx";document.body.appendChild(s);
  s.addEventListener("click",function(ev){var b=ev.target.closest?ev.target.closest("[data-j]"):null;if(!b||b.disabled)return;act(b.getAttribute("data-j"),b.getAttribute("data-v"))})}
-function render(){if(!ov)return;var j=J(),sc=sched(),dev=window.JUNK_DEV&&JUNK_DEV.always,ok=here(),cur=j.lvl,h="";
+function render(){if(!ov)return;var j=J(),sc=sched(),dev=window.JUNK_DEV&&JUNK_DEV.always,ok=true,cur=j.lvl,h="";
  h+='<div class="jkh"><b>🧰 Заїжджий торговець</b><div class="jks">'+ico("horseshoe","🔩")+'<span id="jkbal">'+j.bal+'</span></div><button data-j="x" aria-label="Закрити">✕</button></div><div class="jkb">';
- var st=ok?(dev&&!sc.open?'<b>ТЕСТ: торговець завжди тут</b>За розкладом він приїде через '+sc.wait+' дн. і стоїть 7 днів.':'<b>Торговець у селі</b>Стоїть ще '+sc.left+' дн. Хлам не зникає між візитами.'):'<b>Торговець поїхав</b>Повернеться через '+sc.wait+' дн. Хлам копиться, купувати можна після приїзду.';
- h+='<div class="jkw">'+SCENE+'<div class="jkt">'+st+'<br><span class="jkd">'+(ok?"торгує":"чекає")+' · 10 закупів · '+C.lv.reduce(function(a,l){return a+l.p},0)+' хламу</span></div></div>';
- h+='<div class="jkc"><div class="r"><span>Сьогодні зібрано</span><b>'+j.en+' / '+C.cap+'</b></div><div class="bar"><i style="width:'+Math.min(100,j.en/C.cap*100)+'%"></i></div>'+
-    '<div class="r"><span>Докуплено за талери</span><b>'+j.bn+' / '+C.buyCap+'</b></div><div class="bar b2"><i style="width:'+Math.min(100,j.bn/C.buyCap*100)+'%"></i></div></div>';
- h+='<h4>Докупити хлам</h4><div class="jkp">'+C.packs.map(function(p,i){var dis=!ok||j.bn+p.n>C.buyCap||(S.tl||0)<p.t;return'<button data-j="pack" data-v="'+i+'"'+(dis?" disabled":"")+'><b>+'+p.n+'</b>💰 '+p.t+'</button>'}).join("")+'</div>';
- var L=C.lv[cur],done=cur>=C.lv.length,dots="";for(var q=0;q<C.lv.length;q++)dots+='<i class="'+(q<cur?"on":q==cur?"cur":"")+'"></i>';
- h+='<h4>Закуп торговця · '+(done?C.lv.length:cur+1)+' з '+C.lv.length+'</h4><div class="jkdt">'+dots+'</div>';
+ var st='<b>Торговець у селі</b>Торгує завжди, без ліміту.';
+ h+='<div class="jkw">'+SCENE+'<div class="jkt">'+st+'<br><span class="jkd">'+(ok?"торгує":"чекає")+' · '+C.max+' закупів</span></div></div>';
+ h+='<div class="jkc"><div class="r"><span>Усього зібрано хламу</span><b>'+j.tot+'</b></div></div>';
+ h+='<h4>Докупити хлам</h4><div class="jkp">'+C.packs.map(function(p,i){var dis=(S.tl||0)<p.t;return'<button data-j="pack" data-v="'+i+'"'+(dis?" disabled":"")+'><b>+'+p.n+'</b>💰 '+p.t+'</button>'}).join("")+'</div>';
+ var done=cur>=C.max,L=done?null:lvAt(cur);
+ h+='<h4>Закуп торговця · '+(done?C.max:cur+1)+' з '+C.max+'</h4><div class="jkc"><div class="bar"><i style="width:'+Math.min(100,cur/C.max*100)+'%"></i></div></div>';
  if(done)h+='<div class="jkv done"><div class="n">✔</div><div class="t"><span>Усі закупи куплено. Далі тільки комод.</span></div></div>';
- else h+='<div class="jkl"><div class="jkv cur"><div class="n">'+(cur+1)+'</div><div class="t">'+rewText(L.r)+'</div><button data-j="lv"'+(ok&&j.bal>=L.p?"":" disabled")+'>'+ico("horseshoe","🔩")+L.p+'</button></div></div><div class="jkf" style="margin-top:6px">Купиш цей закуп — одразу відкриється наступний.</div>';
- var cu=j.cd===today();
- h+='<h4>Комод торговця</h4><div class="jkk">Раз на добу: за '+C.comodCost+' хламу відкриваєш шухляду з випадковою нагородою (срібло, самопали, зброя, уламки, іноді талери).<button data-j="comod"'+(ok&&!cu&&j.bal>=C.comodCost?"":" disabled")+'>'+(cu?"Сьогодні вже відкрито":"Відкрити за "+C.comodCost+" 🔩")+'</button></div>';
- h+='<div class="jkf"><b>Де брати хлам:</b><br>🗡 бос: перемога 1–6 / 3–8 / 5–10 (за яріст), втеча боса 1<br>🌾 успішний похід: 1–10<br>🐎 налёт на обоз: 5<br>Разом не більше '+C.cap+' заробленого за добу (скидання о 00:00 за Києвом). Куплений хлам у ліміт не входить.</div>';
+ else h+='<div class="jkl"><div class="jkv cur"><div class="n">'+(cur+1)+'</div><div class="t">'+rewText(L.r)+'</div><button data-j="lv"'+(j.bal>=L.p?"":" disabled")+'>'+ico("horseshoe","🔩")+L.p+'</button></div></div><div class="jkf" style="margin-top:6px">Купиш цей закуп — одразу відкриється наступний.</div><div class="jkk" style="margin-top:6px">Швидко: купити поспіль скільки вистачить хламу (до 25 закупів).<button data-j="lvx">Купити скільки вистачить</button></div>';
+ h+='<h4>Комод торговця</h4><div class="jkk">Без ліміту: за '+C.comodCost+' хламу відкриваєш шухляду з випадковою нагородою (срібло, самопали, зброя, уламки, іноді талери).<button data-j="comod"'+(j.bal>=C.comodCost?"":" disabled")+'>Відкрити за '+C.comodCost+' 🔩</button></div>';
+ h+='<div class="jkf"><b>Де брати хлам:</b><br>🗡 бос: перемога 1–6 / 3–8 / 5–10 (за яріст), втеча боса 1<br>🌾 успішний похід: 1–10<br>🐎 налёт на обоз: 5<br>Ліміту на добу немає.</div>';
  if(dev)h+='<div class="jkdev"><b>ТЕСТ (прибрати перед релізом)</b><br><button data-j="d1">+20 хламу</button><button data-j="d2">Скинути добу (ліміт, комод)</button><button data-j="d3">Почати закупи заново</button><button data-j="d4">+500 талерів</button></div>';
  h+='</div><div id="jkm"></div>';ov.innerHTML=h}
 function act(a,v){var j=J(),r;
  if(a=="x"){close();return}
- if(a=="pack"){r=buyPack(+v);if(r.ok)msg("+"+r.n+" хламу куплено");else msg(r.why=="tl"?"Бракує талерів: ще "+r.need:r.why=="cap"?"Ліміт купівлі на добу. Лишилось "+r.left:"Торговця немає")}
- else if(a=="lv"){r=buyLv();if(r.ok)msg("<b>Закуп "+r.lv+" готовий!</b><br>"+r.txt.join("<br>"));else msg(r.why=="junk"?"Бракує хламу: ще "+r.need:"Торговця немає")}
- else if(a=="comod"){r=comod();if(r.ok)msg("<b>Комод відкрито:</b><br>"+r.txt);else msg(r.why=="used"?"Сьогодні вже відкрито":r.why=="junk"?"Бракує хламу: ще "+r.need:"Торговця немає")}
+ if(a=="pack"){r=buyPack(+v);if(r.ok)msg("+"+r.n+" хламу куплено");else msg(r.why=="tl"?"Бракує талерів: ще "+r.need:"Не вдалося")}
+ else if(a=="lv"){r=buyLv();if(r.ok)msg("<b>Закуп "+r.lv+" готовий!</b><br>"+r.txt.join("<br>"));else msg(r.why=="junk"?"Бракує хламу: ще "+r.need:"Не вдалося")}
+ else if(a=="lvx"){var n=0,last=0,why="";for(var z=0;z<25;z++){var rb=buyLv();if(!rb.ok){why=rb.why=="junk"?"Бракує хламу: ще "+rb.need:rb.why=="done"?"Усі закупи куплено":"";break}n++;last=rb.lv}msg(n?"<b>Куплено закупів: "+n+"</b><br>тепер до №"+last+(why?"<br>"+why:""):why||"Не вдалося")}
+ else if(a=="comod"){r=comod();if(r.ok)msg("<b>Комод відкрито:</b><br>"+r.txt);else msg(r.why=="junk"?"Бракує хламу: ще "+r.need:"Торговця немає")}
  else if(a=="d1"){j.bal+=20;j.tot+=20;save()}
  else if(a=="d2"){j.en=0;j.bn=0;j.cd="";save()}
  else if(a=="d3"){j.lvl=0;save()}

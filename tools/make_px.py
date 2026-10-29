@@ -23,8 +23,9 @@ from px_palette import HAND
 
 CAP_W = int(os.environ.get('PX_CAP', 224))      # сколько пикселей арта в ширину у картинки во весь экран
 MIN_W = int(os.environ.get('PX_MIN', 48))       # минимум у мелких иконок
-DIT = 9.0        # сила упорядоченного дизеринга
-SAT, CON = 1.14, 1.05
+DIT = float(os.environ.get('PX_DIT', 5.0))   # сила упорядоченного дизеринга (9 был слишком «шашечный»)
+DIT_ICON = 0.0   # мелкие картинки (иконки, значки) без дизеринга: так читаются лучше
+SAT, CON = 1.14, 1.10
 CORPUS = 96      # цветов из самих картинок
 
 BAY = np.array([[0, 8, 2, 10], [12, 4, 14, 6], [3, 11, 1, 9], [15, 7, 13, 5]], np.float32) / 16.0 - 0.5
@@ -99,7 +100,7 @@ def finish(args):
     _, w, h, k, RGB, A, full = s
     sh, sw = RGB.shape[:2]
     yy, xx = np.mgrid[0:sh, 0:sw]
-    d = BAY[yy % 4, xx % 4][..., None] * DIT
+    d = BAY[yy % 4, xx % 4][..., None] * (DIT_ICON if (w <= 200 and h <= 200) else DIT)
     idx = TREE.query((RGB + d).reshape(-1, 3))[1].reshape(sh, sw)
     col = PAL[idx]
     col = np.repeat(np.repeat(col, k, 0), k, 1)[:h, :w]
@@ -164,8 +165,21 @@ try{if(!localStorage.getItem("kozak3px")&&localStorage.getItem("kozak3"))localSt
 </script>
 <style id="pxcss">%s
 *{image-rendering:pixelated;font-synthesis:none}
-html,body,button,input,textarea,select,div,span,p,b,i,small,a,td,th,li,h1,h2,h3{font-family:'PXA','PXB',monospace!important}
+html.pxbig .pxh{font-family:'PXA','PXB',monospace!important}
 </style>
+<script>/* kozak2: пиксельный шрифт только для КРУПНЫХ надписей (>=PXMIN px на экране), мелкий текст остаётся обычным: так его можно читать */
+(function(){var PXMIN=20,off=false;try{off=localStorage.getItem("pxfont")==="0"}catch(e){}
+function chk(e){try{if(e.nodeType!==1||e.closest("canvas"))return;var own=0,n=e.firstChild;while(n){if(n.nodeType===3&&n.nodeValue.trim()){own=1;break}n=n.nextSibling}
+if(!own){if(e.classList.contains("pxh"))e.classList.remove("pxh");return}
+var h=e.offsetHeight;if(!h){return}var r=e.getBoundingClientRect(),sc=r.height/h;if(!isFinite(sc)||sc<=0)sc=1;
+var fs=parseFloat(getComputedStyle(e).fontSize)*sc;var big=fs>=PXMIN;if(big!==e.classList.contains("pxh"))e.classList.toggle("pxh",big)}catch(x){}}
+function scan(root){var l=(root||document.body).querySelectorAll("*");for(var i=0;i<l.length;i++)chk(l[i])}
+function go(){if(off)return;document.documentElement.classList.add("pxbig");scan();
+new MutationObserver(function(ms){for(var i=0;i<ms.length;i++)for(var j=0;j<ms[i].addedNodes.length;j++){var a=ms[i].addedNodes[j];if(a.nodeType===1){chk(a);if(a.querySelectorAll)scan(a)}}}).observe(document.body,{childList:true,subtree:true});
+setInterval(function(){if(!document.hidden)scan()},2500)}
+window.pxFont=function(on){try{localStorage.setItem("pxfont",on?"1":"0")}catch(e){}location.reload()};
+if(document.readyState!=="loading")go();else document.addEventListener("DOMContentLoaded",go)})();
+</script>
 '''
 
 

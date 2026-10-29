@@ -36,9 +36,9 @@
 html.gfx-low #ldr .lsun,html.gfx-low #ldr .ldw,html.gfx-low #ldr .lgr,html.gfx-low #ldr .lem,html.gfx-low #ldr .lr1,html.gfx-low #ldr .lr2{animation:none}
 html.gfx-low #ldr .lem{display:none}
 @media (prefers-reduced-motion:reduce){#ldr *{animation:none!important}}
-</style><meta charset="UTF-8"><meta name="ver" content="316">
+</style><meta charset="UTF-8"><meta name="ver" content="317">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<script>var VER=316;(function(){try{fetch(location.pathname+"?c="+Date.now(),{headers:{Range:"bytes=0-600"},cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="ver" content="(\d+)"/);if(m&&+m[1]>VER&&sessionStorage.getItem("upd")!==m[1]){sessionStorage.setItem("upd",m[1]);location.replace(location.pathname+"?v="+m[1]+"&r="+Date.now())}}).catch(function(){})}catch(e){}})()</script>
+<script>var VER=317;(function(){try{fetch(location.pathname+"?c="+Date.now(),{headers:{Range:"bytes=0-600"},cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="ver" content="(\d+)"/);if(m&&+m[1]>VER&&sessionStorage.getItem("upd")!==m[1]){sessionStorage.setItem("upd",m[1]);location.replace(location.pathname+"?v="+m[1]+"&r="+Date.now())}}).catch(function(){})}catch(e){}})()</script>
 <script id="gfxhead">(function(){var L="high";try{var v=localStorage.getItem("gfx");if(v==="mid"||v==="low")L=v}catch(e){}
 var PR={high:{iv:0,dpr:99,strip:3,hI:30,hA:30,pq:1},mid:{iv:40,dpr:1.5,strip:4,hI:45,hA:36,pq:.75},low:{iv:50,dpr:1,strip:6,hI:60,hA:45,pq:.65}}[L];
 window.GFX={lvl:L,low:L==="low",mid:L==="mid",iv:PR.iv,strip:PR.strip,heroI:PR.hI,heroA:PR.hA,pq:PR.pq};
@@ -773,7 +773,7 @@ setTimeout(function(){if(L.boot)L.done()},20000)})();
 <div id="hud2"><div id="hbar"><div class="lau"></div><div id="hlv"><b id="lv"></b></div><div id="hname"><span id="nm"></span></div>
 <div class="hr"><i>⚡</i><span class="ho hv" id="en"></span><button class="hp" onclick="soon()" aria-label="Пополнить">+</button></div><div class="hr"><i class="cs"></i><span class="ho hv" id="sv"></span><button class="hp" onclick="soon()" aria-label="Пополнить">+</button></div><div class="hr"><i>💰</i><span class="ho hv" id="tl"></span><button class="hp" onclick="testTalers()" aria-label="Пополнить">+</button></div><div class="hr"><i>💪</i><span class="ho hv" id="pw"></span><button class="hp" onclick="soon()" aria-label="Пополнить">+</button></div>
 <div class="xpt"><i id="xp"></i></div></div>
-<button id="hgear" onclick="gearTap()" aria-label="Настройки" aria-expanded="false">⚙</button><div class="ho" id="el"></div><div class="ho" id="hver">v316</div></div>
+<button id="hgear" onclick="gearTap()" aria-label="Настройки" aria-expanded="false">⚙</button><div class="ho" id="el"></div><div class="ho" id="hver">v317</div></div>
 <div id="scene">
 
 <div id="hut"><img id="campbg" draggable="false" alt="" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 50%;z-index:0" src="data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=">
@@ -8507,4 +8507,33 @@ setInterval(function(){addBtn();paint(false);watch()},4000);
 document.addEventListener("visibilitychange",function(){if(!document.hidden)paint(false)});
 })();
 </script>
+<style id="rpcss">
+#app #rpan{transition:transform .28s cubic-bezier(.3,.8,.3,1)}
+#app.rpc #rpan{transform:translateX(calc(var(--p)*41));cursor:pointer}
+#app.rpc #rpan>button{pointer-events:none}
+#rptg{position:absolute;left:calc(var(--p)*-15);top:50%;width:calc(var(--p)*15);height:calc(var(--p)*40);transform:translateY(-50%);border-radius:calc(var(--p)*8) 0 0 calc(var(--p)*8);background:linear-gradient(180deg,#6a4220,#2a160a);border:calc(var(--p)*1.6) solid #c8943c;border-right:0;box-shadow:0 calc(var(--p)*1) calc(var(--p)*3) rgba(0,0,0,.55),inset 0 0 0 calc(var(--p)*.8) #4a2a0c;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:3;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+#rptg::before{content:"";position:absolute;left:-10px;right:0;top:-10px;bottom:-10px}
+#rptg svg{width:60%;height:auto;display:block;transition:transform .28s;pointer-events:none}
+#app.rpc #rptg svg{transform:scaleX(-1)}
+#app.rpc #rptg{animation:rptp 2.6s ease-in-out infinite}
+@keyframes rptp{0%,100%{box-shadow:0 calc(var(--p)*1) calc(var(--p)*3) rgba(0,0,0,.55),inset 0 0 0 calc(var(--p)*.8) #4a2a0c}50%{box-shadow:0 0 calc(var(--p)*7) #f0c765,inset 0 0 0 calc(var(--p)*.8) #4a2a0c}}
+html.gfx-low #app.rpc #rptg,html.gfx-mid #app.rpc #rptg{animation:none}
+@media (prefers-reduced-motion:reduce){#app.rpc #rptg{animation:none}#app #rpan{transition:none}}
+/* красные значки — на ЛЕВОМ краю кнопок, чтобы были видны при закрытой панели */
+#app #rpan>#tqbtn>.tqb{position:absolute;right:auto;left:calc(var(--p)*-2);top:calc(var(--p)*1);z-index:3}
+#app #jkbtn i{right:auto;left:calc(var(--p)*-2);bottom:auto;top:calc(var(--p)*1)}
+#rdbtn .dot{right:auto;left:calc(var(--p)*-4);top:calc(var(--p)*-3)}
+</style>
+<script id="rpjs">(function(){
+var app=document.getElementById("app"),rp=document.getElementById("rpan");if(!app||!rp)return;
+var K="rpc",st=1;try{var v=localStorage.getItem(K);if(v==="0")st=0}catch(e){}
+function set(c){st=c?1:0;app.classList.toggle("rpc",!!c);try{localStorage.setItem(K,c?"1":"0")}catch(e){}tg.setAttribute("aria-expanded",c?"false":"true")}
+var tg=document.createElement("div");tg.id="rptg";tg.setAttribute("role","button");tg.setAttribute("aria-label","Панель");
+tg.innerHTML='<svg viewBox="0 0 10 16"><path d="M2 2 L8 8 L2 14" fill="none" stroke="#f0c765" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+rp.appendChild(tg);
+tg.addEventListener("click",function(e){set(!st);e.stopPropagation()});
+rp.addEventListener("click",function(e){if(e.target===tg)return;if(st){set(0);e.stopPropagation()}},true);
+set(st);
+window.RPC={toggle:function(){set(!st)},open:function(){set(0)},close:function(){set(1)},state:function(){return st?"closed":"open"}};
+})()</script>
 </body></html>

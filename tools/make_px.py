@@ -21,9 +21,9 @@ OUT_DIR = os.environ.get('PX_OUT') or os.path.join(ROOT, 'kozak2')
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from px_palette import HAND
 
-CAP_W = int(os.environ.get('PX_CAP', 224))      # сколько пикселей арта в ширину у картинки во весь экран
-MIN_W = int(os.environ.get('PX_MIN', 48))       # минимум у мелких иконок
-DIT = float(os.environ.get('PX_DIT', 5.0))   # сила упорядоченного дизеринга (9 был слишком «шашечный»)
+CAP_W = int(os.environ.get('PX_CAP', 360))      # сколько пикселей арта в ширину у картинки во весь экран
+MIN_W = int(os.environ.get('PX_MIN', 72))       # минимум у мелких иконок
+DIT = float(os.environ.get('PX_DIT', 3.0))   # сила упорядоченного дизеринга (9 был слишком «шашечный»)
 DIT_ICON = 0.0   # мелкие картинки (иконки, значки) без дизеринга: так читаются лучше
 SAT, CON = 1.14, 1.10
 CORPUS = 96      # цветов из самих картинок
@@ -168,7 +168,7 @@ try{if(!localStorage.getItem("kozak3px")&&localStorage.getItem("kozak3"))localSt
 html.pxbig .pxh{font-family:'PXA','PXB',monospace!important}
 </style>
 <script>/* kozak2: пиксельный шрифт только для КРУПНЫХ надписей (>=PXMIN px на экране), мелкий текст остаётся обычным: так его можно читать */
-(function(){var PXMIN=20,off=false;try{off=localStorage.getItem("pxfont")==="0"}catch(e){}
+(function(){var PXMIN=20,off=true;try{off=localStorage.getItem("pxfont")!=="1"}catch(e){}
 function chk(e){try{if(e.nodeType!==1||e.closest("canvas"))return;var own=0,n=e.firstChild;while(n){if(n.nodeType===3&&n.nodeValue.trim()){own=1;break}n=n.nextSibling}
 if(!own){if(e.classList.contains("pxh"))e.classList.remove("pxh");return}
 var h=e.offsetHeight;if(!h){return}var r=e.getBoundingClientRect(),sc=r.height/h;if(!isFinite(sc)||sc<=0)sc=1;

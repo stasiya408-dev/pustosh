@@ -21,8 +21,8 @@ OUT_DIR = os.environ.get('PX_OUT') or os.path.join(ROOT, 'kozak2')
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from px_palette import HAND
 
-CAP_W = int(os.environ.get('PX_CAP', 360))      # сколько пикселей арта в ширину у картинки во весь экран
-MIN_W = int(os.environ.get('PX_MIN', 72))       # минимум у мелких иконок
+CAP_W = int(os.environ.get('PX_CAP', 480))      # сколько пикселей арта в ширину у картинки во весь экран
+MIN_W = int(os.environ.get('PX_MIN', 96))       # минимум у мелких иконок
 DIT = float(os.environ.get('PX_DIT', 3.0))   # сила упорядоченного дизеринга (9 был слишком «шашечный»)
 DIT_ICON = 0.0   # мелкие картинки (иконки, значки) без дизеринга: так читаются лучше
 SAT, CON = 1.14, 1.10

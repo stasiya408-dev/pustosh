@@ -36,9 +36,9 @@
 html.gfx-low #ldr .lsun,html.gfx-low #ldr .ldw,html.gfx-low #ldr .lgr,html.gfx-low #ldr .lem,html.gfx-low #ldr .lr1,html.gfx-low #ldr .lr2{animation:none}
 html.gfx-low #ldr .lem{display:none}
 @media (prefers-reduced-motion:reduce){#ldr *{animation:none!important}}
-</style><meta charset="UTF-8"><meta name="ver" content="330">
+</style><meta charset="UTF-8"><meta name="ver" content="331">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<script>var VER=330;(function(){try{fetch(location.pathname+"?c="+Date.now(),{headers:{Range:"bytes=0-600"},cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="ver" content="(\d+)"/);if(m&&+m[1]>VER&&sessionStorage.getItem("upd")!==m[1]){sessionStorage.setItem("upd",m[1]);location.replace(location.pathname+"?v="+m[1]+"&r="+Date.now())}}).catch(function(){})}catch(e){}})()</script>
+<script>var VER=331;(function(){try{fetch(location.pathname+"?c="+Date.now(),{headers:{Range:"bytes=0-600"},cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="ver" content="(\d+)"/);if(m&&+m[1]>VER&&sessionStorage.getItem("upd")!==m[1]){sessionStorage.setItem("upd",m[1]);location.replace(location.pathname+"?v="+m[1]+"&r="+Date.now())}}).catch(function(){})}catch(e){}})()</script>
 <script id="gfxhead">(function(){var L="high";try{var v=localStorage.getItem("gfx");if(v==="mid"||v==="low")L=v}catch(e){}
 var PR={high:{fps:60,dpr:99,strip:3,hI:30,hA:30,pq:1},mid:{fps:45,dpr:1.5,strip:4,hI:45,hA:36,pq:.75},low:{fps:30,dpr:1,strip:6,hI:60,hA:45,pq:.65}}[L];
 window.GFX={lvl:L,low:L==="low",mid:L==="mid",hres:L==="low"?.5:L==="mid"?.65:1,fps:PR.fps,iv:1000/PR.fps,strip:PR.strip,heroI:PR.hI,heroA:PR.hA,pq:PR.pq,real:0,min:0};
@@ -786,7 +786,7 @@ setTimeout(function(){if(L.boot)L.done()},20000)})();
 <div id="hud2"><div id="hbar"><div class="lau"></div><div id="hlv"><b id="lv"></b></div><div id="hname"><span id="nm"></span></div>
 <div class="hr"><i>⚡</i><span class="ho hv" id="en"></span><button class="hp" onclick="soon()" aria-label="Пополнить">+</button></div><div class="hr"><i class="cs"></i><span class="ho hv" id="sv"></span><button class="hp" onclick="soon()" aria-label="Пополнить">+</button></div><div class="hr"><i>💰</i><span class="ho hv" id="tl"></span><button class="hp" onclick="testTalers()" aria-label="Пополнить">+</button></div><div class="hr"><i>💪</i><span class="ho hv" id="pw"></span><button class="hp" onclick="soon()" aria-label="Пополнить">+</button></div>
 <div class="xpt"><i id="xp"></i></div></div>
-<button id="hgear" onclick="gearTap()" aria-label="Настройки" aria-expanded="false">⚙</button><div class="ho" id="el"></div><div class="ho" id="hver">v330</div></div>
+<button id="hgear" onclick="gearTap()" aria-label="Настройки" aria-expanded="false">⚙</button><div class="ho" id="el"></div><div class="ho" id="hver">v331</div></div>
 <div id="scene">
 
 <div id="hut"><img id="campbg" draggable="false" alt="" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 50%;z-index:0" src="data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=">
@@ -8648,6 +8648,17 @@ html.gfx-low #app.rpc #rptg,html.gfx-mid #app.rpc #rptg{animation:none}
 #app #rpan>#tqbtn>.tqb{position:absolute;right:auto;left:calc(var(--p)*-2);top:calc(var(--p)*1);z-index:3}
 #app #jkbtn i{right:auto;left:calc(var(--p)*-2);bottom:auto;top:calc(var(--p)*1)}
 #rdbtn .dot{right:auto;left:calc(var(--p)*-4);top:calc(var(--p)*-3)}
+</style>
+<style id="rpbmcss">
+#rptg{left:calc(var(--p)*-17);width:calc(var(--p)*17);height:calc(var(--p)*92);border:0;border-radius:0;background:none;box-shadow:none;filter:drop-shadow(0 calc(var(--p)*1.2) calc(var(--p)*2) rgba(0,0,0,.6))}
+#rptg::before{left:-16px;right:0;top:-8px;bottom:-8px}
+#rptg::after{content:"";position:absolute;left:0;top:0;width:100%;height:100%;z-index:-1;background:linear-gradient(90deg,#b3241a 0,#d8362a 45%,#8e130c 100%);clip-path:polygon(0 0,100% 0,100% 100%,0 100%,34% 50%)}
+#rptg svg{position:relative;left:calc(var(--p)*2);width:calc(var(--p)*6.5);filter:drop-shadow(0 1px 1px rgba(0,0,0,.5))}
+#rptg svg path{stroke:#ffe9c0}
+#app.rpc #rptg{animation:rpbmp 2.6s ease-in-out infinite}
+@keyframes rpbmp{0%,100%{filter:drop-shadow(0 calc(var(--p)*1.2) calc(var(--p)*2) rgba(0,0,0,.6))}50%{filter:drop-shadow(0 0 calc(var(--p)*4) #ff6a4a) drop-shadow(0 calc(var(--p)*1.2) calc(var(--p)*2) rgba(0,0,0,.6))}}
+html.gfx-low #app.rpc #rptg,html.gfx-mid #app.rpc #rptg{animation:none}
+@media (prefers-reduced-motion:reduce){#app.rpc #rptg{animation:none}}
 </style>
 <script id="rpjs">(function(){
 var app=document.getElementById("app"),rp=document.getElementById("rpan");if(!app||!rp)return;

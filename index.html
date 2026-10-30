@@ -36,9 +36,9 @@
 html.gfx-low #ldr .lsun,html.gfx-low #ldr .ldw,html.gfx-low #ldr .lgr,html.gfx-low #ldr .lem,html.gfx-low #ldr .lr1,html.gfx-low #ldr .lr2{animation:none}
 html.gfx-low #ldr .lem{display:none}
 @media (prefers-reduced-motion:reduce){#ldr *{animation:none!important}}
-</style><meta charset="UTF-8"><meta name="ver" content="336">
+</style><meta charset="UTF-8"><meta name="ver" content="337">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<script>var VER=336;(function(){try{fetch(location.pathname+"?c="+Date.now(),{headers:{Range:"bytes=0-600"},cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="ver" content="(\d+)"/);if(m&&+m[1]>VER&&sessionStorage.getItem("upd")!==m[1]){sessionStorage.setItem("upd",m[1]);location.replace(location.pathname+"?v="+m[1]+"&r="+Date.now())}}).catch(function(){})}catch(e){}})()</script>
+<script>var VER=337;(function(){try{fetch(location.pathname+"?c="+Date.now(),{headers:{Range:"bytes=0-600"},cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="ver" content="(\d+)"/);if(m&&+m[1]>VER&&sessionStorage.getItem("upd")!==m[1]){sessionStorage.setItem("upd",m[1]);location.replace(location.pathname+"?v="+m[1]+"&r="+Date.now())}}).catch(function(){})}catch(e){}})()</script>
 <script id="gfxhead">(function(){var L="high";try{var v=localStorage.getItem("gfx");if(v==="mid"||v==="low")L=v}catch(e){}
 var PR={high:{fps:60,dpr:99,strip:3,hI:30,hA:30,pq:1},mid:{fps:45,dpr:1.5,strip:4,hI:45,hA:36,pq:.75},low:{fps:30,dpr:1,strip:6,hI:60,hA:45,pq:.65}}[L];
 window.GFX={lvl:L,low:L==="low",mid:L==="mid",hres:L==="low"?.5:L==="mid"?.65:1,fps:PR.fps,iv:1000/PR.fps,strip:PR.strip,heroI:PR.hI,heroA:PR.hA,pq:PR.pq,real:0,min:0};
@@ -786,7 +786,7 @@ setTimeout(function(){if(L.boot)L.done()},20000)})();
 <div id="hud2"><div id="hbar"><div class="lau"></div><div id="hlv"><b id="lv"></b></div><div id="hname"><span id="nm"></span></div>
 <div class="hr"><i>⚡</i><span class="ho hv" id="en"></span><button class="hp" onclick="soon()" aria-label="Пополнить">+</button></div><div class="hr"><i class="cs"></i><span class="ho hv" id="sv"></span><button class="hp" onclick="soon()" aria-label="Пополнить">+</button></div><div class="hr"><i>💰</i><span class="ho hv" id="tl"></span><button class="hp" onclick="testTalers()" aria-label="Пополнить">+</button></div><div class="hr"><i>💪</i><span class="ho hv" id="pw"></span><button class="hp" onclick="soon()" aria-label="Пополнить">+</button></div>
 <div class="xpt"><i id="xp"></i></div></div>
-<button id="hgear" onclick="gearTap()" aria-label="Настройки" aria-expanded="false">⚙</button><div class="ho" id="el"></div><div class="ho" id="hver">v336</div></div>
+<button id="hgear" onclick="gearTap()" aria-label="Настройки" aria-expanded="false">⚙</button><div class="ho" id="el"></div><div class="ho" id="hver">v337</div></div>
 <div id="scene">
 
 <div id="hut"><img id="campbg" draggable="false" alt="" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 50%;z-index:0" src="data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=">
@@ -8883,4 +8883,9 @@ if(document.readyState!="loading")init();else document.addEventListener("DOMCont
 setTimeout(init,600);setTimeout(init,2500);setInterval(function(){el();watch();sync()},4000);
 })();
 </script>
+<svg id="swg336" width="0" height="0" style="position:absolute;width:0;height:0;pointer-events:none" aria-hidden="true"><defs><filter id="swgf336" color-interpolation-filters="sRGB" x="-5%" y="-5%" width="110%" height="110%"><feColorMatrix type="matrix" values="0.98 0.05 0 0 0.02  0.02 0.76 0.04 0 0  0.02 0.04 0.74 0 0.01  0 0 0 1 0"/></filter></defs></svg>
+<style id="swgcss336">#app.swamp #fig{filter:url(#swgf336) drop-shadow(7px -5px 9px rgba(255,45,30,.42)) drop-shadow(0 0 2px rgba(255,80,60,.35))}
+#app.swamp #stage>#trSword{filter:url(#swgf336) drop-shadow(0 6px 7px rgba(0,0,0,.4))}
+html.gfx-low #app.swamp #fig{filter:url(#swgf336)}
+html.gfx-low #app.swamp #stage>#trSword{filter:url(#swgf336)}</style>
 </body></html>

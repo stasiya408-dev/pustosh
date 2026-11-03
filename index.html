@@ -36,9 +36,9 @@
 html.gfx-low #ldr .lsun,html.gfx-low #ldr .ldw,html.gfx-low #ldr .lgr,html.gfx-low #ldr .lem,html.gfx-low #ldr .lr1,html.gfx-low #ldr .lr2{animation:none}
 html.gfx-low #ldr .lem{display:none}
 @media (prefers-reduced-motion:reduce){#ldr *{animation:none!important}}
-</style><meta charset="UTF-8"><meta name="ver" content="344">
+</style><meta charset="UTF-8"><meta name="ver" content="345">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<script>var VER=344;(function(){try{fetch(location.pathname+"?c="+Date.now(),{headers:{Range:"bytes=0-600"},cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="ver" content="(\d+)"/);if(m&&+m[1]>VER&&sessionStorage.getItem("upd")!==m[1]){sessionStorage.setItem("upd",m[1]);location.replace(location.pathname+"?v="+m[1]+"&r="+Date.now())}}).catch(function(){})}catch(e){}})()</script>
+<script>var VER=345;(function(){try{fetch(location.pathname+"?c="+Date.now(),{headers:{Range:"bytes=0-600"},cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="ver" content="(\d+)"/);if(m&&+m[1]>VER&&sessionStorage.getItem("upd")!==m[1]){sessionStorage.setItem("upd",m[1]);location.replace(location.pathname+"?v="+m[1]+"&r="+Date.now())}}).catch(function(){})}catch(e){}})()</script>
 <script id="gfxhead">(function(){var L="high";try{var v=localStorage.getItem("gfx");if(v==="mid"||v==="low")L=v}catch(e){}
 var PR={high:{fps:60,dpr:99,strip:3,hI:30,hA:30,pq:1},mid:{fps:45,dpr:1.5,strip:4,hI:45,hA:36,pq:.75},low:{fps:30,dpr:1,strip:6,hI:60,hA:45,pq:.65}}[L];
 window.GFX={lvl:L,low:L==="low",mid:L==="mid",hres:L==="low"?.5:L==="mid"?.65:1,fps:PR.fps,iv:1000/PR.fps,strip:PR.strip,heroI:PR.hI,heroA:PR.hA,pq:PR.pq,real:0,min:0};
@@ -786,7 +786,7 @@ setTimeout(function(){if(L.boot)L.done()},20000)})();
 <div id="hud2"><div id="hbar"><div class="lau"></div><div id="hlv"><b id="lv"></b></div><div id="hname"><span id="nm"></span></div>
 <div class="hr"><i>⚡</i><span class="ho hv" id="en"></span><button class="hp" onclick="soon()" aria-label="Пополнить">+</button></div><div class="hr"><i class="cs"></i><span class="ho hv" id="sv"></span><button class="hp" onclick="soon()" aria-label="Пополнить">+</button></div><div class="hr"><i>💰</i><span class="ho hv" id="tl"></span><button class="hp" onclick="testTalers()" aria-label="Пополнить">+</button></div><div class="hr"><i>💪</i><span class="ho hv" id="pw"></span><button class="hp" onclick="soon()" aria-label="Пополнить">+</button></div>
 <div class="xpt"><i id="xp"></i></div></div>
-<button id="hgear" onclick="gearTap()" aria-label="Настройки" aria-expanded="false">⚙</button><div class="ho" id="el"></div><div class="ho" id="hver">v344</div></div>
+<button id="hgear" onclick="gearTap()" aria-label="Настройки" aria-expanded="false">⚙</button><div class="ho" id="el"></div><div class="ho" id="hver">v345</div></div>
 <div id="scene">
 
 <div id="hut"><img id="campbg" draggable="false" alt="" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 50%;z-index:0" src="data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=">
@@ -4057,10 +4057,14 @@ C.BOSSCFG={
   gem:[.02,.03,.05]                           /* целый кристалл этого босса */
  },
  /* ---- талеры: только у некоторых боссов ---- */
+ /* v345: «чем выше босс, тем реже ценное». HARD = множитель шансов САМЫХ ЦЕННЫХ наград (целый перстень, целый кристалл, талеры, фон/стойка/комплект);
+    база = Нагай (1). Уламки перстня/кристалла, серебро и сила НЕ меняются. Числа UNAPPROVED. */
+ HARD:{ostap:1,nahai:1,grom:.8,marena:.6,syryi:.45,bekliar:.33,kryzhanyi:.25},
+ /* талеры: базовый шанс у всех боссов как у Нагая, дальше умножается на HARD; у верхних боссов выше размер выпадения */
  TALERS:{
   ostap:{ch:[.20,.30,.40],amt:[1,1]},
-  nahai:{ch:[.20,.30,.40],amt:[1,1]},grom:{ch:[.04,.06,.08],amt:[1,1]},
-  syryi:{ch:[.06,.09,.12],amt:[1,2]},bekliar:{ch:[.06,.09,.12],amt:[1,2]},marena:{ch:[.06,.09,.12],amt:[1,2]},kryzhanyi:{ch:[.06,.09,.12],amt:[1,2]}},
+  nahai:{ch:[.20,.30,.40],amt:[1,1]},grom:{ch:[.20,.30,.40],amt:[1,2]},
+  syryi:{ch:[.20,.30,.40],amt:[1,2]},bekliar:{ch:[.20,.30,.40],amt:[1,2]},marena:{ch:[.20,.30,.40],amt:[1,2]},kryzhanyi:{ch:[.20,.30,.40],amt:[1,2]}},
  /* ---- первая ПОБЕДА за сутки над конкретным боссом ---- */
  FIRSTWIN:{silverPct:.10,powerPct:.05,ringAdd:.002,gemAdd:.001,talerAdd:.001},
  /* ---- редкие косметические трофеи (на каждого босса, независимые броски) ---- */
@@ -5361,12 +5365,13 @@ function roll(bid,rage,first,rand,own){
   rand=rand||Math.random;var D=K.DROP,F=K.FIRSTWIN,C=K.COSM,o={gemShards:0,ringShards:0,ring:0,gem:0,talers:0,backdrop:0,pose:0,outfit:0};
   if(rand()<D.gemShardChance[rage])o.gemShards=ri(D.gemShardBundle[rage],rand);
   if(rand()<D.ringShardChance[rage])o.ringShards=ri(D.ringShardBundle[rage],rand);
-  if(rand()<D.ring[rage]+(first?F.ringAdd:0))o.ring=1;
-  if(rand()<D.gem[rage]+(first?F.gemAdd:0))o.gem=1;
-  var T=K.TALERS[bid];if(T&&T.ch[rage]>0&&rand()<T.ch[rage]+(first?F.talerAdd:0))o.talers=ri(T.amt,rand);
+  var HD=(K.HARD&&K.HARD[bid]!=null)?K.HARD[bid]:1;
+  if(rand()<(D.ring[rage]+(first?F.ringAdd:0))*HD)o.ring=1;
+  if(rand()<(D.gem[rage]+(first?F.gemAdd:0))*HD)o.gem=1;
+  var T=K.TALERS[bid];if(T&&T.ch[rage]>0&&rand()<(T.ch[rage]+(first?F.talerAdd:0))*HD)o.talers=ri(T.amt,rand);
   /* косметика: один бросок на победу; шанс уже полученного переходит на самый ценный ещё не полученный: комплект -> стойка -> фон */
   own=own||{};var ord=["outfit","pose","backdrop"],ef={},fr=0,top=null;
-  ord.forEach(function(k){if(own[k])fr+=C[k][rage];else{ef[k]=C[k][rage];if(!top)top=k}});
+  ord.forEach(function(k){var cv=C[k][rage]*HD;if(own[k])fr+=cv;else{ef[k]=cv;if(!top)top=k}});
   if(top)ef[top]+=fr;
   var cr=rand(),acc=0;
   for(var q=0;q<3;q++){var k2=ord[q];if(ef[k2]==null)continue;acc+=ef[k2];if(cr<acc){o[k2]=1;break}}

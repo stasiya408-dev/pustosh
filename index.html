@@ -36,9 +36,9 @@
 html.gfx-low #ldr .lsun,html.gfx-low #ldr .ldw,html.gfx-low #ldr .lgr,html.gfx-low #ldr .lem,html.gfx-low #ldr .lr1,html.gfx-low #ldr .lr2{animation:none}
 html.gfx-low #ldr .lem{display:none}
 @media (prefers-reduced-motion:reduce){#ldr *{animation:none!important}}
-</style><meta charset="UTF-8"><meta name="ver" content="340">
+</style><meta charset="UTF-8"><meta name="ver" content="341">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<script>var VER=340;(function(){try{fetch(location.pathname+"?c="+Date.now(),{headers:{Range:"bytes=0-600"},cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="ver" content="(\d+)"/);if(m&&+m[1]>VER&&sessionStorage.getItem("upd")!==m[1]){sessionStorage.setItem("upd",m[1]);location.replace(location.pathname+"?v="+m[1]+"&r="+Date.now())}}).catch(function(){})}catch(e){}})()</script>
+<script>var VER=341;(function(){try{fetch(location.pathname+"?c="+Date.now(),{headers:{Range:"bytes=0-600"},cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="ver" content="(\d+)"/);if(m&&+m[1]>VER&&sessionStorage.getItem("upd")!==m[1]){sessionStorage.setItem("upd",m[1]);location.replace(location.pathname+"?v="+m[1]+"&r="+Date.now())}}).catch(function(){})}catch(e){}})()</script>
 <script id="gfxhead">(function(){var L="high";try{var v=localStorage.getItem("gfx");if(v==="mid"||v==="low")L=v}catch(e){}
 var PR={high:{fps:60,dpr:99,strip:3,hI:30,hA:30,pq:1},mid:{fps:45,dpr:1.5,strip:4,hI:45,hA:36,pq:.75},low:{fps:30,dpr:1,strip:6,hI:60,hA:45,pq:.65}}[L];
 window.GFX={lvl:L,low:L==="low",mid:L==="mid",hres:L==="low"?.5:L==="mid"?.65:1,fps:PR.fps,iv:1000/PR.fps,strip:PR.strip,heroI:PR.hI,heroA:PR.hA,pq:PR.pq,real:0,min:0};
@@ -786,7 +786,7 @@ setTimeout(function(){if(L.boot)L.done()},20000)})();
 <div id="hud2"><div id="hbar"><div class="lau"></div><div id="hlv"><b id="lv"></b></div><div id="hname"><span id="nm"></span></div>
 <div class="hr"><i>⚡</i><span class="ho hv" id="en"></span><button class="hp" onclick="soon()" aria-label="Пополнить">+</button></div><div class="hr"><i class="cs"></i><span class="ho hv" id="sv"></span><button class="hp" onclick="soon()" aria-label="Пополнить">+</button></div><div class="hr"><i>💰</i><span class="ho hv" id="tl"></span><button class="hp" onclick="testTalers()" aria-label="Пополнить">+</button></div><div class="hr"><i>💪</i><span class="ho hv" id="pw"></span><button class="hp" onclick="soon()" aria-label="Пополнить">+</button></div>
 <div class="xpt"><i id="xp"></i></div></div>
-<button id="hgear" onclick="gearTap()" aria-label="Настройки" aria-expanded="false">⚙</button><div class="ho" id="el"></div><div class="ho" id="hver">v340</div></div>
+<button id="hgear" onclick="gearTap()" aria-label="Настройки" aria-expanded="false">⚙</button><div class="ho" id="el"></div><div class="ho" id="hver">v341</div></div>
 <div id="scene">
 
 <div id="hut"><img id="campbg" draggable="false" alt="" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 50%;z-index:0" src="data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=">
@@ -1219,14 +1219,14 @@ var HFOE={
 bandit:{n:"Разбойник",ic:"🗡️",hp:62,at:[7,13],loot:{sv:[14,26],it:[["buckle",25],["knife",20]],food:1}},
 dog:{n:"Одичавшая собака",ic:"🐕",hp:30,at:[4,9],loot:{sv:[2,6]}},
 wolf:{n:"Волк",ic:"🐺",hp:52,at:[6,12],loot:{sv:[0,4],it:[["hide",75]]}},
-guard:{n:"Страж кургана",ic:"💀",hp:125,at:[10,17],loot:{sv:[30,50]}}};
-HLOC.field.pw=500;HLOC.field.en=30;HLOC.field.rew=10000;HLOC.field.M=40;HLOC.field.fm=5;HLOC.field.fa=1.2;HLOC.field.bw=[70,25,5];
-HLOC.oak.pw=1500;HLOC.oak.en=36;HLOC.oak.rew=20000;HLOC.oak.M=80;HLOC.oak.fm=12;HLOC.oak.fa=1.6;HLOC.oak.bw=[40,45,15];
-HLOC.farm.pw=4000;HLOC.farm.en=42;HLOC.farm.rew=40000;HLOC.farm.M=160;HLOC.farm.fm=25;HLOC.farm.fa=2.2;HLOC.farm.bw=[20,45,35];
-HLOC.kurgan.pw=9000;HLOC.kurgan.en=48;HLOC.kurgan.rew=80000;HLOC.kurgan.M=320;HLOC.kurgan.fm=50;HLOC.kurgan.fa=3;HLOC.kurgan.bw=[10,40,50];
-HFOE.b1={n:"Атаман налётчиков",ic:"🦹",star:1,hp:1500,at:[16,28],loot:{}};
-HFOE.b2={n:"Волчий вожак",ic:"🐺",star:2,hp:4000,at:[26,44],loot:{}};
-HFOE.b3={n:"Ордынский багатур",ic:"👹",star:3,hp:9000,at:[40,66],loot:{}};
+guard:{n:"Страж кургана",ic:"💀",hp:100,at:[6,10],loot:{sv:[30,50]}}};
+HLOC.field.pw=500;HLOC.field.en=30;HLOC.field.rew=10000;HLOC.field.M=40;HLOC.field.fm=5;HLOC.field.fa=1.2;HLOC.field.bw=[70,25,5];HLOC.field.bh=1;
+HLOC.oak.pw=1500;HLOC.oak.en=36;HLOC.oak.rew=20000;HLOC.oak.M=80;HLOC.oak.fm=12;HLOC.oak.fa=1.6;HLOC.oak.bw=[40,45,15];HLOC.oak.bh=2.4;
+HLOC.farm.pw=4000;HLOC.farm.en=42;HLOC.farm.rew=40000;HLOC.farm.M=160;HLOC.farm.fm=25;HLOC.farm.fa=2.2;HLOC.farm.bw=[20,45,35];HLOC.farm.bh=7;
+HLOC.kurgan.pw=9000;HLOC.kurgan.en=48;HLOC.kurgan.rew=80000;HLOC.kurgan.M=320;HLOC.kurgan.fm=50;HLOC.kurgan.fa=3;HLOC.kurgan.bw=[10,40,50];HLOC.kurgan.bh=16;
+HFOE.b1={n:"Атаман налётчиков",ic:"🦹",star:1,hp:800,at:[6,11],loot:{}};
+HFOE.b2={n:"Волчий вожак",ic:"🐺",star:2,hp:1000,at:[7,12],loot:{}};
+HFOE.b3={n:"Ордынский багатур",ic:"👹",star:3,hp:1650,at:[10,17],loot:{}};
 HITEM.trophy1={n:"Булава атамана",ic:"🪓",v:120,img:"",d:"Тяжёлая трофейная булава."};
 HITEM.trophy2={n:"Золотой кубок",ic:"🏆",v:300,img:"",d:"Награбленная ценность."};
 HITEM.trophy3={n:"Ханская печать",ic:"💠",v:800,img:"",d:"Редчайший трофей орды."};
@@ -1471,13 +1471,13 @@ if(r<.15){var id=hPick();if(id){hShow(id);return}}
 if(r<.5){var fx=Math.random()<.3?{it:{herbs:1}}:{sv:R(3,8)};HK.out={t:"Ты осмотрелся и кое-что нашёл.",c:hFx(fx),end:0};HK.ph="out"}
 else HK.note="Ты осмотрелся: ничего интересного.";
 draw();hRender()}
-function hFightStart(f){var F=HFOE[f.f],L=HLOC[HK.loc],m=F.star?Math.round(F.hp*L.M/40):Math.round(F.hp*(1+S.lv*.03)*L.fm);HK.fg={f:f.f,hp:m,m:m,def:0,sq:f.sq||0,after:f.after||null,log:f.hit?F.n+" нападает первым!":"Ты готов к бою."};HK.ph="fight";if(f.hit){var d=hEnemyHit();HK.fg.log+=" −"+d+" ❤️";if(HK.hp<=0){hFinish(0);return}}draw();hRender()}
+function hFightStart(f){var F=HFOE[f.f],L=HLOC[HK.loc],m=F.star?Math.round(F.hp*(L.bh||L.M/40)):Math.round(F.hp*(1+S.lv*.03)*L.fm);HK.fg={f:f.f,hp:m,m:m,def:0,sq:f.sq||0,after:f.after||null,log:f.hit?F.n+" нападает первым!":"Ты готов к бою."};HK.ph="fight";if(f.hit){var d=hEnemyHit();HK.fg.log+=" −"+d+" ❤️";if(HK.hp<=0){hFinish(0);return}}draw();hRender()}
 function hEnemyHit(){var g=HK.fg,F=HFOE[g.f],L=HLOC[HK.loc],d=Math.max(2,Math.round(R(F.at[0],F.at[1])*(F.star?L.fa/1.2:L.fa)));if(g.def){d=Math.ceil(d/2);g.def=0}if(g.sq)d=Math.ceil(d*.6);HK.hp=Math.max(0,HK.hp-d);return d}
 function hAct(a){var g=HK.fg;if(!g||HK.ph!="fight")return;var F=HFOE[g.f],m="";
 if(a=="hit"){var d=R(10,18)+Math.floor(S.pw*.5);g.hp-=d;hPop("-"+d,"e");m="Ты ударил шаблей: −"+d+". "}
 else if(a=="gun"){if(HK.fz<1)return;HK.fz--;g.hp-=FUSE_DMG;hPop("-"+FUSE_DMG,"e");m="🔫 Выстрел из самопала: −"+FUSE_DMG+". "}
 else if(a=="def"){g.def=1;m="Ты прикрылся и ждёшь удара. "}
-else if(a=="run"){var p=Math.min(.9,.45+.12*HK.hl+(HK.hc>0?.1:0));if(Math.random()<p){HK.st=Math.max(0,HK.st-10);HK.fg=null;HK.out={t:"Конь вынес тебя из боя.",c:"🏃 −10",nx:null,end:0};HK.ph="out";draw();hRender();return}m="Уйти не удалось! "}
+else if(a=="run"){var p=Math.min(.92,.55+.12*HK.hl+(HK.hc>0?.1:0));if(Math.random()<p){HK.st=Math.max(0,HK.st-10);HK.fg=null;HK.out={t:"Конь вынес тебя из боя.",c:"🏃 −10",nx:null,end:0};HK.ph="out";draw();hRender();return}m="Уйти не удалось! "}
 if(g.sq&&g.hp>0){var fd=Math.round(g.m*.06);g.hp-=fd;hPop("-"+fd,"f");m+="Друзья бьют: −"+fd+". "}
 if(g.hp<=0){hWin();return}
 var e=hEnemyHit();hPop("-"+e,"p");g.log=m+F.n+" бьёт: −"+e+" ❤️.";if(HK.hp<=0){hFinish(0);return}draw();hRender()}
@@ -1487,7 +1487,7 @@ HK.stats.wins++;var c=hFx(fx);HK.fg=null;HK.out={t:"Победа! "+F.n+" пов
 function hBossAppear(){var L=HLOC[HK.loc],r=Math.random()*100,s=r<L.bw[0]?1:r<L.bw[0]+L.bw[1]?2:3;HK.boss=s;HK.bs={star:s,sq:0,note:""};HK.ph="boss";draw();hRender()}
 function hBossGo(a){if(HK.ph!="boss")return;var s=HK.bs.star;
 if(a=="fight"){HK.ph="fight";hFightStart({f:"b"+s,sq:HK.bs.sq});return}
-if(a=="run"){var p=Math.min(.9,.5+.1*HK.hl+(HK.hc>0?.1:0));if(Math.random()<p){HK.st=Math.max(0,HK.st-15);HK.bs=null;HK.out={t:"Ты заметил врага вовремя и ушёл в сторону. Босс тебя не догнал.",c:"🏃 −15",nx:null,end:0};HK.ph="out";draw();hRender();return}
+if(a=="run"){var p=Math.min(.95,.65+.1*HK.hl+(HK.hc>0?.1:0));if(Math.random()<p){HK.st=Math.max(0,HK.st-15);HK.bs=null;HK.out={t:"Ты заметил врага вовремя и ушёл в сторону. Босс тебя не догнал.",c:"🏃 −15",nx:null,end:0};HK.ph="out";draw();hRender();return}
 HK.bs=null;HK.out={t:"Уйти не удалось! Босс настиг тебя первым.",c:"",nx:null,fight:{f:"b"+s,hit:1,sq:0},end:0};HK.ph="out";draw();hRender();return}
 if(a=="friends"){if(HK.bs.sq)return;var u=location.origin+location.pathname,url="https://t.me/share/url?url="+encodeURIComponent(u)+"&text="+encodeURIComponent("Помоги мне победить грозного босса в походе по Дикому полю!");try{Telegram.WebApp.openTelegramLink(url)}catch(e){try{window.open(url,"_blank")}catch(e2){}}
 HK.bs.sq=1;HK.bs.note="👥 Друзья услышали зов и вступят в бой: они бьют вместе с тобой, а босс бьёт слабее.";draw();hRender()}}
@@ -1530,7 +1530,7 @@ h+='<div class="hcard"><h3>🗺️ Карта</h3>🏕️ Сечь<br>↓<br>';H
 h+="</div>"+hBtn("🏕️ Вернуться в Сечь (завершить поход)","hFinish(1)")+hBtn("← Назад","hView(null)","alt")}
 else if(HK.ph=="trip"){var L1=HLOC[HK.loc];if(!SK)hBg(L1.bg);$("hti").textContent=L1.ic+" "+L1.n;var m8=HK.t%8,tod=m8<5?"день":m8<7?"вечер":"сумерки";
 h+=hLay(hPanel({hdr:L1.ic+" "+L1.n.toUpperCase(),t:"День "+(Math.floor(HK.t/8)+1)+", "+tod+". "+(HK.note||"Ты уже несколько часов в дороге.")+(window.chHint?chHint():""),extra:'<div class="hbar"><i data-w="'+HK.step/L1.len*100+'" style="width:'+(HPREV.ps!=null?HPREV.ps:HK.step/L1.len*100)+'%;background:linear-gradient(#ffe45a,#e8b40c)"></i></div><span class="hpg">Путь: '+HK.step+" / "+L1.len+"</span>"}),hBs(hBtn("🐎 Продолжить путь","hStep()")+hBtn("🔎 Осмотреться","hLook()","alt")+hBtn("🎒 Сумка","hView('bag')","alt")+hBtn("🗺️ Карта","hView('map')","alt"),"g2"));HPREV.ps=HK.step/L1.len*100}
-else if(HK.ph=="boss"){var bs=HK.bs,BF=HFOE["b"+bs.star],BM=Math.round(BF.hp*HLOC[HK.loc].M/40);if(!SK)hBg(HLOC[HK.loc].bg);$("hti").textContent="⚠️ Босс";
+else if(HK.ph=="boss"){var bs=HK.bs,BF=HFOE["b"+bs.star],BM=Math.round(BF.hp*(HLOC[HK.loc].bh||HLOC[HK.loc].M/40));if(!SK)hBg(HLOC[HK.loc].bg);$("hti").textContent="⚠️ Босс";
 h+=hLay(hPanel({hdr:"⚠️ "+BF.ic+" "+BF.n.toUpperCase()+" "+"★".repeat(bs.star),t:"Из зарослей выходит грозный противник. Сразиться, уйти или позвать на помощь?",extra:'<div class="hnote">❤️ '+BM+" · дроп: 💰 3–15, ценные трофеи, шанс 🔫 самопалов"+(bs.note?"<br>"+bs.note:"")+"</div>"}),hBs(hBtn("⚔️ Вступить в бой","hBossGo('fight')")+hBtn("🏃 Сбежать (шанс "+Math.round(Math.min(.9,.5+.1*HK.hl+(HK.hc>0?.1:0))*100)+"%)","hBossGo('run')","alt")+hBtn(bs.sq?"👥 Друзья уже в пути":"👥 Позвать друзей","hBossGo('friends')","alt",bs.sq)))}
 else if(HK.ph=="ev"){var e=HEVT[HK.ev];if(!SK)hBg(e.bg||HLOC[HK.loc].bg);$("hti").textContent=HLOC[HK.loc].ic+" "+HLOC[HK.loc].n;
 var em=hEm(e.t),evt=em[1].replace(/\n/g,"<br>"),b="",shown=0;
@@ -7129,7 +7129,7 @@ H.speed=function(){var h=act();return h?speedOf(h):10};
 H.cost=function(rest){var sp=H.speed(),c=Math.max(C.hike.minCost,C.hike.base-Math.max(0,Math.floor((sp-10)/C.hike.per)));return rest?Math.max(2,c-2):c};
 H.raidMul=function(){var sp=H.speed();return Math.max(C.raid.minMul,Math.min(C.raid.maxMul,1-(sp-10)*C.raid.mulPer))};
 H.raidLead=function(){var sp=H.speed();return Math.round(Math.min(C.raid.leadMax,Math.max(0,sp-10)*C.raid.leadPer))};
-H.flee=function(){return Math.round(Math.min(.9,.45+.12*H.hl())*100)};
+H.flee=function(){return Math.round(Math.min(.92,.55+.12*H.hl())*100)};
 H.line=function(){var h=act();return h?h.n+" · ⚡ "+speedOf(h)+": меньше устаёшь, легче уйти от боя":"—"};
 /* ---------- выдача ---------- */
 function pickName(){var s=ST(),used={};s.list.forEach(function(h){used[h.n]=1});var pool=C.names.filter(function(n){return !used[n]});if(!pool.length)pool=C.names;return pool[rr(0,pool.length-1)]}
@@ -8127,7 +8127,7 @@ function duelIn(a){if(!HK||HK.ph!="duel"||!D)return;var now=Date.now(),g=HK.fg;
 if(a=="up"||a=="gun"){if(now<D.cd)return;if(a=="gun"){if(HK.fz<1)return;HK.fz--;D.cd=now+500;if(dStrike(1,1))return;var b=document.querySelectorAll(".hdw .hmbt button")[0];if(b){b.textContent="🔫 Самопал ("+HK.fz+")";if(HK.fz<1)b.disabled=true}return}
 D.cd=now+450;var mul=D.st=="cnt"?2.4:1;if(D.st=="cnt"){D.st="idle";D.until=now+ri(500,1000);dTxt("Контрудар!")}
 dStrike(mul,0);return}
-if(a=="run"){var p=Math.min(.9,.45+.12*HK.hl+(HK.hc>0?.1:0));if(Math.random()<p){clr();HK.st=Math.max(0,HK.st-10);HK.fg=null;HK.out={t:"Конь вынес тебя из схватки.",c:"🏃 −10",nx:null,end:0};HK.ph="out";draw();hRender();return}
+if(a=="run"){var p=Math.min(.92,.55+.12*HK.hl+(HK.hc>0?.1:0));if(Math.random()<p){clr();HK.st=Math.max(0,HK.st-10);HK.fg=null;HK.out={t:"Конь вынес тебя из схватки.",c:"🏃 −10",nx:null,end:0};HK.ph="out";draw();hRender();return}
 dTxt("Уйти не удалось!");if(D.st!="tel"&&D.st!="rec"){D.st="idle";D.until=now+200}return}
 if(D.st!="tel")return;
 if(a=="down"){if(D.kind=="hi"){dRing(0);D.st="cnt";D.until=now+1100;dPop("Парирован!","g");dTxt("Парировал! Бей — контрудар ×2");hap("light")}else{D.def=1;dTxt("Блок против замаха — урон вдвое меньше")}return}

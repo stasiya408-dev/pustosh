@@ -36,9 +36,9 @@
 html.gfx-low #ldr .lsun,html.gfx-low #ldr .ldw,html.gfx-low #ldr .lgr,html.gfx-low #ldr .lem,html.gfx-low #ldr .lr1,html.gfx-low #ldr .lr2{animation:none}
 html.gfx-low #ldr .lem{display:none}
 @media (prefers-reduced-motion:reduce){#ldr *{animation:none!important}}
-</style><meta charset="UTF-8"><meta name="ver" content="355">
+</style><meta charset="UTF-8"><meta name="ver" content="356">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<script>var VER=355;(function(){try{fetch(location.pathname+"?c="+Date.now(),{headers:{Range:"bytes=0-600"},cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="ver" content="(\d+)"/);if(m&&+m[1]>VER&&sessionStorage.getItem("upd")!==m[1]){sessionStorage.setItem("upd",m[1]);location.replace(location.pathname+"?v="+m[1]+"&r="+Date.now())}}).catch(function(){})}catch(e){}})()</script>
+<script>var VER=356;(function(){try{fetch(location.pathname+"?c="+Date.now(),{headers:{Range:"bytes=0-600"},cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="ver" content="(\d+)"/);if(m&&+m[1]>VER&&sessionStorage.getItem("upd")!==m[1]){sessionStorage.setItem("upd",m[1]);location.replace(location.pathname+"?v="+m[1]+"&r="+Date.now())}}).catch(function(){})}catch(e){}})()</script>
 <script id="gfxhead">(function(){var L="high";try{var v=localStorage.getItem("gfx");if(v==="mid"||v==="low")L=v}catch(e){}
 var PR={high:{fps:60,dpr:99,strip:3,hI:30,hA:30,pq:1},mid:{fps:45,dpr:1.5,strip:4,hI:45,hA:36,pq:.75},low:{fps:30,dpr:1,strip:6,hI:60,hA:45,pq:.65}}[L];
 window.GFX={lvl:L,low:L==="low",mid:L==="mid",hres:L==="low"?.5:L==="mid"?.65:1,fps:PR.fps,iv:1000/PR.fps,strip:PR.strip,heroI:PR.hI,heroA:PR.hA,pq:PR.pq,real:0,min:0};
@@ -786,7 +786,7 @@ setTimeout(function(){if(L.boot)L.done()},20000)})();
 <div id="hud2"><div id="hbar"><div class="lau"></div><div id="hlv"><b id="lv"></b></div><div id="hname"><span id="nm"></span></div>
 <div class="hr"><i>⚡</i><span class="ho hv" id="en"></span><button class="hp" onclick="soon()" aria-label="Пополнить">+</button></div><div class="hr"><i class="cs"></i><span class="ho hv" id="sv"></span><button class="hp" onclick="soon()" aria-label="Пополнить">+</button></div><div class="hr"><i>💰</i><span class="ho hv" id="tl"></span><button class="hp" onclick="testTalers()" aria-label="Пополнить">+</button></div><div class="hr"><i>💪</i><span class="ho hv" id="pw"></span><button class="hp" onclick="soon()" aria-label="Пополнить">+</button></div>
 <div class="xpt"><i id="xp"></i></div></div>
-<button id="hgear" onclick="gearTap()" aria-label="Настройки" aria-expanded="false">⚙</button><div class="ho" id="el"></div><div class="ho" id="hver">v355</div></div>
+<button id="hgear" onclick="gearTap()" aria-label="Настройки" aria-expanded="false">⚙</button><div class="ho" id="el"></div><div class="ho" id="hver">v356</div></div>
 <div id="scene">
 
 <div id="hut"><img id="campbg" draggable="false" alt="" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 50%;z-index:0" src="data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=">
@@ -2330,7 +2330,7 @@ function cdBtn(){var b=$("dsbtn");if(!b)return;var l=cdLeft();b.disabled=!!l;b.c
 window.dmBuy=function(){if(!cdLeft()||M&&!M.over)return;if(S.tl<2){$("dr").textContent="Не хватает талеров: нужно 2 💰";say("Нужно 2 💰, чтобы сыграть сразу");return}S.tl-=2;S.dcd=0;$("dr").textContent="Куплена ещё одна партия за 2 💰. Выбери ставку и начни!";say("Заплатил 2 💰 — можно играть!");draw();cdBtn();gameUI()};
 /* ---------- победа ---------- */
 var VA={on:0,raf:0,P:[],ctx:null,t0:0,W:0,H:0};
-function sfx(kind){try{var AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;var c=sfx.c||(sfx.c=window._ac());if(!c)return;if(c.state=="suspended")c.resume();var t=c.currentTime;
+function sfx(kind){if(window.SFXN&&SFXN("vic",kind))return;try{var AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;var c=sfx.c||(sfx.c=window._ac());if(!c)return;if(c.state=="suspended")c.resume();var t=c.currentTime;
 function n(f,st,du,ty,vol){var o=c.createOscillator(),g=c.createGain(),fl=c.createBiquadFilter();o.type=ty||"sawtooth";o.frequency.value=f;fl.type="lowpass";fl.frequency.value=1800;g.gain.setValueAtTime(0,t+st);g.gain.linearRampToValueAtTime((vol||.12)*(window.VOL==null?1:window.VOL),t+st+.03);g.gain.exponentialRampToValueAtTime(.001,t+st+du);o.connect(fl);fl.connect(g);g.connect(c.destination);o.start(t+st);o.stop(t+st+du+.05)}
 if(kind=="fan"){[[523,0,.22],[659,.2,.22],[784,.4,.22],[1047,.6,.7]].forEach(function(x){n(x[0],x[1],x[2],"sawtooth",.13);n(x[0]/2,x[1],x[2],"triangle",.1)});[523,659,784,1047].forEach(function(f){n(f,1.0,1.0,"sawtooth",.07)})}
 else if(kind=="hit"){n(90,0,.5,"sine",.35);n(60,0,.6,"sine",.3)}
@@ -3227,8 +3227,8 @@ function add(a,b,ms){for(var i=a;i<=b;i++)SEQ.push([i,ms])}
 add(0,4,72);add(5,19,52);add(20,24,70);add(25,28,62);
 var REL=22;
 function ac(){try{return window._ac&&window._ac()}catch(e){return null}}
-function burst(t,dur,f,g){try{var c=ac();if(!c)return;if(c.state=="suspended")c.resume();var n=Math.floor(c.sampleRate*dur),b=c.createBuffer(1,n,c.sampleRate),d=b.getChannelData(0);for(var i=0;i<n;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/n,2);var s=c.createBufferSource();s.buffer=b;var fl=c.createBiquadFilter();fl.type="bandpass";fl.frequency.value=f;fl.Q.value=1.2;var gn=c.createGain();gn.gain.value=g*(typeof window.VOL=="number"?window.VOL:1);s.connect(fl);fl.connect(gn);gn.connect(c.destination);s.start(c.currentTime+t)}catch(e){}}
-function rattle(){for(var k=0;k<3;k++){var t=.36+k*.26+.04;burst(t,.05,2600,.5);burst(t+.07,.05,3400,.4);burst(t+.13,.04,2200,.35)}}
+function burst(t,dur,f,g){if(window.SFXN&&SFXN("dice","tick",{t:t}))return;try{var c=ac();if(!c)return;if(c.state=="suspended")c.resume();var n=Math.floor(c.sampleRate*dur),b=c.createBuffer(1,n,c.sampleRate),d=b.getChannelData(0);for(var i=0;i<n;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/n,2);var s=c.createBufferSource();s.buffer=b;var fl=c.createBiquadFilter();fl.type="bandpass";fl.frequency.value=f;fl.Q.value=1.2;var gn=c.createGain();gn.gain.value=g*(typeof window.VOL=="number"?window.VOL:1);s.connect(fl);fl.connect(gn);gn.connect(c.destination);s.start(c.currentTime+t)}catch(e){}}
+function rattle(){if(window.SFXN&&SFXN("dice","rattle"))return;for(var k=0;k<3;k++){var t=.36+k*.26+.04;burst(t,.05,2600,.5);burst(t+.07,.05,3400,.4);burst(t+.13,.04,2200,.35)}}
 window.handThrow=function(cb){
   var a=document.getElementById("arena"),c=document.getElementById("hcv");
   if(!c||!a||!HI.complete||!HI.naturalWidth||!window.AW){cb();return}
@@ -4335,6 +4335,7 @@ function buy(id,n){
  modal(id);ui()}
 /* ---------- звук (лёгкий синтез, учитывает громкость из настроек) ---------- */
 function snd(k){
+ if(window.SFXN&&SFXN("wp",k))return;
  try{
   var v=window.VOL==null?1:window.VOL;if(v<=0)return;
   var ac=window._ac&&window._ac();if(!ac)return;if(ac.state=="suspended")ac.resume();
@@ -5081,7 +5082,7 @@ function pose(T){
   return P}
 var oc=null;
 var stp=null,nextStp=0;
-function rumble(){var c=window._ac&&window._ac();if(!c||c.state!="running")return;var t=c.currentTime;
+function rumble(){if(window.SFXN&&SFXN("rumble","stomp"))return;var c=window._ac&&window._ac();if(!c||c.state!="running")return;var t=c.currentTime;
   var g=c.createGain();g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.22,t+.03);g.gain.exponentialRampToValueAtTime(.0001,t+.55);g.connect(c.destination);
   var o=c.createOscillator();o.type="sine";o.frequency.setValueAtTime(62,t);o.frequency.exponentialRampToValueAtTime(34,t+.5);o.connect(g);o.start(t);o.stop(t+.6);
   var len=Math.floor(c.sampleRate*.35),bf=c.createBuffer(1,len,c.sampleRate),d=bf.getChannelData(0);for(var i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,3);
@@ -5821,7 +5822,7 @@ function fxCss(){if(document.getElementById("jwfxcss"))return;var s=document.cre
 +".fxo.done .fxbar,.fxo.done .fxn{display:none}.fxo.done .fxres{display:block}"
 +"@media (prefers-reduced-motion:reduce){.fxo.bad .fxr,.fxo.ok .fxc::before{animation:none}}";
 document.head.appendChild(s)}
-function fxSnd(k){try{var A=window._ac&&window._ac(),v=window.VOL==null?1:window.VOL;if(!A||v<=0)return;if(A.state=="suspended")A.resume();var t=A.currentTime;
+function fxSnd(k){if(window.SFXN&&SFXN("forge",k))return;try{var A=window._ac&&window._ac(),v=window.VOL==null?1:window.VOL;if(!A||v<=0)return;if(A.state=="suspended")A.resume();var t=A.currentTime;
 function tone(f,d,ty,g,at){var o=A.createOscillator(),gn=A.createGain();o.type=ty;o.frequency.setValueAtTime(f,t+at);gn.gain.setValueAtTime(.0001,t+at);gn.gain.exponentialRampToValueAtTime(g*v,t+at+.01);gn.gain.exponentialRampToValueAtTime(.0001,t+at+d);o.connect(gn);gn.connect(A.destination);o.start(t+at);o.stop(t+at+d+.05)}
 if(k=="hit"){tone(900,.22,"triangle",.16,0);tone(1420,.12,"square",.04,0);tone(200,.18,"sine",.18,0)}
 else if(k=="ok"){[523,659,784,1047].forEach(function(f,i){tone(f,.9,"triangle",.15,i*.07)});tone(2093,1.1,"sine",.05,.2)}
@@ -7104,7 +7105,7 @@ x.lineWidth=3+f*5;x.strokeStyle="rgba("+col+",.85)";x.beginPath();x.arc(cx,cy,rr
 if(M.phase=="wind"){var ar=M.cur.need=="block"?"down":"side";x.save();x.translate(cx,cy);x.globalAlpha=.55+.4*Math.sin(M.t*18);x.fillStyle="rgba("+col+",1)";if(ar=="down"){x.beginPath();x.moveTo(-26,-18);x.lineTo(26,-18);x.lineTo(0,26);x.closePath();x.fill()}else{x.beginPath();x.moveTo(-44,0);x.lineTo(-18,-20);x.lineTo(-18,20);x.closePath();x.fill();x.beginPath();x.moveTo(44,0);x.lineTo(18,-20);x.lineTo(18,20);x.closePath();x.fill()}x.restore()}
 else{x.save();x.translate(cx,cy);x.globalAlpha=.6+.4*Math.sin(M.t*20);x.fillStyle="rgba("+col+",1)";x.beginPath();x.moveTo(0,-30);x.lineTo(22,6);x.lineTo(6,6);x.lineTo(6,28);x.lineTo(-6,28);x.lineTo(-6,6);x.lineTo(-22,6);x.closePath();x.fill();x.restore()}}}
 /* звук (синтез WebAudio, без файлов) */
-function sfx(k){try{var A=window._ac&&window._ac(),v=window.VOL==null?1:window.VOL;if(!A||v<=0)return;if(A.state=="suspended")A.resume();var t=A.currentTime;
+function sfx(k){if(window.SFXN&&SFXN("raid",k))return;try{var A=window._ac&&window._ac(),v=window.VOL==null?1:window.VOL;if(!A||v<=0)return;if(A.state=="suspended")A.resume();var t=A.currentTime;
 function tone(f,d,ty,g,at,f2){var o=A.createOscillator(),gn=A.createGain();o.type=ty;o.frequency.setValueAtTime(f,t+at);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+at+d);gn.gain.setValueAtTime(.0001,t+at);gn.gain.exponentialRampToValueAtTime(g*v,t+at+.008);gn.gain.exponentialRampToValueAtTime(.0001,t+at+d);o.connect(gn);gn.connect(A.destination);o.start(t+at);o.stop(t+at+d+.05)}
 function noise(d,fq,g,at,q){var b=A.createBuffer(1,Math.ceil(A.sampleRate*d),A.sampleRate),a=b.getChannelData(0);for(var i=0;i<a.length;i++)a[i]=(Math.random()*2-1)*(1-i/a.length);var s=A.createBufferSource();s.buffer=b;var f=A.createBiquadFilter();f.type="bandpass";f.frequency.value=fq;f.Q.value=q||1;var gn=A.createGain();gn.gain.value=g*v;s.connect(f);f.connect(gn);gn.connect(A.destination);s.start(t+at)}
 if(k=="slash"){noise(.22,2600,.22,0,.8);tone(900,.16,"sawtooth",.04,0,200)}
@@ -9257,6 +9258,170 @@ var N0=Math.floor(S.pw||0);
 (function reg(){if(!window.GACH){setTimeout(reg,200);return}var have={};window.GACH.forEach(function(a){have[a[0]]=1});L.forEach(function(a){if(!have[a[0]])window.GACH.push(a)});window.DSTAT.count=L.length})();
 })();
 </script>
+<script id="sfxlib">
+/* ===== v356: звуковой движок (WebAudio, без файлов): шумы, дерево/металл/колокол/духовые, эхо, компрессор ===== */
+(function(){
+var L={},B=null,NZ={};
+function rnd(a,b){return a+Math.random()*(b-a)}
+function mkIR(a){
+ var sr=a.sampleRate,len=Math.floor(sr*1.5),b=a.createBuffer(2,len,sr);
+ for(var c=0;c<2;c++){var d=b.getChannelData(c),lp=0;
+  for(var i=0;i<len;i++){var u=i/len,k=.18+u*.78;lp+=((Math.random()*2-1)-lp)*(1-k);d[i]=lp*Math.pow(1-u,2.6)*(i<sr*.012?i/(sr*.012):1)*1.6}}
+ return b}
+function bus(a){
+ if(B&&B.a===a)return B;
+ var inp=a.createGain(),ls=a.createBiquadFilter(),hs=a.createBiquadFilter(),cm=a.createDynamicsCompressor(),mk=a.createGain();
+ ls.type="lowshelf";ls.frequency.value=140;ls.gain.value=3;
+ hs.type="highshelf";hs.frequency.value=6500;hs.gain.value=-5;
+ cm.threshold.value=-16;cm.knee.value=12;cm.ratio.value=4;cm.attack.value=.003;cm.release.value=.18;
+ mk.gain.value=1.35;
+ inp.connect(ls);ls.connect(hs);hs.connect(cm);cm.connect(mk);mk.connect(a.destination);
+ var rv=a.createGain(),cv=a.createConvolver(),wg=a.createGain();
+ try{cv.buffer=mkIR(a)}catch(e){}
+ wg.gain.value=.8;rv.connect(cv);cv.connect(wg);wg.connect(ls);
+ B={a:a,i:inp,r:rv};return B}
+function nbuf(a,ty){
+ var key=ty+a.sampleRate;if(NZ[key])return NZ[key];
+ var n=Math.floor(a.sampleRate*2),b=a.createBuffer(1,n,a.sampleRate),d=b.getChannelData(0),i;
+ if(ty=="pink"){var b0=0,b1=0,b2=0,b3=0,b4=0,b5=0,b6=0;for(i=0;i<n;i++){var w=Math.random()*2-1;b0=.99886*b0+w*.0555179;b1=.99332*b1+w*.0750759;b2=.969*b2+w*.153852;b3=.8665*b3+w*.3104856;b4=.55*b4+w*.5329522;b5=-.7616*b5-w*.016898;d[i]=(b0+b1+b2+b3+b4+b5+b6+w*.5362)*.11;b6=w*.115926}}
+ else if(ty=="brown"){var l=0;for(i=0;i<n;i++){var w2=Math.random()*2-1;l=(l+.02*w2)/1.02;d[i]=l*3.5}}
+ else for(i=0;i<n;i++)d[i]=Math.random()*2-1;
+ return NZ[key]=b}
+function outTo(a,n,o){
+ var B2=bus(a),t=n;
+ if(o.pan&&a.createStereoPanner){var p=a.createStereoPanner();p.pan.value=Math.max(-1,Math.min(1,o.pan));n.connect(p);t=p}
+ t.connect(B2.i);
+ if(o.send){var s=a.createGain();s.gain.value=o.send;t.connect(s);s.connect(B2.r)}}
+function env(g,t,att,d,v){g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(Math.max(.0002,v),t+att);g.gain.exponentialRampToValueAtTime(.0001,t+att+d)}
+/* тон: f,f2(скольжение),d,v,ty,att,lp(фильтр),lp2,vib(гц),vd(глубина гц),am(гц),det,t,pan,send */
+L.tone=function(a,o){
+ var t=a.currentTime+(o.t||0),os=a.createOscillator(),g=a.createGain(),n=os,att=o.att==null?.006:o.att,d=o.d||.2;
+ os.type=o.ty||"sine";os.frequency.setValueAtTime(o.f,t);
+ if(o.f2)os.frequency.exponentialRampToValueAtTime(o.f2,t+(o.fd||d));
+ if(o.det)os.detune.value=o.det;
+ if(o.vib){var lf=a.createOscillator(),lg=a.createGain();lf.frequency.value=o.vib;lg.gain.value=o.vd||o.f*.012;lf.connect(lg);lg.connect(os.frequency);lf.start(t);lf.stop(t+att+d+.1)}
+ if(o.lp){var fl=a.createBiquadFilter();fl.type="lowpass";fl.Q.value=o.lq||.8;fl.frequency.setValueAtTime(o.lp,t);if(o.lp2)fl.frequency.exponentialRampToValueAtTime(o.lp2,t+att+d);n.connect(fl);n=fl}
+ n.connect(g);
+ if(o.am){var al=a.createOscillator(),ag=a.createGain(),bg=a.createGain();bg.gain.value=1-(o.ad||.5)*.5;al.frequency.value=o.am;ag.gain.value=(o.ad||.5)*.5;al.connect(ag);ag.connect(bg.gain);g.connect(bg);g=bg;al.start(t);al.stop(t+att+d+.1)}
+ var eg=a.createGain();env(eg,t,att,d,o.v);
+ /* огибающая: подключаем через отдельный gain */
+ (o.am?g:g).connect(eg);outTo(a,eg,o);
+ os.start(t);os.stop(t+att+d+.08)};
+/* шум: ty(white|pink|brown), ft(bandpass|lowpass|highpass), f1,f2,q,d,v,att,am,ad,t,pan,send */
+L.noise=function(a,o){
+ var t=a.currentTime+(o.t||0),s=a.createBufferSource(),fl=a.createBiquadFilter(),g=a.createGain(),att=o.att==null?.004:o.att,d=o.d||.1;
+ s.buffer=nbuf(a,o.ty||"white");s.loop=true;fl.type=o.ft||"bandpass";fl.Q.value=o.q==null?.9:o.q;
+ fl.frequency.setValueAtTime(o.f1||1000,t);if(o.f2)fl.frequency.exponentialRampToValueAtTime(o.f2,t+att+d);
+ s.connect(fl);var n=fl;
+ if(o.am){var bg=a.createGain(),al=a.createOscillator(),ag=a.createGain();bg.gain.value=1-(o.ad||.6)*.5;al.frequency.value=o.am;ag.gain.value=(o.ad||.6)*.5;al.connect(ag);ag.connect(bg.gain);fl.connect(bg);n=bg;al.start(t);al.stop(t+att+d+.1)}
+ env(g,t,att,d,o.v);n.connect(g);outTo(a,g,o);
+ s.start(t,Math.random()*1.5);s.stop(t+att+d+.05)};
+/* колокол/колокольчик: инфа о гармониках */
+var BR=[[1,1,1],[2.756,.55,.62],[5.404,.3,.4],[8.933,.16,.26]];
+L.bell=function(a,o){
+ var r=o.r||BR,i;
+ for(i=0;i<r.length;i++)L.tone(a,{f:o.f*r[i][0],d:(o.d||.8)*r[i][2],v:o.v*r[i][1],t:o.t,att:.003,pan:o.pan,send:o.send,det:o.det})};
+/* металл (удар по железу/монета/клинок): густой набор негармоничных частот */
+var MR=[[1,1,1],[1.504,.7,.8],[2.0,.55,.6],[2.74,.45,.5],[3.76,.3,.4],[5.43,.2,.28]];
+L.metal=function(a,o){
+ var i;for(i=0;i<MR.length;i++)L.tone(a,{f:o.f*MR[i][0]*(1+rnd(-.004,.004)),d:(o.d||.4)*MR[i][2],v:o.v*MR[i][1],t:o.t,att:.0015,pan:o.pan,send:o.send});
+ L.noise(a,{f1:Math.min(9000,o.f*3),f2:o.f*1.5,q:1.2,d:.025,v:o.v*.9,t:o.t,pan:o.pan})};
+/* дерево/кожа: короткий глухой тон + щелчок */
+L.wood=function(a,o){
+ var f=o.f||260;
+ L.tone(a,{f:f*1.15,f2:f,d:o.d||.07,v:o.v,t:o.t,att:.0015,pan:o.pan,send:o.send,lp:f*3,lq:1});
+ L.noise(a,{f1:f*3.2,q:1.4,d:.02,v:o.v*.55,t:o.t,att:.001,pan:o.pan})};
+/* удар/бум: синус со скольжением + глухой щелчок + (опц.) хвост */
+L.thump=function(a,o){
+ L.tone(a,{f:o.f,f2:o.f2||o.f*.45,d:o.d||.2,v:o.v,t:o.t,att:.004,pan:o.pan,send:o.send,fd:(o.d||.2)*.8});
+ L.noise(a,{ft:"lowpass",f1:o.f*5,f2:o.f,ty:"brown",d:.06,v:o.v*.6,t:o.t,att:.002,pan:o.pan,q:.5})};
+/* свист/взмах */
+L.whoosh=function(a,o){
+ L.noise(a,{ty:"pink",f1:o.f1,f2:o.f2,q:o.q||1.1,d:o.d||.2,v:o.v,att:o.att==null?(o.d||.2)*.4:o.att,t:o.t,pan:o.pan,send:o.send})};
+/* духовой/труба: два пилообразных тона, фильтр раскрывается */
+L.brass=function(a,o){
+ var d=o.d||.4,att=o.att==null?.05:o.att;
+ L.tone(a,{f:o.f,d:d,v:o.v,ty:"sawtooth",att:att,lp:o.f*1.6,lp2:o.f*(o.br||5),lq:2,vib:5.2,vd:o.f*.004,t:o.t,pan:o.pan,send:o.send,det:-5});
+ L.tone(a,{f:o.f,d:d,v:o.v*.8,ty:"sawtooth",att:att,lp:o.f*1.6,lp2:o.f*(o.br||5),lq:2,vib:5.2,vd:o.f*.004,t:o.t,pan:o.pan,send:o.send,det:6});
+ L.tone(a,{f:o.f/2,d:d,v:o.v*.5,ty:"triangle",att:att,t:o.t,pan:o.pan,send:o.send})};
+/* флейта/свирель */
+L.flute=function(a,o){
+ L.tone(a,{f:o.f,f2:o.f2,d:o.d||.4,v:o.v,att:o.att==null?.05:o.att,vib:5,vd:o.f*.008,lp:o.f*4,t:o.t,pan:o.pan,send:o.send});
+ L.noise(a,{f1:o.f*2,q:2,d:o.d||.4,v:o.v*.25,att:.04,t:o.t,pan:o.pan,send:o.send})};
+/* кастаньеты костей: серия ударов по дереву */
+L.dice=function(a,o){
+ var n=o.n||8,span=o.span||.6,i,t=o.t||0;
+ for(i=0;i<n;i++){var u=i/n,tt=t+Math.pow(u,.8)*span+rnd(0,.012);
+  L.wood(a,{f:rnd(380,1000),d:.045,v:(o.v||.1)*(1-u*.65)*rnd(.7,1),t:tt,pan:rnd(-.35,.35),send:.06});
+  if(i%3==0)L.noise(a,{f1:rnd(2400,3800),q:2,d:.012,v:(o.v||.1)*.3*(1-u*.5),t:tt,att:.001})}
+ L.thump(a,{f:130,f2:85,d:.1,v:(o.v||.1)*.9,t:t+span});
+};
+L.rnd=rnd;
+window.SFXLIB=L;
+})();
+</script>
+<script id="sfxmap">
+/* ===== v356: звуки боя, налёта, кузнеца, костей, победы на общем движке SFXLIB ===== */
+(function(){
+var L=window.SFXLIB;
+if(!L){window.SFXN=function(){return 0};return}
+var R=L.rnd;
+function wh(a,o){L.whoosh(a,o)}
+var D={
+raid:{
+ slash:function(a,m){wh(a,{f1:1300,f2:5200,d:.18,v:.24*m,pan:R(-.3,.3)});L.metal(a,{f:2600,d:.1,v:.025*m,t:.09})},
+ clang:function(a,m){L.metal(a,{f:R(780,880),d:.6,v:.24*m,send:.2});L.thump(a,{f:210,f2:110,d:.1,v:.12*m})},
+ hurt:function(a,m){L.thump(a,{f:150,f2:55,d:.24,v:.3*m});L.noise(a,{ty:"pink",f1:900,f2:250,q:.6,d:.18,v:.14*m});L.tone(a,{f:190,f2:90,d:.25,v:.07*m,ty:"sawtooth",lp:600})},
+ dodge:function(a,m){wh(a,{f1:500,f2:2400,d:.26,v:.45*m,pan:R(-.5,.5)});L.noise(a,{ty:"pink",ft:"highpass",f1:2500,q:.4,d:.1,v:.03*m,t:.05})},
+ coin:function(a,m){var f=R(2300,2700);L.metal(a,{f:f,d:.3,v:.07*m});L.bell(a,{f:f*1.2,d:.4,v:.05*m,t:.06,send:.15})},
+ creak:function(a,m){L.tone(a,{f:110,f2:170,d:.4,v:.09*m,ty:"sawtooth",lp:700,lq:4,att:.04,am:19,ad:.6});L.noise(a,{ty:"pink",f1:500,f2:900,q:3,d:.35,v:.07*m,att:.05,am:15,ad:.6})},
+ click:function(a,m){L.wood(a,{f:R(620,760),d:.05,v:.16*m});L.metal(a,{f:2000,d:.08,v:.02*m})},
+ thud:function(a,m){L.thump(a,{f:95,f2:40,d:.3,v:.34*m});L.noise(a,{ty:"brown",ft:"lowpass",f1:500,f2:120,q:.5,d:.2,v:.2*m})},
+ splash:function(a,m){var i;for(i=0;i<4;i++)L.noise(a,{ty:"pink",f1:R(1200,2200),f2:R(2800,4200),q:.7,d:R(.12,.22),v:.3*m,t:i*.05,att:.01,pan:R(-.5,.5),send:.12})},
+ win:function(a,m){var n=[523,659,784,1047],i;for(i=0;i<4;i++)L.bell(a,{f:n[i],d:1.2,v:.12*m,t:i*.1,send:.3,r:[[1,1,1],[2,.35,.5],[3,.2,.3]]});L.brass(a,{f:262,d:.7,v:.05*m,t:.3,att:.08})},
+ fail:function(a,m){L.brass(a,{f:196,d:.6,v:.1*m,att:.04,br:3});L.brass(a,{f:147,d:.8,v:.1*m,t:.25,att:.04,br:2.5});L.thump(a,{f:80,f2:35,d:.6,v:.3*m,t:.3})},
+ warn:function(a,m){L.brass(a,{f:440,d:.2,v:.08*m,att:.02,br:4});L.brass(a,{f:330,d:.26,v:.08*m,t:.22,att:.02,br:4})}
+},
+forge:{
+ hit:function(a,m){L.metal(a,{f:R(740,820),d:.55,v:.24*m,send:.25});L.thump(a,{f:190,f2:90,d:.12,v:.2*m});L.noise(a,{ft:"highpass",f1:3500,q:.5,d:.06,v:.05*m})},
+ ok:function(a,m){var n=[523,659,784,1047],i;for(i=0;i<4;i++)L.bell(a,{f:n[i],d:1.4,v:.13*m,t:i*.08,send:.35});L.bell(a,{f:2093,d:1.4,v:.05*m,t:.3,send:.4});L.noise(a,{ft:"highpass",f1:5000,q:.4,d:.5,v:.04*m,t:.3,att:.1})},
+ bad:function(a,m){L.thump(a,{f:85,f2:34,d:.7,v:.36*m});L.metal(a,{f:310,d:.3,v:.1*m});L.noise(a,{ty:"brown",ft:"lowpass",f1:900,f2:150,q:.5,d:.5,v:.18*m,send:.2})}
+},
+wp:{
+ whoosh:function(a,m){wh(a,{f1:500,f2:1900,d:.22,v:.3*m,pan:R(-.2,.2)})},
+ slash:function(a,m){wh(a,{f1:1500,f2:5200,d:.16,v:.28*m});L.metal(a,{f:3200,d:.14,v:.025*m,t:.07})},
+ punch:function(a,m){L.thump(a,{f:150,f2:52,d:.2,v:.4*m});L.noise(a,{ty:"pink",ft:"lowpass",f1:1400,f2:300,q:.5,d:.1,v:.2*m})},
+ kick:function(a,m){L.thump(a,{f:115,f2:40,d:.26,v:.46*m});L.noise(a,{ty:"pink",ft:"lowpass",f1:1000,f2:250,q:.5,d:.14,v:.22*m});wh(a,{f1:300,f2:900,d:.1,v:.08*m})},
+ clink:function(a,m){L.metal(a,{f:R(1900,2300),d:.3,v:.12*m,send:.15})},
+ shot:function(a,m){L.noise(a,{ft:"highpass",f1:2200,q:.4,d:.05,v:.4*m,att:.001});L.noise(a,{ty:"pink",ft:"lowpass",f1:3200,f2:400,q:.5,d:.28,v:.3*m,att:.001,send:.25});L.thump(a,{f:170,f2:55,d:.2,v:.35*m})},
+ rifle:function(a,m){L.noise(a,{ft:"highpass",f1:2000,q:.4,d:.06,v:.5*m,att:.001});L.noise(a,{ty:"pink",ft:"lowpass",f1:3800,f2:300,q:.5,d:.4,v:.36*m,att:.001,send:.35});L.thump(a,{f:135,f2:42,d:.3,v:.45*m})},
+ boom:function(a,m){L.thump(a,{f:92,f2:27,d:.85,v:.7*m});L.noise(a,{ty:"brown",ft:"lowpass",f1:1600,f2:160,q:.5,d:1,v:.55*m,send:.4});L.noise(a,{ft:"highpass",f1:2500,q:.4,d:.08,v:.2*m,att:.001})},
+ cannon:function(a,m){L.thump(a,{f:105,f2:34,d:.55,v:.6*m});L.noise(a,{ty:"brown",ft:"lowpass",f1:1800,f2:200,q:.5,d:.55,v:.45*m,send:.3});L.noise(a,{ft:"highpass",f1:2400,q:.4,d:.06,v:.25*m,att:.001});L.metal(a,{f:260,d:.3,v:.05*m,t:.04})},
+ arrows:function(a,m){var i;for(i=0;i<4;i++){wh(a,{f1:1200+i*150,f2:3800,d:.24,v:.16*m,t:i*.05,pan:R(-.5,.5)});L.wood(a,{f:R(900,1200),d:.05,v:.05*m,t:i*.05})}},
+ hitarrow:function(a,m){L.wood(a,{f:R(200,260),d:.09,v:.3*m});L.noise(a,{ty:"pink",f1:2600,f2:1200,q:.8,d:.14,v:.12*m})}
+},
+vic:{
+ fan:function(a,m){if(window.SFX)SFX.play("fanfare")},
+ hit:function(a,m){L.thump(a,{f:85,f2:30,d:.6,v:.5*m});L.noise(a,{ty:"brown",ft:"lowpass",f1:700,f2:150,q:.5,d:.4,v:.2*m})},
+ coin:function(a,m){var f=R(2400,3200);L.metal(a,{f:f,d:.2,v:.04*m,pan:R(-.4,.4)});L.bell(a,{f:f,d:.3,v:.03*m,t:.04})}
+},
+rumble:{
+ stomp:function(a,m){L.thump(a,{f:64,f2:30,d:.6,v:.34*m});L.noise(a,{ty:"brown",ft:"lowpass",f1:420,f2:90,q:.5,d:.55,v:.34*m,send:.3})}
+},
+dice:{
+ rattle:function(a,m,o){L.dice(a,{n:9,span:.8,v:.12*m,t:.36})},
+ tick:function(a,m,o){L.wood(a,{f:R(600,900),d:.05,v:.1*m,t:o&&o.t||0,pan:R(-.3,.3)});L.noise(a,{f1:2800,q:1.5,d:.015,v:.04*m,t:o&&o.t||0})}
+}};
+/* true = звук обработан (играет или выключен по громкости); 0 = пусть играет старый */
+window.SFXN=function(dm,k,o){
+ try{var f=D[dm]&&D[dm][k];if(!f)return 0;
+  var v=window.VOL==null?1:window.VOL;if(!(v>0))return 1;
+  var a=window._ac&&window._ac();if(!a)return 0;
+  if(a.state=="suspended")try{a.resume()}catch(e){}
+  f(a,Math.min(1,v),o);return 1}catch(e){return 0}};
+window.SFXN.D=D;
+})();
+</script>
 <script id="sfxjs">
 /* ===== v349–v350: звуки интерфейса и событий (синтез WebAudio, без файлов) ===== */
 (function(){
@@ -9318,13 +9483,63 @@ var K={
  run:function(a,m){for(var i=0;i<5;i++)nz(a,.05,.08*m,500,200,i*.09,"lowpass")},
  chest:function(a,m){K.creak(a,m*1.6);tn(a,660,.12,"triangle",.07*m,0,.3);tn(a,990,.2,"triangle",.07*m,0,.38);nz(a,.15,.04*m,3000,7000,.3)}
 };
+/* v356: новые «живые» звуки на движке SFXLIB: дерево, кожа, металл, колокола, духовые, шумы, эхо */
+var L=window.SFXLIB,R=L?L.rnd:Math.random;
+var K1=!L?null:{
+ tap:function(a,m){var f=R(200,260);L.wood(a,{f:f,d:.05,v:.17*m});L.noise(a,{ft:"highpass",f1:3500,q:.5,d:.012,v:.045*m})},
+ btn:function(a,m){var f=R(470,560);L.wood(a,{f:f,d:.045,v:.2*m});L.metal(a,{f:R(1900,2200),d:.07,v:.025*m});L.noise(a,{ft:"highpass",f1:4000,q:.5,d:.01,v:.05*m})},
+ nav:function(a,m){L.thump(a,{f:210,f2:110,d:.13,v:.15*m});L.wood(a,{f:R(640,720),d:.06,v:.07*m,t:.012});L.bell(a,{f:1320,d:.3,v:.025*m,t:.02,send:.12})},
+ open:function(a,m){L.whoosh(a,{f1:350,f2:2400,d:.22,v:.09*m,q:.8});L.wood(a,{f:330,d:.05,v:.07*m,t:.2})},
+ close:function(a,m){L.whoosh(a,{f1:2200,f2:300,d:.18,v:.08*m,q:.8,att:.03});L.thump(a,{f:170,f2:100,d:.1,v:.1*m,t:.14})},
+ ok:function(a,m){L.bell(a,{f:880,d:.5,v:.07*m,send:.2});L.bell(a,{f:1318,d:.7,v:.07*m,t:.09,send:.25})},
+ err:function(a,m){L.thump(a,{f:140,f2:75,d:.18,v:.2*m});L.tone(a,{f:150,f2:105,d:.2,v:.07*m,ty:"sawtooth",lp:420,att:.01,t:.01});L.wood(a,{f:150,d:.06,v:.09*m,t:.12});L.tone(a,{f:125,f2:88,d:.22,v:.06*m,ty:"sawtooth",lp:380,att:.01,t:.11})},
+ coin:function(a,m){L.metal(a,{f:R(2300,2600),d:.28,v:.06*m,send:.12});L.metal(a,{f:R(3100,3500),d:.4,v:.06*m,t:.065,send:.15})},
+ chime:function(a,m){[523,659,784,1047].forEach(function(f,i){L.bell(a,{f:f,d:.9,v:.06*m,t:i*.08,send:.3,pan:(i-1.5)*.15})});L.bell(a,{f:2093,d:1,v:.02*m,t:.34,send:.35})},
+ lvup:function(a,m){[392,494,587,784].forEach(function(f,i){L.brass(a,{f:f,d:i==3?.7:.16,v:.05*m,t:i*.1,att:.03,send:.25})});[1175,1568,2349].forEach(function(f,i){L.bell(a,{f:f,d:1,v:.04*m,t:.4+i*.07,send:.35})});L.thump(a,{f:90,f2:50,d:.4,v:.18*m,t:.4,send:.2})},
+ fanfare:function(a,m){var s=[[392,0,.14],[392,.16,.14],[392,.32,.14],[523,.48,.38],[494,.9,.14],[523,1.06,.9]];s.forEach(function(p){L.brass(a,{f:p[0],d:p[2]+.1,v:.065*m,t:p[1],att:.04,br:6,send:.3,pan:-.1});L.brass(a,{f:p[0]*1.5,d:p[2]+.05,v:.025*m,t:p[1],att:.05,send:.3,pan:.15})});L.thump(a,{f:100,f2:55,d:.4,v:.24*m,t:.48,send:.25});L.thump(a,{f:95,f2:50,d:.7,v:.28*m,t:1.06,send:.3});L.noise(a,{f1:5000,f2:9000,q:.4,d:1.2,v:.04*m,t:1.06,att:.01,send:.3})},
+ lose:function(a,m){[262,247,208].forEach(function(f,i){L.brass(a,{f:f,d:.55,v:.05*m,t:i*.28,att:.06,br:2.2,send:.35})});L.thump(a,{f:80,f2:40,d:.8,v:.22*m,t:.56,send:.3})},
+ slash:function(a,m){L.whoosh(a,{f1:700,f2:5600,d:.14,v:.14*m,q:1.3,att:.03});L.metal(a,{f:R(2200,2700),d:.18,v:.03*m,t:.07,send:.12})},
+ boom:function(a,m){L.thump(a,{f:120,f2:36,d:.45,v:.34*m,send:.25});L.noise(a,{ty:"brown",ft:"lowpass",f1:1400,f2:90,d:.6,v:.2*m,att:.005,send:.3})},
+ hurt:function(a,m){L.thump(a,{f:165,f2:60,d:.2,v:.26*m});L.noise(a,{ty:"pink",f1:900,f2:240,q:.8,d:.14,v:.12*m});L.tone(a,{f:230,f2:120,d:.22,v:.05*m,ty:"sawtooth",lp:500,att:.01,t:.03})},
+ rattle:function(a,m){L.dice(a,{n:9,span:.55,v:.11*m})},
+ cloth:function(a,m){L.noise(a,{ty:"pink",f1:700,f2:3000,q:.7,d:.26,v:.3*m,att:.05,am:22,ad:.5,pan:-.1});L.noise(a,{ty:"pink",f1:1500,f2:600,q:.6,d:.18,v:.18*m,t:.09,att:.03,pan:.1})},
+ uncloth:function(a,m){L.noise(a,{ty:"pink",f1:3000,f2:700,q:.7,d:.24,v:.28*m,att:.03,am:18,ad:.5,pan:.1});L.noise(a,{ty:"pink",f1:900,f2:2400,q:.6,d:.14,v:.15*m,t:.1,att:.03})},
+ tink:function(a,m){L.metal(a,{f:3100,d:.3,v:.045*m,send:.2});L.bell(a,{f:4186,d:.5,v:.03*m,t:.04,send:.3})},
+ gemc:function(a,m){L.metal(a,{f:1900,d:.1,v:.05*m});L.bell(a,{f:2637,d:.7,v:.05*m,t:.04,send:.35});L.bell(a,{f:3322,d:.6,v:.03*m,t:.09,send:.35})},
+ anvil:function(a,m){L.metal(a,{f:560,d:.7,v:.1*m,send:.18});L.thump(a,{f:140,f2:80,d:.12,v:.16*m});L.metal(a,{f:1500,d:.35,v:.03*m,t:.005,send:.2})},
+ sharpok:function(a,m){K1.anvil(a,m);L.bell(a,{f:1175,d:1,v:.06*m,t:.12,send:.35});L.bell(a,{f:1568,d:1.2,v:.06*m,t:.2,send:.4});L.bell(a,{f:2349,d:1.4,v:.04*m,t:.3,send:.4})},
+ sharpbad:function(a,m){L.metal(a,{f:420,d:.25,v:.1*m});L.noise(a,{ty:"pink",f1:3500,f2:400,q:.6,d:.4,v:.1*m,t:.04,att:.01});L.thump(a,{f:110,f2:50,d:.4,v:.18*m,t:.08})},
+ step:function(a,m){var i;for(i=0;i<2;i++){L.noise(a,{ty:"brown",ft:"lowpass",f1:520,f2:160,d:.09,v:.17*m,t:i*.2,att:.004});L.noise(a,{ty:"pink",f1:1800,q:.8,d:.04,v:.025*m,t:i*.2,att:.002});L.tone(a,{f:75,f2:50,d:.1,v:.08*m,t:i*.2,att:.004})}},
+ bow:function(a,m){L.noise(a,{ty:"pink",f1:500,f2:1500,q:2,d:.3,v:.05*m,att:.1,am:30,ad:.7});L.tone(a,{f:190,f2:290,d:.3,v:.035*m,ty:"triangle",att:.08,lp:600});L.wood(a,{f:200,d:.07,v:.09*m,t:.3})},
+ arrow:function(a,m){L.whoosh(a,{f1:900,f2:3800,d:.18,v:.09*m,q:1.2,att:.02});L.wood(a,{f:320,d:.08,v:.15*m,t:.16});L.tone(a,{f:420,d:.25,v:.02*m,ty:"triangle",att:.002,t:.17,am:40,ad:.8})},
+ fire:function(a,m){var i;L.noise(a,{ty:"brown",ft:"lowpass",f1:400,d:.6,v:.05*m,att:.1});for(i=0;i<9;i++)L.noise(a,{ft:"highpass",f1:R(2500,5500),q:.5,d:R(.01,.03),v:R(.03,.09)*m,t:R(0,.6),att:.001})},
+ bird:function(a,m){var f=R(2600,3600),n=2+Math.floor(R(0,3)),i;for(i=0;i<n;i++)L.tone(a,{f:f,f2:f*R(1.2,1.5),d:.07,v:.06*m,t:i*.12,att:.008,vib:28,vd:90,send:.2,pan:R(-.4,.4)})},
+ meow:function(a,m){L.tone(a,{f:540,f2:900,d:.16,v:.05*m,ty:"sawtooth",lp:1500,lq:3,att:.03,vib:6,vd:12,send:.1});L.tone(a,{f:900,f2:440,d:.3,v:.05*m,ty:"sawtooth",lp:1300,lq:3,att:.02,t:.15,vib:6,vd:10,send:.1})},
+ purr:function(a,m){L.noise(a,{ty:"brown",ft:"lowpass",f1:240,d:1.1,v:.1*m,att:.15,am:26,ad:.9})},
+ creak:function(a,m){L.tone(a,{f:110,f2:170,d:.4,v:.09*m,ty:"sawtooth",lp:700,lq:4,att:.04,am:19,ad:.6});L.noise(a,{ty:"pink",f1:500,f2:900,q:3,d:.35,v:.07*m,att:.05,am:15,ad:.6})},
+ wind:function(a,m){L.noise(a,{ty:"pink",f1:260,f2:950,q:1.2,d:1.8,v:.2*m,att:.6,am:.9,ad:.5,pan:.2,send:.15})},
+ growl:function(a,m){L.tone(a,{f:75,f2:52,d:.6,v:.12*m,ty:"sawtooth",lp:320,lq:2,att:.05,am:34,ad:.8,send:.15});L.noise(a,{ty:"brown",ft:"lowpass",f1:500,f2:150,d:.6,v:.12*m,att:.05,am:30,ad:.6})},
+ keys:function(a,m){[3000,3700,3300,4200,3500].forEach(function(f,i){L.metal(a,{f:f*R(.97,1.03),d:.18,v:.03*m,t:i*.05+R(0,.02),pan:R(-.3,.3)})})},
+ pop:function(a,m){L.tone(a,{f:300,f2:900,d:.09,v:.1*m,att:.004,fd:.07});L.wood(a,{f:700,d:.04,v:.05*m,t:.03})},
+ glory:function(a,m){[392,523,659,784].forEach(function(f,i){L.brass(a,{f:f,d:i==3?.45:.14,v:.045*m,t:i*.08,att:.03,send:.3})});L.bell(a,{f:1568,d:1,v:.04*m,t:.3,send:.35});L.noise(a,{f1:3000,f2:8000,q:.4,d:.5,v:.03*m,t:.25,att:.2,send:.2})},
+ bell:function(a,m){L.bell(a,{f:784,d:1.8,v:.1*m,send:.4});L.bell(a,{f:784*1.002,d:1.6,v:.04*m,t:.004,send:.4,det:7})},
+ guide:function(a,m){L.flute(a,{f:587,f2:659,d:.2,v:.05*m,send:.3});L.flute(a,{f:784,d:.35,v:.05*m,t:.15,send:.35})},
+ dland:function(a,m){L.dice(a,{n:5,span:.28,v:.12*m})},
+ setpart:function(a,m){K1.fanfare(a,m);L.bell(a,{f:1047,d:1.2,v:.05*m,t:.9,send:.4});L.bell(a,{f:1568,d:1.4,v:.05*m,t:1.1,send:.4})},
+ wpick:function(a,m){L.metal(a,{f:1400,d:.1,v:.03*m});L.wood(a,{f:420,d:.06,v:.1*m,t:.02});L.noise(a,{ty:"pink",f1:3000,f2:1500,q:.6,d:.06,v:.05*m})},
+ evt:function(a,m){L.bell(a,{f:523,d:.7,v:.06*m,send:.3});L.flute(a,{f:784,d:.4,v:.04*m,t:.1,send:.35})},
+ sleep:function(a,m){[392,330,262].forEach(function(f,i){L.flute(a,{f:f,d:.6,v:.045*m,t:i*.3,att:.08,send:.5})})},
+ run:function(a,m){var i;for(i=0;i<7;i++){var t=i*.095+(i%2?.02:0);L.thump(a,{f:R(110,150),f2:70,d:.08,v:.11*m,t:t,pan:-.2+i*.06});L.noise(a,{ty:"brown",ft:"lowpass",f1:700,f2:200,d:.05,v:.06*m,t:t})}},
+ chest:function(a,m){L.tone(a,{f:100,f2:190,d:.45,v:.05*m,ty:"sawtooth",lp:800,lq:4,att:.05,am:17,ad:.6});L.noise(a,{ty:"pink",f1:500,f2:1100,q:3,d:.4,v:.035*m,att:.05,am:14});L.metal(a,{f:900,d:.25,v:.06*m,t:.38});L.thump(a,{f:100,f2:60,d:.15,v:.14*m,t:.4});[1175,1568,2093].forEach(function(f,i){L.bell(a,{f:f,d:1,v:.04*m,t:.5+i*.08,send:.4})});L.noise(a,{f1:4000,f2:9000,q:.4,d:.4,v:.025*m,t:.5,att:.1})}
+};
+if(K1)K=K1;
 var GAP={tap:35,btn:35,nav:60,open:150,close:150,ok:250,err:300,coin:200,chime:600,lvup:800,fanfare:1500,lose:1500,slash:90,boom:120,hurt:120,rattle:400,cloth:200,uncloth:200,tink:300,gemc:250,anvil:300,sharpok:900,sharpbad:600,step:120,bow:200,arrow:150,fire:2500,bird:3000,meow:6000,purr:8000,creak:5000,wind:6000,growl:3000,keys:500,pop:90,glory:1200,bell:1500,guide:800,dland:250,setpart:2000,wpick:150,evt:500,sleep:2000,run:300,chest:400};
 function P(k){
  var v=vol();if(!v||!K[k])return;if(!gate(k,GAP[k]||80))return;
  var a=ctx();if(!a)return;
  try{K[k](a,Math.min(1,v)*1.0)}catch(e){}
 }
-window.SFX={play:P,on:1};
+window.SFX={play:P,on:1,K:K,GAP:GAP};
 /* ---- звук нажатия на экран ---- */
 var BTN="button,[onclick],[data-a],[data-j],[data-sl],[data-act],[data-v],[data-k],.nb,.ni,.hbn,.roll,a,label,select,summary";
 var NAVSEL="#nav2,#dnav2,#mnav2";

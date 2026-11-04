@@ -36,9 +36,9 @@
 html.gfx-low #ldr .lsun,html.gfx-low #ldr .ldw,html.gfx-low #ldr .lgr,html.gfx-low #ldr .lem,html.gfx-low #ldr .lr1,html.gfx-low #ldr .lr2{animation:none}
 html.gfx-low #ldr .lem{display:none}
 @media (prefers-reduced-motion:reduce){#ldr *{animation:none!important}}
-</style><meta charset="UTF-8"><meta name="ver" content="353">
+</style><meta charset="UTF-8"><meta name="ver" content="354">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<script>var VER=353;(function(){try{fetch(location.pathname+"?c="+Date.now(),{headers:{Range:"bytes=0-600"},cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="ver" content="(\d+)"/);if(m&&+m[1]>VER&&sessionStorage.getItem("upd")!==m[1]){sessionStorage.setItem("upd",m[1]);location.replace(location.pathname+"?v="+m[1]+"&r="+Date.now())}}).catch(function(){})}catch(e){}})()</script>
+<script>var VER=354;(function(){try{fetch(location.pathname+"?c="+Date.now(),{headers:{Range:"bytes=0-600"},cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="ver" content="(\d+)"/);if(m&&+m[1]>VER&&sessionStorage.getItem("upd")!==m[1]){sessionStorage.setItem("upd",m[1]);location.replace(location.pathname+"?v="+m[1]+"&r="+Date.now())}}).catch(function(){})}catch(e){}})()</script>
 <script id="gfxhead">(function(){var L="high";try{var v=localStorage.getItem("gfx");if(v==="mid"||v==="low")L=v}catch(e){}
 var PR={high:{fps:60,dpr:99,strip:3,hI:30,hA:30,pq:1},mid:{fps:45,dpr:1.5,strip:4,hI:45,hA:36,pq:.75},low:{fps:30,dpr:1,strip:6,hI:60,hA:45,pq:.65}}[L];
 window.GFX={lvl:L,low:L==="low",mid:L==="mid",hres:L==="low"?.5:L==="mid"?.65:1,fps:PR.fps,iv:1000/PR.fps,strip:PR.strip,heroI:PR.hI,heroA:PR.hA,pq:PR.pq,real:0,min:0};
@@ -786,7 +786,7 @@ setTimeout(function(){if(L.boot)L.done()},20000)})();
 <div id="hud2"><div id="hbar"><div class="lau"></div><div id="hlv"><b id="lv"></b></div><div id="hname"><span id="nm"></span></div>
 <div class="hr"><i>⚡</i><span class="ho hv" id="en"></span><button class="hp" onclick="soon()" aria-label="Пополнить">+</button></div><div class="hr"><i class="cs"></i><span class="ho hv" id="sv"></span><button class="hp" onclick="soon()" aria-label="Пополнить">+</button></div><div class="hr"><i>💰</i><span class="ho hv" id="tl"></span><button class="hp" onclick="testTalers()" aria-label="Пополнить">+</button></div><div class="hr"><i>💪</i><span class="ho hv" id="pw"></span><button class="hp" onclick="soon()" aria-label="Пополнить">+</button></div>
 <div class="xpt"><i id="xp"></i></div></div>
-<button id="hgear" onclick="gearTap()" aria-label="Настройки" aria-expanded="false">⚙</button><div class="ho" id="el"></div><div class="ho" id="hver">v353</div></div>
+<button id="hgear" onclick="gearTap()" aria-label="Настройки" aria-expanded="false">⚙</button><div class="ho" id="el"></div><div class="ho" id="hver">v354</div></div>
 <div id="scene">
 
 <div id="hut"><img id="campbg" draggable="false" alt="" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 50%;z-index:0" src="data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=">
@@ -4678,13 +4678,43 @@ function genPort(id,t,hh){return P(118,t,823,240,"gcls gpt i-por_"+id)}
 function genCv(id,t,h,cid){return '<canvas id="'+cid+'" data-id="'+id+'" data-h="'+h+'" width="941" height="'+h+'" style="position:absolute;left:0;top:'+t+'px;width:941px;height:'+h+'px;pointer-events:none"></canvas>'}
 function genFight(){var b=BOSSES[S.cb];return genCv(b.id,260,1000,"gnF")+P(150,262,640,100,"gnm","",'<b>'+b.n+'</b><i>'+b.w+'</i>')}
 function genIntro(){var b=BOSSES[cs.i];return genCv(b.id,100,620,"gnI")+P(150,548,640,120,"gnm","",'<b>'+b.n+'</b><i>'+b.w+'</i>')}
+var tipSel={},NK_TROPH={grom:"Молот Грому",syryi:"Вовча шкура",kryzhanyi:"Крижаний клинок"};
+function nkPc(v){v=Math.round(v*10000)/100;return String(v).replace(".",",")+"%"}
+function nkTri(arr,m){m=m||1;return arr.map(function(v){return nkPc(v*m)}).join(" / ")}
+function nkItems(bid){
+  var K=GAME_CONFIG.BOSSCFG,D=K.DROP,d=K.BOSS[bid],T=K.TALERS[bid],C=K.COSM,H=(K.HARD&&K.HARD[bid])||1,R=K.RAGES,it=[];
+  var rn=R.map(function(r){return r.uk}).join(" / ");
+  var lead="Шанс за ярістю ("+rn+"): ";
+  it.push({ic:"silver",t:"Срібло і сила",d:"Падають завжди після кожної перемоги. Чим вища ярість, тим більше."});
+  it.push({ic:"ring_shard",t:"Уламки перстня",d:lead+nkTri(D.ringShardChance)+". Пачка "+D.ringShardBundle.map(function(a){return a[0]+"–"+a[1]}).join(" / ")+". З уламків коваль кує перстень."});
+  it.push({ic:"gem_shard",t:"Уламки кристала",d:lead+nkTri(D.gemShardChance)+". З них збирають кристал для перстня."});
+  it.push({ic:ringIconId(bid),t:"«"+d.ring.uk+"»",d:lead+nkTri(D.ring,H)+". Готовий перстень: дає бонус до шкоди по босах."});
+  it.push({ic:"gem",t:"«"+d.gem.uk+"»",d:lead+nkTri(D.gem,H)+". Кристал вставляється в перстень і підсилює його."});
+  if(T&&T.ch[2]>0)it.push({ic:"taler",t:"Талери",d:lead+nkTri(T.ch,H)+". Кількість: "+T.amt[0]+(T.amt[1]>T.amt[0]?"–"+T.amt[1]:"")+"."});
+  it.push({ic:"boss_chest",t:"Вигляд боса",d:lead+"Фон "+nkTri(C.backdrop,H)+"; стійка "+nkTri(C.pose,H)+"; комплект "+nkTri(C.outfit,H)+". Прикраси для козака."});
+  if(NK_TROPH[bid])it.push({ic:"trophy",t:"Трофей: "+NK_TROPH[bid],d:"Дається один раз за першу перемогу. Його можна повісити в хаті."});
+  var hs=(window.HORSE_CFG&&HORSE_CFG.drop&&HORSE_CFG.drop[bid])||null;
+  if(hs){var br=HORSE_CFG.breeds,tx=hs.map(function(q){return (br[q[0]]?br[q[0]].n:"Кінь")+" "+nkTri(q[1])}).join("; ");
+    it.push({ic:"horse",t:"Кінь",d:lead+tx+". Кінь прискорює похід і втечу з налітів."})}
+  return it}
+function nkPanel(b,inf,y,hh){
+  var it=nkItems(b.id),sel=tipSel[b.id],ph=256,icons="",tip;
+  it.forEach(function(q,i){
+    icons+='<div class="nk354i'+(sel===i?" on":"")+'" style="left:'+(i*60)+'px" data-a="ntip" data-v="'+b.id+'|'+i+'" title="'+q.t.replace(/"/g,"")+'">'+ICO(q.ic)+'</div>'});
+  if(sel!=null&&it[sel])tip='<span><b>'+it[sel].t+'.</b> '+it[sel].d+'</span>';
+  else tip='<span><i>Торкнись іконки, щоб дізнатись, що це і з яким шансом випадає.</i></span>';
+  var ok1=inf.keys>=inf.need,ok2=inf.okRuns;
+  var h='<div class="nk354l"><em>Ключі</em><b class="'+(ok1?"":"bad")+'">'+ICO("key")+' '+inf.keys+' / '+inf.need+'</b><em>Спроби сьогодні</em><b class="'+(ok2?"":"bad")+'">'+ICO("w_sabre")+' '+inf.runs+' / '+inf.lim+'</b></div>'
+   +'<div class="nk354r"><em>Що випадає</em><div class="nk354ic">'+icons+'</div></div>'
+   +'<div class="nk354tip">'+tip+'</div>';
+  return P(0,y+hh+2,800,ph,"nk354"+(inf.active?" act":""),"",h)}
 function listUI(){
   var h=P(70,36,118,84,"zone","data-a=\"lback\""),y=0,sc="",tk339=0;
   BOSSES.forEach(function(b,i){
     var inf=btInfo(b.id),active=!!inf.active,hh=CARDH[b.id]||210,nw=!!NEWC[b.id];tk339+=inf.keys||0;
     var c=nw?[108,252,142,136,hh-62]:[113,276,147,141,hh-52];
     var chips='<div class="nk339"><span class="'+(inf.okRuns?"":"bad")+'" style="left:'+c[0]+'px;top:'+c[4]+'px;width:'+c[2]+'px">'+ICO("w_sabre")+' '+inf.runs+'/'+inf.lim+'</span><span class="'+(inf.keys>=inf.need?"":"bad")+'" style="left:'+c[1]+'px;top:'+c[4]+'px;width:'+c[3]+'px">'+ICO("key")+' '+inf.keys+'/'+inf.need+'</span>'+(active?'<span class="act" style="left:'+(c[1]+c[3]+10)+'px;top:'+c[4]+'px;width:210px">▶ БІЙ ЙДЕ</span>':'')+(b.id=="marena"?'<div class="mn339"><b>'+b.n.toUpperCase()+'</b><i>'+b.w+'</i></div>':'')+'</div>';
-    sc+=P(0,y,800,hh,"nbBossRow zone gcard gcls i-card_"+b.id+(active?" nbBossActive":""),'data-pk="'+i+'" role="button" aria-label="'+b.n+'" style2=""',chips);y+=hh+10});
+    sc+=P(0,y,800,hh,"nbBossRow zone gcard gcls i-card_"+b.id+(active?" nbBossActive":""),'data-pk="'+i+'" role="button" aria-label="'+b.n+'" style2=""',chips);sc+=nkPanel(b,inf,y,hh);y+=hh+2+256+44});
   h+=P(250,40,440,76,"nk339t","","Боси")+P(790,60,76,48,"nk339n","",tk339);
   h+='<div id="nbLs" class="nbLs"><div style="position:relative;height:'+(y+6)+'px">'+sc.replace(/class="nbBossRow zone gcard gcls/g,'class="nbBossRow zone gcard gcls pe')+'</div></div>';
   h+=P(670,1560,190,56,"devb","data-a=\"devkeys\"","+5 "+ICO("key")+" тест");
@@ -4918,6 +4948,7 @@ function act(a,el){
   if(a=="shoot")shoot();
   else if(a=="btn"){var T0=btActive();if(!T0||T0.bid!=BOSSES[S.cb].id)choose(S.cb);else shoot()}
   else if(a=="lback")close();
+  else if(a=="ntip"){var q=String(el.dataset.v).split("|");tipSel[q[0]]=(tipSel[q[0]]===+q[1])?null:+q[1];lkey="";listUI()}
   else if(a=="iback")show("list");
   else if(a=="fback"){show("list")}
   else if(a=="tal"){if(window.TALENTS)TALENTS.open();else toast("Таланти скоро")}
@@ -9019,6 +9050,21 @@ setTimeout(init,600);setTimeout(init,2500);setInterval(function(){el();watch();s
 #app.swamp #stage>#trSword{filter:url(#swgf336) drop-shadow(0 6px 7px rgba(0,0,0,.4))}
 html.gfx-low #app.swamp #fig{filter:url(#swgf336)}
 html.gfx-low #app.swamp #stage>#trSword{filter:url(#swgf336)}</style>
+<style id="nk354css">/* v354: рамки-пергаменты под боссами в списке */
+.nk354{position:absolute;box-sizing:border-box;border:5px solid #b98a3a;border-top:3px solid #7a5420;border-radius:0 0 22px 22px;background:linear-gradient(#e9d3a0,#d4b878 60%,#c4a463);box-shadow:inset 0 0 26px rgba(90,52,16,.55),0 6px 12px rgba(0,0,0,.65);font-family:Georgia,serif;color:#3a2210}
+.nk354.act{border-color:#e0a24a;box-shadow:inset 0 0 26px rgba(90,52,16,.55),0 0 18px rgba(224,162,74,.7),0 6px 12px rgba(0,0,0,.65)}
+.nk354 em{position:absolute;white-space:nowrap;font-style:normal;font:700 23px/1 Georgia,serif;letter-spacing:0;text-transform:uppercase;color:#6b4620}
+.nk354l{position:absolute;left:0;top:0;width:292px;height:136px;border-right:3px solid rgba(110,70,28,.55)}
+.nk354l em{left:18px}.nk354l em:nth-of-type(1){top:10px}.nk354l em:nth-of-type(2){top:74px}
+.nk354l b{position:absolute;left:18px;display:flex;align-items:center;gap:10px;font:700 38px/1 Georgia,serif;color:#2b190c}
+.nk354l b:nth-of-type(1){top:34px}.nk354l b:nth-of-type(2){top:98px}
+.nk354l b.bad{color:#9c1d10}.nk354l .ic{width:36px;height:36px}
+.nk354r{position:absolute;left:306px;top:0;width:480px;height:136px}.nk354r em{left:0;top:10px}
+.nk354ic{position:absolute;left:0;top:44px;width:480px;height:80px}
+.nk354i{position:absolute;top:0;width:54px;height:54px;box-sizing:border-box;padding:6px;border-radius:14px;background:linear-gradient(#2b190c,#150b05);border:3px solid #8d6a2c;box-shadow:inset 0 0 8px rgba(0,0,0,.7);cursor:pointer;display:flex;align-items:center;justify-content:center}
+.nk354i .ic{width:100%;height:100%}.nk354i.on{border-color:#ffd86a;box-shadow:0 0 12px rgba(255,216,106,.9),inset 0 0 8px rgba(0,0,0,.7);transform:translateY(-3px)}
+.nk354tip{position:absolute;left:14px;right:14px;top:140px;height:104px;box-sizing:border-box;padding:6px 14px;border-radius:12px;background:rgba(60,34,12,.2);border:2px dashed rgba(110,70,28,.6);font:600 27px/32px Georgia,serif;color:#2b190c;overflow:hidden;display:flex;align-items:center}
+.nk354tip i{color:#6b4620;font-weight:400}.nk354tip .ic{width:1em;height:1em}</style>
 <style id="nk339css">.nbLs{left:74px!important;top:170px!important;width:800px!important;height:1340px!important}.nbLs .gcard{box-shadow:none!important;border-radius:0!important}
 .nk339{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none}.nk339 span{position:absolute;height:50px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;gap:8px;font:700 30px/1 Georgia,serif;color:#ffe6a6;background:linear-gradient(#2b190c,#150b05);border:3px solid #b98a3a;border-radius:15px;white-space:nowrap;text-shadow:0 2px 3px #000;box-shadow:inset 0 0 8px rgba(0,0,0,.7),0 2px 4px rgba(0,0,0,.6)}.nk339 .ic{width:34px;height:34px}.nk339 .bad{color:#ff8a7a}.nk339 .act{background:#7a1a08;color:#fff;font-size:25px;border-color:#e0a24a}
 .mn339{position:absolute;left:600px;top:46px;width:122px;height:80px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-family:Georgia,serif}.mn339 b{font-size:34px;line-height:1.05;letter-spacing:1px;color:#f3e2b8;text-shadow:0 3px 5px #000}.mn339 i{font-style:normal;font-size:17px;line-height:1.1;color:#e8d6aa;margin-top:6px;text-shadow:0 2px 3px #000}

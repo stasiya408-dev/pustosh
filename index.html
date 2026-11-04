@@ -36,9 +36,9 @@
 html.gfx-low #ldr .lsun,html.gfx-low #ldr .ldw,html.gfx-low #ldr .lgr,html.gfx-low #ldr .lem,html.gfx-low #ldr .lr1,html.gfx-low #ldr .lr2{animation:none}
 html.gfx-low #ldr .lem{display:none}
 @media (prefers-reduced-motion:reduce){#ldr *{animation:none!important}}
-</style><meta charset="UTF-8"><meta name="ver" content="348">
+</style><meta charset="UTF-8"><meta name="ver" content="349">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<script>var VER=348;(function(){try{fetch(location.pathname+"?c="+Date.now(),{headers:{Range:"bytes=0-600"},cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="ver" content="(\d+)"/);if(m&&+m[1]>VER&&sessionStorage.getItem("upd")!==m[1]){sessionStorage.setItem("upd",m[1]);location.replace(location.pathname+"?v="+m[1]+"&r="+Date.now())}}).catch(function(){})}catch(e){}})()</script>
+<script>var VER=349;(function(){try{fetch(location.pathname+"?c="+Date.now(),{headers:{Range:"bytes=0-600"},cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="ver" content="(\d+)"/);if(m&&+m[1]>VER&&sessionStorage.getItem("upd")!==m[1]){sessionStorage.setItem("upd",m[1]);location.replace(location.pathname+"?v="+m[1]+"&r="+Date.now())}}).catch(function(){})}catch(e){}})()</script>
 <script id="gfxhead">(function(){var L="high";try{var v=localStorage.getItem("gfx");if(v==="mid"||v==="low")L=v}catch(e){}
 var PR={high:{fps:60,dpr:99,strip:3,hI:30,hA:30,pq:1},mid:{fps:45,dpr:1.5,strip:4,hI:45,hA:36,pq:.75},low:{fps:30,dpr:1,strip:6,hI:60,hA:45,pq:.65}}[L];
 window.GFX={lvl:L,low:L==="low",mid:L==="mid",hres:L==="low"?.5:L==="mid"?.65:1,fps:PR.fps,iv:1000/PR.fps,strip:PR.strip,heroI:PR.hI,heroA:PR.hA,pq:PR.pq,real:0,min:0};
@@ -786,7 +786,7 @@ setTimeout(function(){if(L.boot)L.done()},20000)})();
 <div id="hud2"><div id="hbar"><div class="lau"></div><div id="hlv"><b id="lv"></b></div><div id="hname"><span id="nm"></span></div>
 <div class="hr"><i>⚡</i><span class="ho hv" id="en"></span><button class="hp" onclick="soon()" aria-label="Пополнить">+</button></div><div class="hr"><i class="cs"></i><span class="ho hv" id="sv"></span><button class="hp" onclick="soon()" aria-label="Пополнить">+</button></div><div class="hr"><i>💰</i><span class="ho hv" id="tl"></span><button class="hp" onclick="testTalers()" aria-label="Пополнить">+</button></div><div class="hr"><i>💪</i><span class="ho hv" id="pw"></span><button class="hp" onclick="soon()" aria-label="Пополнить">+</button></div>
 <div class="xpt"><i id="xp"></i></div></div>
-<button id="hgear" onclick="gearTap()" aria-label="Настройки" aria-expanded="false">⚙</button><div class="ho" id="el"></div><div class="ho" id="hver">v348</div></div>
+<button id="hgear" onclick="gearTap()" aria-label="Настройки" aria-expanded="false">⚙</button><div class="ho" id="el"></div><div class="ho" id="hver">v349</div></div>
 <div id="scene">
 
 <div id="hut"><img id="campbg" draggable="false" alt="" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 50%;z-index:0" src="data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=">
@@ -9208,6 +9208,114 @@ add("chain5","🔗","Звенья славы","Дойди до 5 звена це
 add("chain10","⛓","Ланцюг славы","Собери цепочку славы из 10 побед за сутки",40,function(){return gv(function(){return S.glory.n||0},0)>=10});
 var N0=Math.floor(S.pw||0);
 (function reg(){if(!window.GACH){setTimeout(reg,200);return}var have={};window.GACH.forEach(function(a){have[a[0]]=1});L.forEach(function(a){if(!have[a[0]])window.GACH.push(a)});window.DSTAT.count=L.length})();
+})();
+</script>
+<script id="sfxjs">
+/* ===== v349: звуки интерфейса и событий (синтез WebAudio, без файлов) ===== */
+(function(){
+var last={},TS=0,booted=0;
+function vol(){var v=window.VOL==null?1:window.VOL;return v>0?v:0}
+function ctx(){var a=null;try{a=window._ac&&window._ac()}catch(e){}if(a&&a.state!="running"){try{a.resume()}catch(e){}}return a}
+function gate(k,ms){var n=Date.now();if(last[k]&&n-last[k]<ms)return 0;last[k]=n;return 1}
+/* тон: частота, длительность, тип, громкость, скольжение до частоты, задержка */
+function tn(a,f,d,ty,v,f2,dl){var t=a.currentTime+(dl||0),o=a.createOscillator(),g=a.createGain();o.type=ty||"sine";o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+d);g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(Math.max(.0002,v),t+.006);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g);g.connect(a.destination);o.start(t);o.stop(t+d+.03)}
+/* шум: длительность, громкость, полоса (фильтр от-до), задержка */
+var NB=null;
+function nz(a,d,v,f1,f2,dl,ty){if(!NB||NB.sampleRate!=a.sampleRate){NB=a.createBuffer(1,Math.floor(a.sampleRate*.5),a.sampleRate);var c=NB.getChannelData(0);for(var i=0;i<c.length;i++)c[i]=Math.random()*2-1}
+ var t=a.currentTime+(dl||0),s=a.createBufferSource(),fl=a.createBiquadFilter(),g=a.createGain();s.buffer=NB;fl.type=ty||"bandpass";fl.frequency.setValueAtTime(f1,t);if(f2)fl.frequency.exponentialRampToValueAtTime(f2,t+d);fl.Q.value=.9;
+ g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(Math.max(.0002,v),t+.008);g.gain.exponentialRampToValueAtTime(.0001,t+d);s.connect(fl);fl.connect(g);g.connect(a.destination);s.start(t);s.stop(t+d+.03)}
+var K={
+ tap:function(a,m){tn(a,520,.05,"triangle",.07*m,330);nz(a,.025,.03*m,2600,1800)},
+ btn:function(a,m){tn(a,1250,.045,"triangle",.10*m,760);tn(a,2100,.02,"sine",.03*m,1500);nz(a,.02,.035*m,3200,2400)},
+ nav:function(a,m){tn(a,420,.09,"sine",.11*m,640);tn(a,840,.06,"triangle",.05*m,1100,.03)},
+ open:function(a,m){nz(a,.16,.05*m,500,2200)},
+ close:function(a,m){nz(a,.14,.04*m,1900,450)},
+ ok:function(a,m){tn(a,660,.09,"triangle",.09*m);tn(a,990,.13,"triangle",.09*m,0,.07)},
+ err:function(a,m){tn(a,240,.11,"sawtooth",.06*m,170);tn(a,200,.14,"sawtooth",.06*m,140,.1)},
+ coin:function(a,m){tn(a,1320,.07,"sine",.1*m);tn(a,1760,.16,"sine",.1*m,0,.06);tn(a,3520,.1,"sine",.025*m,0,.06)},
+ chime:function(a,m){[523,659,784,1047].forEach(function(f,i){tn(a,f,.22,"triangle",.09*m,0,i*.075)});tn(a,2093,.3,"sine",.03*m,0,.3)},
+ lvup:function(a,m){[392,494,587,784,988,1175].forEach(function(f,i){tn(a,f,.2,"triangle",.09*m,0,i*.08)});tn(a,1568,.5,"sine",.05*m,0,.5)},
+ fanfare:function(a,m){[[523,0],[523,.12],[523,.24],[659,.36],[784,.6],[1047,.84]].forEach(function(p){tn(a,p[0],p[1]==.84?.7:.2,"square",.045*m,0,p[1]);tn(a,p[0]/2,p[1]==.84?.7:.2,"triangle",.07*m,0,p[1])});nz(a,.5,.04*m,3000,8000,.84)},
+ lose:function(a,m){[392,330,262].forEach(function(f,i){tn(a,f,.28,"triangle",.09*m,f*.97,i*.2)})},
+ slash:function(a,m){nz(a,.12,.12*m,900,5200);tn(a,300,.08,"sawtooth",.03*m,120)},
+ boom:function(a,m){nz(a,.28,.18*m,1400,120,0,"lowpass");tn(a,140,.22,"sine",.18*m,45)},
+ hurt:function(a,m){tn(a,190,.18,"sine",.2*m,60);nz(a,.1,.1*m,500,150)},
+ rattle:function(a,m){for(var i=0;i<9;i++)nz(a,.03,(.05+Math.random()*.05)*m,1800+Math.random()*2400,0,i*.055+Math.random()*.02);tn(a,160,.15,"sine",.06*m,100,.5)}
+};
+var GAP={tap:35,btn:35,nav:60,open:150,close:150,ok:250,err:300,coin:200,chime:600,lvup:800,fanfare:1500,lose:1500,slash:90,boom:120,hurt:120,rattle:400};
+function P(k){
+ var v=vol();if(!v||!K[k])return;if(!gate(k,GAP[k]||80))return;
+ var a=ctx();if(!a)return;
+ try{K[k](a,Math.min(1,v)*1.0)}catch(e){}
+}
+window.SFX={play:P,on:1};
+/* ---- звук нажатия на экран ---- */
+var BTN="button,[onclick],[data-a],[data-j],[data-sl],[data-act],[data-v],[data-k],.nb,.ni,.hbn,.roll,a,label,select,summary";
+var NAVSEL="#nav2,#dnav2,#mnav2";
+function onDown(e){
+ try{
+  if(e.isPrimary===false)return;
+  var t=e.target;if(!t||!t.closest)return;
+  /* свой звук есть у стрельбы по боссу и у налёта на обоз */
+  if(t.closest("#nbFg,#rdx"))return;
+  var a=ctx();            /* создаём/будим звук прямо в момент касания */
+  if(!window.SFX.on)return;
+  if(t.closest(NAVSEL)&&t.closest(".nb")){P("nav");return}
+  P(t.closest(BTN)?"btn":"tap");
+ }catch(x){}
+}
+document.addEventListener("pointerdown",onDown,true);
+/* на старых WebView без pointer-событий */
+if(!window.PointerEvent)document.addEventListener("touchstart",function(e){onDown({target:e.target,isPrimary:true})},true);
+/* ---- сообщения игры ---- */
+var ERR=/Бракує|Не вистач|Недостатн|Нет сил|Не хватает|Немає|Нема |Нет\s|Не можна|Нельзя|Лимит|Ліміт|Закрыт|Закрит|Недоступ|Сначала|Не вдалося|Невдача|Не удалось|ещё не|уже есть|Мало /i;
+var OK=/Куплен|Придбан|Купил|Отримано|Получено|Награда|Нагород|Вдалося|Успіх|Забрал|Взял|Собрал|Надето|Одето|Вдягнено|Продан/i;
+var _say=window.say;
+if(typeof _say=="function")window.say=function(t){
+ try{var s=String(t||"");
+  if(/Новый уровень|Новий рівень/.test(s))P("lvup");
+  else if(ERR.test(s))P("err");
+  else if(OK.test(s))P("ok");
+ }catch(e){}
+ return _say.apply(this,arguments)};
+/* ---- обёртки событий ---- */
+function wrap(n,fn){var f=window[n];if(typeof f!="function")return;window[n]=function(){var r;try{fn.apply(this,arguments)}catch(e){}r=f.apply(this,arguments);return r}}
+function wrapAfter(n,fn){var f=window[n];if(typeof f!="function")return;window[n]=function(){var r=f.apply(this,arguments);try{fn.apply(this,[r].concat([].slice.call(arguments)))}catch(e){}return r}}
+wrapAfter("bossWin",function(){setTimeout(function(){P("fanfare")},350)});
+wrapAfter("victory",function(){P("fanfare")});
+wrap("dmThrow",function(){P("rattle")});
+wrap("hAct",function(a){if(a=="hit")P("slash");else if(a=="gun")P("boom")});
+wrapAfter("hEnemyHit",function(){P("hurt")});
+wrapAfter("hWin",function(){P("ok")});
+wrapAfter("hFinish",function(r,ok){P(ok?"fanfare":"lose")});
+/* ---- наблюдатель: деньги, достижения, уведомления, открытие и закрытие экранов ---- */
+var SCR=["hike","mkt2","mkt","nbx","dice","rtx","jwx","stx","gach","jkx","tqx","ntx","talentModal","ward","trx","tav"];
+var vis0={},tl0=null,ach0=null,gt0=0,nt0=0,tick=0;
+function shown(el){if(!el)return false;var cs=getComputedStyle(el);if(cs.display=="none"||cs.visibility=="hidden"||parseFloat(cs.opacity)<.05)return false;var r=el.getBoundingClientRect();return r.width>30&&r.height>30&&r.bottom>0&&r.right>0&&r.left<innerWidth&&r.top<innerHeight}
+function cnt(o){try{return Object.keys(o||{}).length}catch(e){return 0}}
+function watch(){
+ tick++;
+ try{
+  if(!window.S||document.hidden)return;
+  var tl=Math.floor(S.tl||0),ac=cnt(S.gach)+cnt(S.ach);
+  if(tl0!=null&&tl>tl0)P("coin");
+  if(ach0!=null&&ac>ach0)P("chime");
+  tl0=tl;ach0=ac;
+  var g=document.getElementById("gtoast"),n=document.getElementById("ntt");
+  var gs=g&&g.classList.contains("show")?1:0,ns=n&&n.classList.contains("show")?1:0;
+  if(booted&&((gs&&!gt0)||(ns&&!nt0)))P("chime");
+  gt0=gs;nt0=ns;
+  var ldr=document.getElementById("ldr");
+  var busy=ldr&&ldr.classList.contains("on");
+  SCR.forEach(function(id){
+   var v=shown(document.getElementById(id));
+   if(id in vis0){if(booted&&!busy&&v!==vis0[id])P(v?"open":"close")}
+   vis0[id]=v;
+  });
+ }catch(e){}
+}
+setInterval(watch,300);
+setTimeout(function(){booted=1},4500);
 })();
 </script>
 </body></html>

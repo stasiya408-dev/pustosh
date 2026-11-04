@@ -36,9 +36,9 @@
 html.gfx-low #ldr .lsun,html.gfx-low #ldr .ldw,html.gfx-low #ldr .lgr,html.gfx-low #ldr .lem,html.gfx-low #ldr .lr1,html.gfx-low #ldr .lr2{animation:none}
 html.gfx-low #ldr .lem{display:none}
 @media (prefers-reduced-motion:reduce){#ldr *{animation:none!important}}
-</style><meta charset="UTF-8"><meta name="ver" content="347">
+</style><meta charset="UTF-8"><meta name="ver" content="348">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<script>var VER=347;(function(){try{fetch(location.pathname+"?c="+Date.now(),{headers:{Range:"bytes=0-600"},cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="ver" content="(\d+)"/);if(m&&+m[1]>VER&&sessionStorage.getItem("upd")!==m[1]){sessionStorage.setItem("upd",m[1]);location.replace(location.pathname+"?v="+m[1]+"&r="+Date.now())}}).catch(function(){})}catch(e){}})()</script>
+<script>var VER=348;(function(){try{fetch(location.pathname+"?c="+Date.now(),{headers:{Range:"bytes=0-600"},cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="ver" content="(\d+)"/);if(m&&+m[1]>VER&&sessionStorage.getItem("upd")!==m[1]){sessionStorage.setItem("upd",m[1]);location.replace(location.pathname+"?v="+m[1]+"&r="+Date.now())}}).catch(function(){})}catch(e){}})()</script>
 <script id="gfxhead">(function(){var L="high";try{var v=localStorage.getItem("gfx");if(v==="mid"||v==="low")L=v}catch(e){}
 var PR={high:{fps:60,dpr:99,strip:3,hI:30,hA:30,pq:1},mid:{fps:45,dpr:1.5,strip:4,hI:45,hA:36,pq:.75},low:{fps:30,dpr:1,strip:6,hI:60,hA:45,pq:.65}}[L];
 window.GFX={lvl:L,low:L==="low",mid:L==="mid",hres:L==="low"?.5:L==="mid"?.65:1,fps:PR.fps,iv:1000/PR.fps,strip:PR.strip,heroI:PR.hI,heroA:PR.hA,pq:PR.pq,real:0,min:0};
@@ -786,7 +786,7 @@ setTimeout(function(){if(L.boot)L.done()},20000)})();
 <div id="hud2"><div id="hbar"><div class="lau"></div><div id="hlv"><b id="lv"></b></div><div id="hname"><span id="nm"></span></div>
 <div class="hr"><i>⚡</i><span class="ho hv" id="en"></span><button class="hp" onclick="soon()" aria-label="Пополнить">+</button></div><div class="hr"><i class="cs"></i><span class="ho hv" id="sv"></span><button class="hp" onclick="soon()" aria-label="Пополнить">+</button></div><div class="hr"><i>💰</i><span class="ho hv" id="tl"></span><button class="hp" onclick="testTalers()" aria-label="Пополнить">+</button></div><div class="hr"><i>💪</i><span class="ho hv" id="pw"></span><button class="hp" onclick="soon()" aria-label="Пополнить">+</button></div>
 <div class="xpt"><i id="xp"></i></div></div>
-<button id="hgear" onclick="gearTap()" aria-label="Настройки" aria-expanded="false">⚙</button><div class="ho" id="el"></div><div class="ho" id="hver">v347</div></div>
+<button id="hgear" onclick="gearTap()" aria-label="Настройки" aria-expanded="false">⚙</button><div class="ho" id="el"></div><div class="ho" id="hver">v348</div></div>
 <div id="scene">
 
 <div id="hut"><img id="campbg" draggable="false" alt="" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 50%;z-index:0" src="data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=">
@@ -2219,7 +2219,23 @@ var ACH=[
 ["left","🚶","Тихий уход","Уйди молча, когда оспорили твою победу",2,function(s){return s.left>=1}],
 ["def","🛡","Отстоял честь","Выиграй драку, когда оспорили твою победу",8,function(s){return s.def>=1}],
 ["drink3","🍷","Постоянный клиент","Оплати выпивку 3 раза",4,function(s){return s.drinks>=3}],
-["perf3","🥇","Мастер партии","Выиграй 3 партии без единого проигранного раунда",15,function(s){return s.perf>=3}]];
+["perf3","🥇","Мастер партии","Выиграй 3 партии без единого проигранного раунда",15,function(s){return s.perf>=3}],
+["win50","🏅","Хозяин стола","Выиграй 50 партий",20,function(s){return s.w>=50}],
+["win100","🥁","Сотня побед","Выиграй 100 партий",35,function(s){return s.w>=100}],
+["g100","🎲","Завсегдатай","Сыграй 100 партий",18,function(s){return s.g>=100}],
+["g250","🍺","Кость в руке","Сыграй 250 партий",30,function(s){return s.g>=250}],
+["dbl100","🎰","Дубль-мастер","Выбей 100 дублей",20,function(s){return s.dbl>=100}],
+["six10","👑","Шестёрочный король","Выбей 6 и 6 десять раз",15,function(s){return s.six>=10}],
+["sev25","7️⃣","Семёрочный фарт","Выбей сумму 7 двадцать пять раз",12,function(s){return s.sev>=25}],
+["risk50","🔥","Игрок на риск","Выиграй 50 раундов с риском",20,function(s){return s.riskw>=50}],
+["str8","⛓","Стальная серия","Выиграй 8 партий подряд",25,function(s){return s.best>=8}],
+["pot5000","💎","Сундук таверны","Выиграй банков на 5000 💰 в сумме",50,function(s){return s.pot>=5000}],
+["fw15","👊","Гроза драк","Выиграй 15 драк",20,function(s){return s.fw>=15}],
+["perf10","🌟","Безупречный","Выиграй 10 партий без единого проигранного раунда",35,function(s){return s.perf>=10}],
+["rr50","🔄","Переброс-мастер","Используй переброс 50 раз",12,function(s){return s.rrs>=50}],
+["drink10","🍷","Щедрая душа","Оплати выпивку 10 раз",10,function(s){return s.drinks>=10}],
+["disp15","⚖","Крючкотвор","Оспорь победу 15 раз",14,function(s){return s.disp>=15}],
+["dq10","👻","Легенда страха","Соперник ушёл молча 10 раз",20,function(s){return s.dq>=10}]];
 function ST(){if(!S.ds)S.ds={};["g","w","dbl","six","riskw","perf","best","str","come","big","disp","fw","dod","dq","drinks","crush","sev","beatS","rrs","pot","hi","tie","ls","lsb","left","def"].forEach(function(k){if(typeof S.ds[k]!="number")S.ds[k]=0});if(!S.ach)S.ach={};return S.ds}
 var AFR=0,toastQ=[],toastOn=0;
 function toast(t){toastQ.push(t);if(!toastOn)nextToast()}
@@ -4858,9 +4874,9 @@ function shoot(){
   var jb=window.bossBonus?bossBonus(T.mode):0;if(jb>0){pd=Math.round(pd*(1+jb));hn+=" 💍+"+(Math.round(jb*1000)/10)+"%"}
   var sb=window.bossSetBonus?bossSetBonus():0;if(sb>0){pd=Math.round(pd*(1+sb));hn+=" 👘+"+(Math.round(sb*1000)/10)+"%"}
   var gl=window.GLORY?GLORY.dmg():0;if(gl>0){pd=Math.round(pd*(1+gl));hn+=" 🔗+"+(Math.round(gl*1000)/10)+"%"}
-  if(window.TALENTS){var boost=TALENTS.shot(pd,b.hp,b.max,S.hs);pd=boost.damage;if(boost.critical)hn+=" 🎯 КРИТ!"}
+  var crt=0;if(window.TALENTS){var boost=TALENTS.shot(pd,b.hp,b.max,S.hs);pd=boost.damage;if(boost.critical){crt=1;hn+=" 🎯 КРИТ!"}}
   pd=Math.min(Math.max(0,b.hp),pd); /* no excess-HP damage credit */
-  b.hp=Math.max(0,b.hp-pd);if(T.mode=="grp")b.my=(b.my||0)+pd;b.pd=(b.pd||0)+pd;try{pgBossShot(pd)}catch(e){}
+  b.hp=Math.max(0,b.hp-pd);if(T.mode=="grp")b.my=(b.my||0)+pd;b.pd=(b.pd||0)+pd;try{pgBossShot(pd)}catch(e){}try{window.DSTAT&&DSTAT.hit(pd,crt,W.id,T)}catch(e){}
   WP.fire(W,function(){fx(pd,hn)});lastEv="🔥 "+W.uk+": −"+nf(pd)+hn;
   if(b.hp<=0)bossWin(T.mode=="grp");
   draw();ui()}
@@ -5867,15 +5883,39 @@ var N=[
 {id:"powder",n:"Порохова сила",ic:"✹",d:"+1% шкоди зброєю за рівень",t:0},
 {id:"eagle",n:"Орлине око",ic:"◎",d:"+0,5 в.п. шансу криту",t:0},
 {id:"finish",n:"Останній удар",ic:"⚔",d:"+1% при HP боса ≤30%",t:0},
+{id:"fist",n:"Кулак-молот",ic:"✊",d:"+1,5% кулаком і ногою",t:0},
+{id:"pistol",n:"Порохова нюшка",ic:"🔫",d:"+1% самопалом і рушницею",t:0},
+{id:"luck",n:"Козацьке щастя",ic:"🍀",d:"+0,3 в.п. шансу криту",t:0},
 {id:"steady",n:"Тверда рука",ic:"✦",d:"+0,5% шкоди зброєю",t:1},
 {id:"marksman",n:"Влучний стрілець",ic:"🎯",d:"+2 в.п. до множника криту",t:1},
 {id:"opening",n:"Перший залп",ic:"➶",d:"+1% при HP боса ≥70%",t:1},
+{id:"blade",n:"Гостра шабля",ic:"🗡",d:"+1,5% шаблею і кинджалом",t:1},
+{id:"cloud",n:"Хмара стріл",ic:"🏹",d:"+2% залпом стріл",t:1},
+{id:"siege",n:"Облогова гармата",ic:"💣",d:"+2% гарматою",t:1},
 {id:"barrage",n:"Пороховий натиск",ic:"✹",d:"+1% п’ятому пострілу",t:2},
 {id:"precision",n:"Зіркий сокіл",ic:"◈",d:"+0,5 в.п. криту при HP ≤50%",t:2},
 {id:"fury",n:"Без пощади",ic:"⚡",d:"+0,5% при HP боса ≤30%",t:2},
+{id:"rhythm",n:"Ритм бою",ic:"♬",d:"+0,1% за кожні 10 пострілів (до 10 кроків)",t:2},
+{id:"rend",n:"Розрив",ic:"✂",d:"+3 в.п. до множника криту",t:2},
+{id:"tamer",n:"Приборкувач люті",ic:"🐺",d:"+1% на усиленому та епічному бою",t:2},
 {id:"ataman",n:"Сила одинака",ic:"♜",d:"+1% шкоди у соло",t:3},
 {id:"comrade",n:"Побратим",ic:"♙",d:"+1% шкоди у відряді",t:3},
-{id:"legend",n:"Легенда степу",ic:"★",d:"+0,5% урону будь-якої зброї",t:3}
+{id:"legend",n:"Легенда степу",ic:"★",d:"+0,5% урону будь-якої зброї",t:3},
+{id:"slayer",n:"Серце бою",ic:"♥",d:"+1,5% при HP боса 30–70%",t:3},
+{id:"chain",n:"Ланцюг крітів",ic:"⛓",d:"+1 в.п. криту після криту",t:3},
+{id:"vet",n:"Досвід Січі",ic:"🎖",d:"+0,05% за кожні 5 рівнів героя",t:3},
+{id:"epic",n:"Ярість степу",ic:"🔥",d:"+1,5% на епічному бою",t:4},
+{id:"cleaver",n:"Розсікаючий",ic:"⚒",d:"+2% кожному третьому пострілу",t:4},
+{id:"golden",n:"Золота куля",ic:"✪",d:"+0,8 в.п. криту у соло",t:4},
+{id:"blood",n:"Жага крові",ic:"🩸",d:"+2,5% при HP боса ≤15%",t:5},
+{id:"assault",n:"Блискавичний штурм",ic:"⚡",d:"+2% перших 5 пострілів бою",t:5},
+{id:"devastate",n:"Нищівний крит",ic:"☄",d:"+4 в.п. до множника криту",t:5},
+{id:"warlord",n:"Воєвода",ic:"⚑",d:"+1,5% шкоди будь-якою зброєю",t:6},
+{id:"falcon",n:"Сокіл-володар",ic:"🦅",d:"+0,8 в.п. шансу криту",t:6},
+{id:"mastery",n:"Майстер зброї",ic:"🛡",d:"+1,5% платною зброєю",t:6},
+{id:"hetman",n:"Гетьманська булава",ic:"⚜",d:"+2% шкоди будь-якою зброєю",t:7},
+{id:"doom",n:"Вирок долі",ic:"☠",d:"+6 в.п. до множника криту",t:7},
+{id:"glory",n:"Безсмертна слава",ic:"👑",d:"+1% шкоди і +0,8 в.п. криту",t:7}
 ];
 /* Each talent point costs 1000, then 1200, 1400, ... PERSONAL boss damage. */
 var BASE=1000,STEP=200;
@@ -5890,7 +5930,7 @@ function levelFromDamage(d){
 }
 var TH=Array.from({length:60},function(_,i){return totalFor(i+1)});
 
-var REQ=[0,3,8,14];
+var REQ=[0,3,8,14,22,32,44,58];
 function root(){var p=PG();return p.talents||(p.talents={version:1,spent:{}})}
 function spent(){var t=root();if(!t.spent||typeof t.spent!=="object")t.spent={};return t.spent}
 function damage(){var stats=PG().bossStats||{};return Math.max(0,Math.floor(Number(stats.totalPersonalDamage)||0))}
@@ -5900,14 +5940,34 @@ function used(){return N.reduce(function(a,n){return a+r(n.id)},0)}
 function free(){return Math.max(0,lvl()-used())}
 function inc(k){var n=N.find(function(x){return x.id===k});if(!n||!free()||r(k)>=5||used()<REQ[n.t])return false;spent()[k]=r(k)+1;try{save()}catch(e){}render();return true}
 function shot(base,hp,mx,shotNo){
-var p=mx>0?hp/mx:1,add=r("powder")*.01+r("steady")*.005+r("legend")*.005;
-if(p<=.30)add+=r("finish")*.01+r("fury")*.005;
-if(p>=.70)add+=r("opening")*.01;
-if(shotNo>0&&shotNo%5===0)add+=r("barrage")*.01;
-add+=(S.mode==="grp"?r("comrade"):r("ataman"))*.01;
-var chance=Math.min(.125,.05+r("eagle")*.005+(p<=.5?r("precision")*.005:0));
+var p=mx>0?hp/mx:1,W=null,T=null,wid="",paid=false,rage=0,streak=0,q=function(k){return r(k)};
+try{W=window.WP&&WP.sel();if(W){wid=W.id;paid=!W.free}}catch(e){}
+try{T=window.btActive&&btActive();if(T)rage=T.rage|0}catch(e){}
+try{streak=(S.dst&&S.dst.streak)|0}catch(e){}
+var add=q("powder")*.01+q("steady")*.005+q("legend")*.005+q("warlord")*.015+q("hetman")*.02+q("glory")*.01;
+if(p<=.30)add+=q("finish")*.01+q("fury")*.005;
+if(p>=.70)add+=q("opening")*.01;
+if(p>.30&&p<.70)add+=q("slayer")*.015;
+if(p<=.15)add+=q("blood")*.025;
+if(shotNo>0&&shotNo%5===0)add+=q("barrage")*.01;
+if(shotNo>0&&shotNo%3===0)add+=q("cleaver")*.02;
+if(shotNo>0&&shotNo<=5)add+=q("assault")*.02;
+add+=q("rhythm")*.001*Math.min(10,Math.floor(Math.max(0,shotNo)/10));
+add+=q("vet")*.0005*Math.min(20,Math.floor((S.lv||1)/5));
+add+=(S.mode==="grp"?q("comrade"):q("ataman"))*.01;
+if(rage>=1)add+=q("tamer")*.01;
+if(rage>=2)add+=q("epic")*.015;
+if(wid==="fist"||wid==="foot")add+=q("fist")*.015;
+if(wid==="samopal"||wid==="rifle")add+=q("pistol")*.01;
+if(wid==="sabre"||wid==="dagger")add+=q("blade")*.015;
+if(wid==="volley")add+=q("cloud")*.02;
+if(wid==="cannon")add+=q("siege")*.02;
+if(paid)add+=q("mastery")*.015;
+var cc=.05+q("eagle")*.005+q("luck")*.003+q("falcon")*.008+q("glory")*.008+(p<=.5?q("precision")*.005:0)+(streak>0?q("chain")*.01:0)+(S.mode!=="grp"?q("golden")*.008:0);
+var chance=Math.min(.35,cc);
+var cm=1.5+q("marksman")*.02+q("rend")*.03+q("devastate")*.04+q("doom")*.06;
 var crit=Math.random()<chance;
-return {damage:Math.max(1,Math.round(base*(1+Math.min(add,.25))*(crit?1.5+r("marksman")*.02:1))),critical:crit};
+return {damage:Math.max(1,Math.round(base*(1+Math.min(add,.75))*(crit?cm:1))),critical:crit};
 }
 function fmt(n){return Math.floor(n).toLocaleString("uk-UA")}
 function render(){
@@ -5916,8 +5976,11 @@ var l=lvl(),d=damage(),prev=totalFor(l),next=totalFor(l+1),pct=Math.max(0,Math.m
 var h='<div class="tal-shell" role="dialog" aria-modal="true" aria-label="Козацька майстерність"><div class="tal-head"><b>⚔ КОЗАЦЬКА МАЙСТЕРНІСТЬ</b><button type="button" id="talClose">✕</button></div>'
 +'<p class="tal-sub">Одне дерево на весь акаунт · бонуси для всіх видів зброї проти босів</p><div class="tal-meta">Рівень <b>'+l+'</b> · Вільні очки <b>'+free()+'</b></div>'
 +'<div class="tal-bar"><span style="width:'+pct+'%"></span></div><div class="tal-note">Досвід від особистої шкоди босам: '+fmt(d)+' · наступне очко за '+fmt(needForPoint(l+1))+' шкоди · залишилось '+fmt(next-d)+'</div><div class="tal-tree">';
+var TT=["I · ОСНОВА","II · МАЙСТЕРНІСТЬ","III · ВЕТЕРАН","IV · ОТАМАН","V · СОТНИК","VI · КОШОВИЙ","VII · ПОЛКОВНИК","VIII · ГЕТЬМАН"],lt=-1,ci=0;
 N.forEach(function(n,i){
-if(i%3===0){if(i)h+='</div>';h+='<div class="tal-tier"><div class="tal-ttl">'+["I · ОСНОВА","II · МАЙСТЕРНІСТЬ","III · ВЕТЕРАН","IV · ОТАМАН"][n.t]+(REQ[n.t]?' · від '+REQ[n.t]+' вкладених очок':'')+'</div><div class="tal-row">'}
+if(n.t!==lt){if(i)h+='</div></div>';lt=n.t;ci=0;h+='<div class="tal-tier"><div class="tal-ttl">'+TT[n.t]+(REQ[n.t]?' · від '+REQ[n.t]+' вкладених очок':'')+'</div><div class="tal-row">'}
+else if(ci%3===0)h+='</div><div class="tal-row" style="margin-top:7px">';
+ci++;
 var a=r(n.id),locked=used()<REQ[n.t];
 h+='<button class="tal-node'+(locked?' locked':'')+'" data-talent="'+n.id+'" '+(locked||a===5||!free()?'disabled':'')+'><span class="tal-icon">'+n.ic+'</span><b>'+n.n+'</b><small>'+n.d+'</small><em>'+a+'/5</em></button>';
 });
@@ -9076,6 +9139,75 @@ function ntf(){
   if(fe>=2&&f.last!==today()&&ml<=4*3600000)L.push({id:"fire",st:"warn",ic:"🔥",ti:"Вогонь згасне",sub:"Серія "+fe+" дн. · перемога над босом збереже її · ",tm:now+ml,tok:"f"+today(),scr:"nbx",go:function(){bossOpen()}});
   return L}
 window.GLORY={dmg:dmg,html:html,open:modal,ntf:ntf,state:function(){return{g:G(),f:F(),dmg:dmgPct(),sil:silPct(G().n,fEff()),fe:fEff()}},pct:dmgPct,silPct:silPct};
+})();
+</script>
+
+<script id="dstatjs">
+/* ===== v348: счётчики боя (удары, криты, оружие) + много новых достижений ===== */
+(function(){
+function D(){if(!S.dst||typeof S.dst!="object")S.dst={};var d=S.dst;["hits","crits","dmg","streak","bstreak"].forEach(function(k){if(typeof d[k]!="number")d[k]=0});if(!d.w)d.w={};if(!d.kr)d.kr=[0,0,0];if(!d.km)d.km={solo:0,grp:0};return d}
+function BS(){try{return window.PG&&PG().bossStats||{}}catch(e){return {}}}
+window.DSTAT={
+hit:function(pd,crt,wid,T){var d=D();d.hits++;d.dmg+=pd;if(crt){d.crits++;d.streak++;if(d.streak>d.bstreak)d.bstreak=d.streak}else d.streak=0;
+if(wid){var w=d.w[wid]||(d.w[wid]={h:0,c:0});w.h++;if(crt)w.c++}},
+state:D};
+var _b=window.bossWin;
+if(typeof _b=="function"){window.bossWin=bossWin=function(g){var T=null,cb=S.cb;try{T=window.btActive&&btActive()}catch(e){}var k0=S.bossKills||0;_b(g);try{if((S.bossKills||0)>k0&&!window._devWin){var d=D(),rg=T?(T.rage|0):0,md=(T&&T.mode=="grp")?"grp":"solo";d.kr[Math.max(0,Math.min(2,rg))]++;d.km[md]++}}catch(e){}}}
+function gv(f,dflt){try{var v=f();return v==null?dflt:v}catch(e){return dflt}}
+var BN=BOSSES.map(function(b){return b.n}),BIM={ostap:"⚓",nahai:"🌙",grom:"🏹",marena:"🔪",syryi:"✝️",bekliar:"🐸",kryzhanyi:"🏰"};
+function fm(n){return n>=1e6?(n/1e6)+" млн":n>=1e3?(n/1e3)+" тыс.":""+n}
+function fs(n){return String(n).replace(/\B(?=(\d{3})+(?!\d))/g," ")}
+var L=[];
+function add(id,ic,nm,ds,rw,fn){L.push([id,ic,nm,ds,rw,function(s){try{return !!fn(s)}catch(e){return false}}])}
+function ladder(pre,ic,names,desc,th,rws,get){th.forEach(function(t,i){add(pre+t,ic,names[i],desc.replace("{n}",fs(t)),rws[i],function(){return get()>=t})})}
+/* урон */
+ladder("dmg","💥",["Первая кровь","Разминка","Серьёзный урон","Ломатель щитов","Лавина клинков","Миллионер урона","Буря степи","Разрушитель","Сокрушитель","Гроза небес","Бич божий","Неистовый"],"Нанеси боссам {n} урона в сумме",[1e4,5e4,1e5,25e4,5e5,1e6,25e5,5e6,1e7,25e6,5e7,1e8],[5,8,10,15,20,30,40,50,60,80,100,120],function(){return BS().totalPersonalDamage||0});
+/* удары */
+ladder("hit","🎯",["Первые выстрелы","Стрелок","Меткий глаз","Тысяча ударов","Не промах","Мастер пальбы","Неутомимый"],"Нанеси боссам {n} ударов",[100,500,1000,2500,5000,10000,25000],[4,8,12,20,30,45,70],function(){return BS().hits||0});
+/* криты */
+ladder("crit","🎯",["Первый крит","Меткий","Критик","Сотня критов","Снайпер","Полтысячи критов","Тысяча критов","Рука судьбы","Повелитель критов"],"Нанеси {n} критических ударов",[1,10,50,100,250,500,1000,2500,5000],[3,5,8,12,18,25,40,60,90],function(){return D().crits});
+ladder("cstr","⛓",["Дубль-крит","Тройной крит","Четыре подряд","Пять подряд","Семь подряд"],"Нанеси {n} крита подряд",[2,3,4,5,7],[5,10,20,35,60],function(){return D().bstreak});
+/* лучший удар */
+ladder("shot","☄",["Хороший удар","Сильный удар","Тяжёлая рука","Удар молота","Удар грома","Небесный удар","Удар титана","Удар легенды"],"Нанеси один удар на {n} урона",[500,1000,2500,5000,10000,25000,50000,100000],[3,5,8,12,20,35,55,90],function(){return BS().bestShot||0});
+/* убийства боссов */
+ladder("kills","💀",["Сотня трофеев","Охотник-ветеран","Полтысячи голов","Тысяча голов"],"Победи {n} боссов",[100,250,500,1000],[40,60,90,140],function(){return S.bossKills||0});
+var RN=["Грозный","Свирепый","Беспощадный"],RI=["🟢","🔵","🟣"];
+[0,1,2].forEach(function(r){ladder("rage"+r,RI[r],[RN[r]+": десяток",RN[r]+": полсотни",RN[r]+": сто пятьдесят"],"Победи {n} боссов в режиме «"+RN[r]+"»",[10,50,150],[8+r*6,22+r*10,50+r*15],function(){return D().kr[r]})});
+ladder("solo","♜",["Одиночка","Волк-одиночка","Легенда одиночек"],"Победи {n} боссов в одиночку",[10,50,150],[10,30,70],function(){return BS().winsSolo||0});
+ladder("grp","♙",["Побратим","Душа отряда","Голова сотни"],"Победи {n} боссов в отряде",[10,50,150],[10,30,70],function(){return BS().winsGrp||0});
+/* по каждому боссу */
+BOSSES.forEach(function(b,i){var ic=BIM[b.id]||"🎯",nm=BN[i];
+add("bkx10_"+i,ic,"Охотник: "+nm,"Победи босса «"+nm+"» 10 раз",15+i*5,function(s){return ((S.bk||{})[i]||0)>=10});
+add("bkx50_"+i,ic,"Гроза: "+nm,"Победи босса «"+nm+"» 50 раз",35+i*10,function(s){return ((S.bk||{})[i]||0)>=50})});
+add("bkall","🏆","Все боссы пали","Победи каждого босса хотя бы раз",60,function(){return BOSSES.every(function(_,i){return ((S.bk||{})[i]||0)>=1})});
+add("bkall10","👑","Хозяин степи","Победи каждого босса не менее 10 раз",120,function(){return BOSSES.every(function(_,i){return ((S.bk||{})[i]||0)>=10})});
+/* оружие */
+var WN={fist:["Кулак","✊"],foot:["Нога","🦵"],sabre:["Шабля","⚔️"],dagger:["Кинжал","🗡"],samopal:["Самопал","🔫"],rifle:["Рушница","🔫"],volley:["Залп стрел","🏹"],cannon:["Гармата","💣"]};
+Object.keys(WN).forEach(function(k){var n=WN[k][0],ic=WN[k][1];
+add("w100_"+k,ic,n+": сотня","Нанеси 100 ударов оружием «"+n+"»",6,function(){return ((D().w[k]||{}).h||0)>=100});
+add("w1k_"+k,ic,n+": мастер","Нанеси 1000 ударов оружием «"+n+"»",25,function(){return ((D().w[k]||{}).h||0)>=1000});
+add("wc50_"+k,"🎯",n+": меткий","Нанеси 50 критов оружием «"+n+"»",15,function(){return ((D().w[k]||{}).c||0)>=50})});
+/* общие */
+ladder("lvx","⭐",["Сотник","Полковник","Атаман","Кошевой","Гетьман Сечи"],"Достигни {n} уровня",[30,40,50,75,100],[30,45,60,90,130],function(){return S.lv||1});
+ladder("pwx","💪",["Могучий","Исполин","Громовержец"],"Набери {n} силы",[5000,10000,25000],[40,60,100],function(){return S.pw||0});
+ladder("hkx","🐎",["Бывалый путник","Следопыт-ветеран","Вожак походов","Легенда дикого поля"],"Заверши {n} походов",[50,100,250,500],[30,50,80,130],function(){return S.hn||0});
+ladder("svx","🥈",["Сундук серебра","Серебряный дождь","Серебряная гора"],"Накопи {n} серебра",[1e5,1e6,1e7],[20,50,100],function(){return S.svm||0});
+add("horse5","🐴","Крепкий конь","Подними уровень коня до 5",10,function(s){return s.hl>=5});
+add("horse10","🐎","Конь-легенда","Подними уровень коня до 10",30,function(s){return s.hl>=10});
+add("stbl2","🏇","Конюх","Держи в стойле 2 коня",8,function(){return S.stable.list.length>=2});
+add("stbl4","🏇","Табунщик","Держи в стойле 4 коней",20,function(){return S.stable.list.length>=4});
+add("stbl8","🏇","Хозяин табуна","Заполни все 8 стойл",50,function(){return S.stable.list.length>=8});
+ladder("tvx","🍻",["Знаток таверны","Король таверны"],"Получи {n} достижений таверны",[30,40],[30,60],function(){return gv(function(){return achCnt()},0)});
+ladder("fire","🔥",["Три дня подряд","Неделя огня","Две недели огня","Месяц огня"],"Держи серию дней с победами над боссами: {n}",[3,7,14,30],[8,20,40,100],function(){return gv(function(){return Math.max(S.fire.best||0,S.fire.n||0)},0)});
+ladder("junk","🧰",["Покупатель","Постоянный клиент","Лучший друг торговца","Скупщик","Магнат хлама","Барон хлама","Король торговцев"],"Купи {n} закупов у заезжего торговца",[1,10,25,100,250,500,1000],[5,12,20,45,80,120,200],function(){return gv(function(){return S.junk.lvl||0},0)});
+ladder("raid","🛡",["Первый налёт","Налётчик","Гроза обозов","Атаман налётов","Король налётов"],"Заверши {n} налётов на обоз",[1,5,10,25,50],[8,18,30,60,100],function(){return gv(function(){return Object.keys(S.raid.claimed||{}).length},0)});
+ladder("jwl","⚒",["Заточка","Мастер заточки","Кузнец-виртуоз"],"Удачно заточи перстни {n} раз",[1,10,50],[8,25,70],function(){return gv(function(){return PG().jewel.sharpened||0},0)});
+ladder("jfg","🔨",["Первая ковка","Подмастерье","Мастер-кузнец"],"Скуй перстни {n} раз",[1,5,20],[8,20,50],function(){return gv(function(){return PG().jewel.crafted||0},0)});
+ladder("tutx","📅",["Три дня подряд","Неделя в игре"],"Заходи в игру {n} дней подряд",[3,7],[6,20],function(){return gv(function(){return S.tut.streak||0},0)});
+add("chain5","🔗","Звенья славы","Дойди до 5 звена цепочки славы за сутки",15,function(){return gv(function(){return S.glory.n||0},0)>=5});
+add("chain10","⛓","Ланцюг славы","Собери цепочку славы из 10 побед за сутки",40,function(){return gv(function(){return S.glory.n||0},0)>=10});
+var N0=Math.floor(S.pw||0);
+(function reg(){if(!window.GACH){setTimeout(reg,200);return}var have={};window.GACH.forEach(function(a){have[a[0]]=1});L.forEach(function(a){if(!have[a[0]])window.GACH.push(a)});window.DSTAT.count=L.length})();
 })();
 </script>
 </body></html>

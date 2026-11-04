@@ -36,9 +36,9 @@
 html.gfx-low #ldr .lsun,html.gfx-low #ldr .ldw,html.gfx-low #ldr .lgr,html.gfx-low #ldr .lem,html.gfx-low #ldr .lr1,html.gfx-low #ldr .lr2{animation:none}
 html.gfx-low #ldr .lem{display:none}
 @media (prefers-reduced-motion:reduce){#ldr *{animation:none!important}}
-</style><meta charset="UTF-8"><meta name="ver" content="357">
+</style><meta charset="UTF-8"><meta name="ver" content="358">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<script>var VER=357;(function(){try{fetch(location.pathname+"?c="+Date.now(),{headers:{Range:"bytes=0-600"},cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="ver" content="(\d+)"/);if(m&&+m[1]>VER&&sessionStorage.getItem("upd")!==m[1]){sessionStorage.setItem("upd",m[1]);location.replace(location.pathname+"?v="+m[1]+"&r="+Date.now())}}).catch(function(){})}catch(e){}})()</script>
+<script>var VER=358;(function(){try{fetch(location.pathname+"?c="+Date.now(),{headers:{Range:"bytes=0-600"},cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="ver" content="(\d+)"/);if(m&&+m[1]>VER&&sessionStorage.getItem("upd")!==m[1]){sessionStorage.setItem("upd",m[1]);location.replace(location.pathname+"?v="+m[1]+"&r="+Date.now())}}).catch(function(){})}catch(e){}})()</script>
 <script id="gfxhead">(function(){var L="high";try{var v=localStorage.getItem("gfx");if(v==="mid"||v==="low")L=v}catch(e){}
 var PR={high:{fps:60,dpr:99,strip:3,hI:30,hA:30,pq:1},mid:{fps:45,dpr:1.5,strip:4,hI:45,hA:36,pq:.75},low:{fps:30,dpr:1,strip:6,hI:60,hA:45,pq:.65}}[L];
 window.GFX={lvl:L,low:L==="low",mid:L==="mid",hres:L==="low"?.5:L==="mid"?.65:1,fps:PR.fps,iv:1000/PR.fps,strip:PR.strip,heroI:PR.hI,heroA:PR.hA,pq:PR.pq,real:0,min:0};
@@ -786,7 +786,7 @@ setTimeout(function(){if(L.boot)L.done()},20000)})();
 <div id="hud2"><div id="hbar"><div class="lau"></div><div id="hlv"><b id="lv"></b></div><div id="hname"><span id="nm"></span></div>
 <div class="hr"><i>⚡</i><span class="ho hv" id="en"></span><button class="hp" onclick="soon()" aria-label="Пополнить">+</button></div><div class="hr"><i class="cs"></i><span class="ho hv" id="sv"></span><button class="hp" onclick="soon()" aria-label="Пополнить">+</button></div><div class="hr"><i>💰</i><span class="ho hv" id="tl"></span><button class="hp" onclick="testTalers()" aria-label="Пополнить">+</button></div><div class="hr"><i>💪</i><span class="ho hv" id="pw"></span><button class="hp" onclick="soon()" aria-label="Пополнить">+</button></div>
 <div class="xpt"><i id="xp"></i></div></div>
-<button id="hgear" onclick="gearTap()" aria-label="Настройки" aria-expanded="false">⚙</button><div class="ho" id="el"></div><div class="ho" id="hver">v357</div></div>
+<button id="hgear" onclick="gearTap()" aria-label="Настройки" aria-expanded="false">⚙</button><div class="ho" id="el"></div><div class="ho" id="hver">v358</div></div>
 <div id="scene">
 
 <div id="hut"><img id="campbg" draggable="false" alt="" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 50%;z-index:0" src="data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=">
@@ -7623,6 +7623,22 @@ window.BAL={
 #jkx .q .qd{position:absolute;inset:0;background:rgba(8,3,1,.55);border-radius:calc(var(--k)*14px);pointer-events:none}
 #jkx .q .qp{position:absolute;display:flex;align-items:center;justify-content:center}
 #jkx .q span{display:inline-flex;align-items:center;gap:3px;margin:0 6px;white-space:nowrap}
+#jkx .q .qp{margin:0}
+#jkx .jr{position:absolute;z-index:6;cursor:pointer;filter:drop-shadow(0 calc(var(--k)*8px) calc(var(--k)*10px) rgba(0,0,0,.6));transform:rotate(-.5deg);-webkit-tap-highlight-color:transparent}
+#jkx .jr.nw{animation:jkrin .45s cubic-bezier(.2,1.2,.4,1) both}
+#jkx .jr.bye{animation:jkrout .25s ease-in both}
+@keyframes jkrin{from{opacity:0;transform:translateY(calc(var(--k)*-26px)) scale(.9) rotate(-3deg)}to{opacity:1;transform:rotate(-.5deg)}}
+@keyframes jkrout{to{opacity:0;transform:translateY(calc(var(--k)*14px)) scale(.96)}}
+html.gfx-low #jkx .jr.nw,html.gfx-low #jkx .jr.bye{animation:none}
+#jkx .jri{position:absolute;left:calc(var(--k)*22px);right:calc(var(--k)*22px);top:calc(var(--k)*6px);bottom:calc(var(--k)*6px);background:radial-gradient(ellipse at 50% 40%,#f7e7b8 0%,#ecd196 60%,#d4aa62 100%);border-top:calc(var(--k)*3px) solid #a87a36;border-bottom:calc(var(--k)*3px) solid #a87a36;box-shadow:inset 0 0 calc(var(--k)*24px) rgba(120,70,20,.45);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:calc(var(--k)*6px) calc(var(--k)*14px);overflow:hidden;color:#3a2208}
+#jkx .jre{position:absolute;top:0;bottom:0;width:calc(var(--k)*44px);border-radius:calc(var(--k)*22px);background:linear-gradient(90deg,#7a4a1c 0%,#d9a95a 28%,#f6dfa0 50%,#c48f45 76%,#6b3e16 100%);box-shadow:inset 0 0 0 calc(var(--k)*2px) rgba(60,30,8,.55)}
+#jkx .jre.a{left:0}
+#jkx .jre.b{right:0}
+#jkx .jrh{font-weight:bold;letter-spacing:.02em;color:#7a2410;text-shadow:0 1px 0 rgba(255,240,200,.6);line-height:1.1;margin-bottom:calc(var(--k)*6px);white-space:nowrap}
+#jkx .jrl{display:flex;flex-wrap:wrap;justify-content:center;align-content:flex-start;align-items:center;gap:calc(var(--k)*5px) calc(var(--k)*20px);line-height:1.1;font-weight:bold;width:100%;flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch}#jkx .jrl.m{display:grid;grid-template-columns:1fr 1fr;justify-items:start;gap:calc(var(--k)*4px) calc(var(--k)*14px)}
+#jkx .jrc{display:inline-flex;flex-direction:row;align-items:center;gap:calc(var(--k)*6px);white-space:nowrap;margin:0}
+#jkx .jrc img{width:1.25em;height:1.25em;flex:none;filter:drop-shadow(0 1px 1px rgba(60,30,8,.5))}
+#jkx .jrc b{color:#8a1d0c}#jkx .jrc em{font-style:normal;font-weight:bold;color:#3a2208;font-size:.78em;line-height:1.05;white-space:normal;max-width:calc(var(--k)*230px)}
 #jkx .q img{width:1em;height:1em;vertical-align:middle}
 #jkx .qfill{position:absolute;border-radius:calc(var(--k)*20px);background:linear-gradient(#ffcf5e,#d9811c 60%,#a85a10);box-shadow:0 0 8px rgba(255,170,50,.55)}
 #jkx .qpk{flex:none;width:100%;box-sizing:border-box;padding:calc(var(--k)*8px) calc(var(--k)*30px) calc(var(--k)*16px);background:url(data:image/webp;base64,UklGRjIFAABXRUJQVlA4ICYFAACwJgCdASqtAygAPrVWo06pLa8povMLUeAWiWdtoeq9g64ieRuSNXx+yMzngugTHDoyTlsy3fsMy/5te9X2pG3sOCjz71wOmABJC0E3klePi0gytlR6vFuS/vtam6j1BFM5Jcoo+9MHuf8SAJJKhUeB8gPysCxzSS3s6pxIkq/cZGzAHA60hsd9bIdMMYgg8ogG7zkrnXXQgM9QeJ0pCYXkiQfZK3+nQpYMK3yGDLMq3lFwZ51ciqUaWckZgMH7498jtykZntDoub7T8VAgwgn4XPOF7pnOclpI2tFYAmcX89ylQ+bQRD8gKim2kPhsMrFQasntUgt3saWDII42yxDG4upXsEIqF7781x8iaFCfaKKluwm+7uax26Ptyzcz9tPd5wcXOAKP+N5+8oKOCAinPey/H0LnyQbZR8Ja8sgA/vPyv8Z3o7IC3K7mMElhAIY5WILX5TWdX4i72V3W6FnOhYTB9TxsqDel8IC3ujNONMY1j62Gq0PJcwxMe565Lnga3sr/ajTDxy2NXFq17vmAFhOoHFpQZLJOFEAMQUurhww93c2UpPApermGOkOxsjesaadErqJq6LRKcShewxYY+ohA/EgUHQcfIzuPI9keNB+h8z3FWWg/8NPcK5P5xsPeEdlXjN8JXSxGdr6zfCIMDtNiAYa5p7Jn4+MrUV6J7JqHAwDCle0gcfw9l5XKALc2lfNZsvgKjBEmX2c+0W5gAt5e3SRFqHJFk7Ggn53TKWGD3rYkRf5VYU2a8U0JY5G8l+KdgkqLF5wiCgoUBPyeGIxIZggDFP9JPrmrAhADGh01K5Ct3N2bCzt1cd8ZiHmAqvuvq44wG7qioYuwwMEAcm6rG7yKYkZ2MvgzRjfvz0uAjUBnbyU3c0ivB0Kj277PWoWXq6GdiucDD1umvCDEzAL5Yv3zVyzfG3p/uCIcBXiahekoMB9YOnkspcVleqDc22ahCXTPFTr2J9bFL2/2JFyJNXOQqob7KXJqJA9OcNdbNR/obgqic6jlMIbf3le/IyAcphGTddbhFr4GMW72LX+BevjAXKqZqGNKD95Pyu22SKlkAVs3EUkclB4fJOwvGKmC8QRZrc1P8W0aQU3l1tee3O8e5R2M1K4a4DUFDhxvtgkYBNyJ4qhMaKeEY9Tu7l1QQGsVB8WKCOElnhlz/G7cwRkhmuIdi0jUZR8/K9AS/HlwATP2dZ6DzXUiRJSyQw95i29jcZGXW4RHint6CVEES8BaTgaPMeRg/zfIRXzj4jGIF6mvycaDG0ZB6Bhonz/0ScWocj5iNisK7wgHL2oJBwLmEhMt0FhOP/8QosBEbqlEi1tHaYcrKxChStgqo6rWbz3FGfabajyqcaDYGFvkh/YlsroL87tEr201wjQdOhdRivLTU202sC90NHnJ1GFfBpsj2f64qddqj+JS6tSW7arq41n/lFS1JBOkFYa+BrqtWQjPzp3BVBkQNQyllmPWyf0NAsPjs41VdrZANydeZCNvpZmgSQqDILI4Bjfy+4mBLXyP22V3yyMnr7OFD+QdGavTNzSOZE0MHIKOGmK/JnDXytN+H3fLbcMlCGu36wKUJhLU0aRslxEh2AW1CzqsqkPrG3EedAlPKsLuN8KR0JbqDRJOD7Iv5sB3PbifC4v9oKgR9qAd9GksVjRuYq0cTAtpP2bd8TKmUPhL5L7fW4hoqNWdE6dokrEIZPs10/hyDHKH7WBBWF/BvY4v7f1almdDGOxnZ0yzkpO1NiUpgAAA) 0 0/100% 100% no-repeat,#24120a}
@@ -7771,7 +7787,7 @@ function rewText(rs){return rs.map(function(r){var t=r[0];
  if(t=="gs")return"<span>🔷 "+r[2]+" "+bn(r[1])+"</span>";if(t=="cos")return"<span>🏆 трофей «"+bn(r[1])+"»</span>";return""}).join("")}
 /* покупка уровня */
 function buyLv(){var j=J(),i=j.lvl,L=i<C.max?lvAt(i):null;if(!L)return{ok:false,why:"done"};if(!here())return{ok:false,why:"away"};if(j.bal<L.p)return{ok:false,why:"junk",need:L.p-j.bal};
- j.bal-=L.p;j.lvl++;var txt=L.r.map(giveR);save();try{if(window.draw)draw()}catch(e){}return{ok:true,lv:i+1,txt:txt}}
+ j.bal-=L.p;j.lvl++;var txt=L.r.map(giveR);save();try{if(window.draw)draw()}catch(e){}return{ok:true,lv:i+1,txt:txt,rr:L.r}}
 /* покупка хлама за талеры */
 function buyPack(k){var j=J(),P=C.packs[k];if(!P)return{ok:false};if(!here())return{ok:false,why:"away"};if(j.bn+P.n>C.buyCap)return{ok:false,why:"cap",left:C.buyCap-j.bn};
  if((S.tl||0)<P.t)return{ok:false,why:"tl",need:P.t-(S.tl||0)};S.tl-=P.t;j.bal+=P.n;j.bn+=P.n;j.tot+=P.n;save();try{if(window.draw)draw()}catch(e){}refreshBtn();return{ok:true,n:P.n}}
@@ -7782,7 +7798,24 @@ function comod(){var j=J();if(!here())return{ok:false,why:"away"};if(j.bal<C.com
  if(r[0]=="w")rr=["w",r[1],q];else if(r[0]=="rs"||r[0]=="gs")rr=[r[0],r[1],q];else rr=[r[0],q];
  j.bal-=C.comodCost;var t=giveR(rr);save();try{if(window.draw)draw()}catch(e2){}refreshBtn();return{ok:true,txt:t,rr:rr}}
 /* ---------- экран ---------- */
-var ov=null,mt=0;
+var ov=null,mt=0,RP=null,rpt=0;
+function nf(n){return String(n).replace(/\B(?=(\d{3})+(?!\d))/g,"\u2009")}
+function rpItems(list){var a={},o=[];function add(k,id,fb,nm,n,pl){if(!a[k]){a[k]={id:id,fb:fb,nm:nm,n:0,pl:pl};o.push(a[k])}a[k].n+=n}
+ list.forEach(function(r){var t=r[0],b=r[1];
+  if(t=="sv")add("sv","silver","🥈","срібло",r[1],1);
+  else if(t=="fz")add("fz","pistol","🔫","самопал",r[1]);
+  else if(t=="w")add("w"+b,WI[b],"⚔",String(WN[b]||b).toLowerCase(),r[2]);
+  else if(t=="tl")add("tl","taler","💰","талерів",r[1],1);
+  else if(t=="key")add("k"+b,"key","🔑","ключ: "+bn(b),r[2]);
+  else if(t=="rs")add("rs"+b,"ring_shard","🧩",b=="all"?"уламки перстня всім босам":b=="any"?"уламки перстня":"уламки перстня · "+bn(b),r[2]);
+  else if(t=="gs")add("gs"+b,"gem_shard","🔷",b=="any"?"уламки кристала":"уламки кристала · "+bn(b),r[2]);
+  else if(t=="cos")add("c"+b,"boss_outfit","🏆","трофей «"+bn(b)+"»",1)});
+ return o}
+function rpHTML(){var it=RP.it,n=it.length,fs=n<=2?32:n<=4?28:n<=6?24:n<=10?22:20,c=it.map(function(x){return'<span class="jrc">'+ico(x.id,x.fb)+'<b>'+(x.pl?"+":"×")+nf(x.n)+'</b><em>'+x.nm+'</em></span>'}).join("");
+ var fr=RP.fresh;RP.fresh=false;
+ return'<div id="jkrp" class="jr'+(fr?" nw":"")+'" data-j="rp" style="'+B(150,8,745,194)+'"><div class="jri"><div class="jrh" style="font-size:'+F(26)+'">'+RP.ti+'</div><div class="jrl'+(n>4?" m":"")+'" style="font-size:'+F(fs)+'">'+c+'</div></div><i class="jre a"></i><i class="jre b"></i></div>'}
+function rpHide(){clearTimeout(rpt);var e=RP&&$("jkrp");RP=null;if(e){e.classList.remove("nw");e.classList.add("bye");setTimeout(function(){if(e.parentNode&&!RP)e.parentNode.removeChild(e)},260)}}
+function rpShow(ti,list){var it=rpItems(list);if(!it.length)return;RP={ti:ti,it:it,fresh:true};clearTimeout(rpt);rpt=setTimeout(rpHide,9000)}
 function msg(t){var m=$("jkm");if(!m)return;m.innerHTML=t;m.classList.add("on");clearTimeout(mt);mt=setTimeout(function(){m.classList.remove("on")},3200)}
 var SCENE='<svg viewBox="0 0 150 140" xmlns="http://www.w3.org/2000/svg"><rect x="8" y="112" width="134" height="6" rx="3" fill="#1a0e05" opacity=".6"/><path d="M20 58L75 14l55 44z" fill="#b83a22"/><path d="M20 58l18-10 17 10-17 10z M55 58l20-14 20 14-20 12z M95 58l17-10 18 10-18 10z" fill="#f0dcae" opacity=".92"/><path d="M20 58h110v7H20z" fill="#7a2410"/><rect x="26" y="65" width="5" height="48" fill="#4a2a12"/><rect x="119" y="65" width="5" height="48" fill="#4a2a12"/><rect x="26" y="88" width="98" height="24" rx="3" fill="#6b4524"/><rect x="26" y="88" width="98" height="5" fill="#8a5a2c"/><g fill="#8a8a8a"><path d="M40 84c0-8 14-8 14 0z"/><rect x="60" y="76" width="5" height="12" rx="1"/><rect x="68" y="72" width="5" height="16" rx="1" fill="#a08a5a"/><circle cx="95" cy="82" r="6" fill="#b08a40"/><path d="M104 88l10-16 5 4-7 12z" fill="#7a7a82"/></g><circle cx="38" cy="116" r="11" fill="none" stroke="#2b1608" stroke-width="4"/><circle cx="112" cy="116" r="11" fill="none" stroke="#2b1608" stroke-width="4"/><path d="M122 36l8-6 2 9z" fill="#ffd878"/></svg>';
 function build(){if(ov)return;var s=document.createElement("div");ov=s;s.id="jkx";document.body.appendChild(s);window.addEventListener("resize",sk);
@@ -7801,11 +7834,11 @@ function render(){if(!ov)return;sk();var j=J(),dev=window.JUNK_DEV&&JUNK_DEV.alw
  h+='<div class="qs qt1">'+Q("l dk",50,20,500,60,34,"Закуп торговця · "+(done?C.max:cur+1)+" з "+C.max);
  if(fw>0)h+='<div class="qfill" style="left:'+F(61)+';top:'+F(107)+';width:'+F(Math.max(fw,38))+';height:'+F(38)+'"></div>';
  h+=Q("cr",60,107,820,38,26,cur+" / "+C.max);
- h+=Q("gd",55,162,110,110,done?44:46,done?"✔":(cur+1));
+ h+=Q("gd",55,162,110,110,done?42:(cur+1>=1000?34:cur+1>=100?40:44),done?"✔":(cur+1));
  if(done){h+=Q("cr",190,172,450,92,29,"Усі закупи куплено. Далі тільки комод.")}
  else{var rt=rewText(L.r),plain=rt.replace(/<[^>]*>/g,"").length;
   h+=Q("cr",182,172,462,92,plain>46?23:plain>30?26:29,'<div style="display:flex;flex-wrap:wrap;justify-content:center;align-items:center;line-height:1.2">'+rt+'</div>');
-  h+='<button class="q gd" data-j="lv" style="'+B(655,172,240,88)+'"><span class="qp" style="left:'+F(112)+';top:0;width:'+F(122)+';height:100%;font-size:'+F(L.p>=1000?34:40)+'">'+L.p+'</span>'+(j.bal>=L.p?"":'<i class="qd"></i>')+'</button>'}
+  h+='<button class="q gd" data-j="lv" style="'+B(655,172,240,88)+'"><span class="qp" style="left:'+F(105)+';top:0;width:'+F(120)+';height:100%;font-size:'+F(L.p>=1000?34:40)+'">'+L.p+'</span>'+(j.bal>=L.p?"":'<i class="qd"></i>')+'</button>'}
  h+=Q("cr",30,272,880,44,25,done?"":"Купиш цей закуп — одразу відкриється наступний.");
  h+='</div>';
  /* докупити хлам за талери */
@@ -7814,6 +7847,7 @@ function render(){if(!ov)return;sk();var j=J(),dev=window.JUNK_DEV&&JUNK_DEV.alw
  h+='<div class="qs qm">';
  h+=Q("l cr",228,23,640,84,28,"Швидко: купити поспіль скільки вистачить хламу (до 25 закупів).");
  h+=QB("lvx",null,215,108,645,84,40,"Купити скільки вистачить",done||j.bal<L.p);
+ if(RP)h+=rpHTML();
  h+=Q("l dk",48,235,345,58,34,"Комод торговця");
  h+=Q("l dk",302,308,575,106,26,"Без ліміту: за "+C.comodCost+" хламу — шухляда з випадковою нагородою: срібло, зброя, уламки, іноді талери.");
  h+=QB("comod",null,303,418,577,86,38,'<span style="margin:0 '+F(135)+' 0 0">Відкрити за '+C.comodCost+' '+hi+'</span>',j.bal<C.comodCost);
@@ -7827,9 +7861,10 @@ function render(){if(!ov)return;sk();var j=J(),dev=window.JUNK_DEV&&JUNK_DEV.alw
  h+='<div class="qbot"></div></div><div id="jkm"></div>';ov.innerHTML=h}
 function act(a,v){var j=J(),r;
  if(a=="x"){close();return}
+ if(a=="rp"){rpHide();return}
  if(a=="pack"){r=buyPack(+v);if(r.ok)msg("+"+r.n+" хламу куплено");else msg(r.why=="tl"?"Бракує талерів: ще "+r.need:"Не вдалося")}
- else if(a=="lv"){r=buyLv();if(r.ok)msg("<b>Закуп "+r.lv+" готовий!</b><br>"+r.txt.join("<br>"));else msg(r.why=="junk"?"Бракує хламу: ще "+r.need:"Не вдалося")}
- else if(a=="lvx"){var n=0,last=0,why="";for(var z=0;z<25;z++){var rb=buyLv();if(!rb.ok){why=rb.why=="junk"?"Бракує хламу: ще "+rb.need:rb.why=="done"?"Усі закупи куплено":"";break}n++;last=rb.lv}msg(n?"<b>Куплено закупів: "+n+"</b><br>тепер до №"+last+(why?"<br>"+why:""):why||"Не вдалося")}
+ else if(a=="lv"){r=buyLv();if(r.ok)rpShow("Закуп "+r.lv+" · отримано",r.rr);else msg(r.why=="junk"?"Бракує хламу: ще "+r.need:"Не вдалося")}
+ else if(a=="lvx"){var n=0,last=0,why="",all=[];for(var z=0;z<25;z++){var rb=buyLv();if(!rb.ok){why=rb.why=="junk"?"Бракує хламу: ще "+rb.need:rb.why=="done"?"Усі закупи куплено":"";break}n++;last=rb.lv;all=all.concat(rb.rr)}if(n)rpShow(n>1?"Закупи "+(last-n+1)+"–"+last+" · отримано":"Закуп "+last+" · отримано",all);else msg(why||"Не вдалося")}
  else if(a=="comod"){r=comod();if(r.ok)msg("<b>Комод відкрито:</b><br>"+r.txt);else msg(r.why=="junk"?"Бракує хламу: ще "+r.need:"Торговця немає")}
  else if(a=="d1"){j.bal+=20;j.tot+=20;save()}
  else if(a=="d2"){j.en=0;j.bn=0;j.cd="";save()}

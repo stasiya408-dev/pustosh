@@ -25,6 +25,7 @@ function help(k){var co=C();if(Date.now()<co.help){P.say("Збирач ще ві
 function hook(){
  var hf=window.hFinish;if(typeof hf=="function"&&!hf._d9){var n=function(ok){var loc=window.HK&&HK.loc,r=hf.apply(this,arguments);try{if(loc){var t=drop(loc,ok?2:1,true);if(t&&window.HK&&HK.res&&HK.res.items)HK.res.items.push("🧩 Знахідка для колекції: "+t)}}catch(e){}return r};n._d9=1;window.hFinish=hFinish=n}
  var hs=window.hStep;if(typeof hs=="function"&&!hs._d9){var m=function(){var loc=window.HK&&HK.loc,s0=window.HK&&HK.step,r=hs.apply(this,arguments);try{if(loc&&window.HK&&HK.step>s0&&Math.random()<.07){var t=drop(loc,1,false);if(t)P.toast("Знахідка: "+t)}}catch(e){}return r};m._d9=1;window.hStep=hStep=m}}
+ var H=window.HMAP;if(H&&typeof H.go=="function"&&!H.go._d9){var g=H.go,q=function(id){var loc=window.HK&&HK.loc,s0=window.HK&&HK.step,r=g.apply(this,arguments);try{if(loc&&window.HK&&HK.step>s0&&Math.random()<.07){var t=drop(loc,1,false);if(t)P.toast("Знахідка: "+t)}}catch(e){}return r};q._d9=1;H.go=q}
 /* ---- экраны ---- */
 var ov,view="skr";
 function colHTML(){var h="";

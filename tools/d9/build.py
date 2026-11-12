@@ -1,5 +1,5 @@
 import re,subprocess,sys
-VER=int(sys.argv[1]) if len(sys.argv)>1 else 366
+VER=int(sys.argv[1]) if len(sys.argv)>1 else 367
 import os
 D=os.path.dirname(os.path.abspath(__file__))+'/'
 s=subprocess.check_output(['git','-C','/home/claude/pustosh','show','refs/heads/v358-stable:index.html']).decode('utf-8')
@@ -18,6 +18,19 @@ s=s.replace(a2,'var W=OW||WP.sel(),rs=OW?(WP.ammo(W)>=1?"ok":"ammo"):WP.ready(W)
 a3='function buy(){if(typeof window._mkOld=="function")'
 assert s.count(a3)==1
 s=s.replace(a3,'window._nbShoot=shoot;'+a3)
+# 1в. кони: ступень коня = +1 ячейка мешка в налёте на обоз и чуть легче побег
+c1='raid:{mulPer:.012,minMul:.6,maxMul:1.08,leadPer:.6,leadMax:20},'
+assert s.count(c1)==1
+s=s.replace(c1,'raid:{mulPer:.012,minMul:.55,maxMul:1.08,leadPer:.6,leadMax:20,tierMul:.03},')
+c2='H.raidMul=function(){var sp=H.speed();return Math.max(C.raid.minMul,Math.min(C.raid.maxMul,1-(sp-10)*C.raid.mulPer))};'
+assert s.count(c2)==1
+s=s.replace(c2,'H.tier=function(){var h=act();var B=h&&(C.breeds[h.b]||C.breeds[0]);return B?B.r:0};H.bagBonus=function(){return H.tier()};H.raidMul=function(){var sp=H.speed();return Math.max(C.raid.minMul,Math.min(C.raid.maxMul,(1-(sp-10)*C.raid.mulPer)*(1-H.tier()*C.raid.tierMul)))};')
+c3='cargoCapacity:C.cargoCap,'
+assert s.count(c3)==1
+s=s.replace(c3,'cargoCapacity:C.cargoCap+(window.HORSE&&HORSE.bagBonus?HORSE.bagBonus():0),')
+c4="<p><i>🚚</i>Наліт на обоз: '+(raidPct>0?"
+assert s.count(c4)==1
+s=s.replace(c4,"<p><i>🎒</i>Мішок у нальоті: <b>'+(4+H.bagBonus())+' комірок</b> (кожен кращий кінь +1)</p><p><i>🚚</i>Наліт на обоз: '+(raidPct>0?")
 # 2. версия
 for pat,rep in [(r'name="ver" content="358"','name="ver" content="%d"'%VER),(r'var VER=358','var VER=%d'%VER),(r'id="hver">v358<','id="hver">v%d<'%VER)]:
     assert len(re.findall(pat,s))==1,pat

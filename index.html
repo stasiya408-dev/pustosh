@@ -36,9 +36,9 @@
 html.gfx-low #ldr .lsun,html.gfx-low #ldr .ldw,html.gfx-low #ldr .lgr,html.gfx-low #ldr .lem,html.gfx-low #ldr .lr1,html.gfx-low #ldr .lr2{animation:none}
 html.gfx-low #ldr .lem{display:none}
 @media (prefers-reduced-motion:reduce){#ldr *{animation:none!important}}
-</style><meta charset="UTF-8"><meta name="ver" content="366">
+</style><meta charset="UTF-8"><meta name="ver" content="367">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<script>var VER=366;(function(){try{fetch(location.pathname+"?c="+Date.now(),{headers:{Range:"bytes=0-600"},cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="ver" content="(\d+)"/);if(m&&+m[1]>VER&&sessionStorage.getItem("upd")!==m[1]){sessionStorage.setItem("upd",m[1]);location.replace(location.pathname+"?v="+m[1]+"&r="+Date.now())}}).catch(function(){})}catch(e){}})()</script>
+<script>var VER=367;(function(){try{fetch(location.pathname+"?c="+Date.now(),{headers:{Range:"bytes=0-600"},cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="ver" content="(\d+)"/);if(m&&+m[1]>VER&&sessionStorage.getItem("upd")!==m[1]){sessionStorage.setItem("upd",m[1]);location.replace(location.pathname+"?v="+m[1]+"&r="+Date.now())}}).catch(function(){})}catch(e){}})()</script>
 <script id="gfxhead">(function(){var L="high";try{var v=localStorage.getItem("gfx");if(v==="mid"||v==="low")L=v}catch(e){}
 var PR={high:{fps:60,dpr:99,strip:3,hI:30,hA:30,pq:1},mid:{fps:45,dpr:1.5,strip:4,hI:45,hA:36,pq:.75},low:{fps:30,dpr:1,strip:6,hI:60,hA:45,pq:.65}}[L];
 window.GFX={lvl:L,low:L==="low",mid:L==="mid",hres:L==="low"?.5:L==="mid"?.65:1,fps:PR.fps,iv:1000/PR.fps,strip:PR.strip,heroI:PR.hI,heroA:PR.hA,pq:PR.pq,real:0,min:0};
@@ -786,7 +786,7 @@ setTimeout(function(){if(L.boot)L.done()},20000)})();
 <div id="hud2"><div id="hbar"><div class="lau"></div><div id="hlv"><b id="lv"></b></div><div id="hname"><span id="nm"></span></div>
 <div class="hr"><i>⚡</i><span class="ho hv" id="en"></span><button class="hp" onclick="soon()" aria-label="Пополнить">+</button></div><div class="hr"><i class="cs"></i><span class="ho hv" id="sv"></span><button class="hp" onclick="soon()" aria-label="Пополнить">+</button></div><div class="hr"><i>💰</i><span class="ho hv" id="tl"></span><button class="hp" onclick="testTalers()" aria-label="Пополнить">+</button></div><div class="hr"><i>💪</i><span class="ho hv" id="pw"></span><button class="hp" onclick="soon()" aria-label="Пополнить">+</button></div>
 <div class="xpt"><i id="xp"></i></div></div>
-<button id="hgear" onclick="gearTap()" aria-label="Настройки" aria-expanded="false">⚙</button><div class="ho" id="el"></div><div class="ho" id="hver">v366</div></div>
+<button id="hgear" onclick="gearTap()" aria-label="Настройки" aria-expanded="false">⚙</button><div class="ho" id="el"></div><div class="ho" id="hver">v367</div></div>
 <div id="scene">
 
 <div id="hut"><img id="campbg" draggable="false" alt="" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 50%;z-index:0" src="data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=">
@@ -6723,7 +6723,7 @@ function later(f,ms){var t=setTimeout(function(){var i=tms.indexOf(t);if(i>=0)tm
 function clearLater(){tms.forEach(clearTimeout);tms=[]}
 function lock(ms){var n=performance.now();if(n<LK)return false;LK=n+(ms||250);return true}
 function newRun(dev){var id="r"+Date.now().toString(36)+Math.floor(Math.random()*1e9).toString(36),t=nowMs();
-var o={id:id,scene:"S01",status:"active",createdAt:t,updatedAt:t,rngSeed:id,selectedWagon:null,approach:null,ambushGrade:null,alert:0,condition:100,cargoCapacity:C.cargoCap,cargo:[],openedContainers:[],loot:{},
+var o={id:id,scene:"S01",status:"active",createdAt:t,updatedAt:t,rngSeed:id,selectedWagon:null,approach:null,ambushGrade:null,alert:0,condition:100,cargoCapacity:C.cargoCap+(window.HORSE&&HORSE.bagBonus?HORSE.bagBonus():0),cargo:[],openedContainers:[],loot:{},
 wagonStates:{"1":"unvisited","2":"unvisited","3":"unvisited"},chest:{attempted:false,locks:0,fails:0,opened:false,lootRolled:false,left:false},alertReinforcements:false,
 escape:{chosenRoute:null,distance:0,pursuerDistance:0,stamina:100,mistakes:0,lead:0},elapsedActiveMs:0,rewardCommitted:false,events:[],result:null,dev:!!dev,early:false,observed:false,buff:0,sub:{},held:false,dropped:false,tried:{}};
 o.plan={crates:[0,1,2].map(function(i){var r=rnd(o,"crate"+i);return{id:"c"+(i+1),kind:i<2?"silver":r<.5?"silver":r<.75?"hide":"buckle",roll:rnd(o,"cq"+i)}}),
@@ -7206,7 +7206,7 @@ xpNeed:function(lv){return 20+10*(lv-1)},
 sat:{perHour:100/24,hungry:30,minMul:.7},
 feed:{hay:{n:"Сіно",ic:"🌿",price:15,sat:25,xpPer:.16},oats:{n:"Овес",ic:"🌾",price:40,sat:60,xpPer:.233}},
 hike:{base:7,per:8,minCost:4,hlPer:8},
-raid:{mulPer:.012,minMul:.6,maxMul:1.08,leadPer:.6,leadMax:20},
+raid:{mulPer:.012,minMul:.55,maxMul:1.08,leadPer:.6,leadMax:20,tierMul:.03},
 /* шанс выпадения с босса по яростям [обычный, усиленный, эпичный] — UNAPPROVED */
 drop:{ostap:[[1,[.03,.045,.07]],[2,[.02,.03,.05]]],nahai:[[3,[.012,.018,.03]],[4,[.003,.005,.01]]]},
 names:["Вітер","Грім","Блискавка","Буря","Орлик","Сокіл","Вихор","Стріла","Яструб","Шторм","Козак","Мара","Лютий","Зірка","Бурко","Ворон","Сивко","Вогник"]
@@ -7239,7 +7239,7 @@ var H={cfg:C};
 H.hl=function(){var h=act();return h?hlOf(h):1};
 H.speed=function(){var h=act();return h?speedOf(h):10};
 H.cost=function(rest){var sp=H.speed(),c=Math.max(C.hike.minCost,C.hike.base-Math.max(0,Math.floor((sp-10)/C.hike.per)));return rest?Math.max(2,c-2):c};
-H.raidMul=function(){var sp=H.speed();return Math.max(C.raid.minMul,Math.min(C.raid.maxMul,1-(sp-10)*C.raid.mulPer))};
+H.tier=function(){var h=act();var B=h&&(C.breeds[h.b]||C.breeds[0]);return B?B.r:0};H.bagBonus=function(){return H.tier()};H.raidMul=function(){var sp=H.speed();return Math.max(C.raid.minMul,Math.min(C.raid.maxMul,(1-(sp-10)*C.raid.mulPer)*(1-H.tier()*C.raid.tierMul)))};
 H.raidLead=function(){var sp=H.speed();return Math.round(Math.min(C.raid.leadMax,Math.max(0,sp-10)*C.raid.leadPer))};
 H.flee=function(){return Math.round(Math.min(.92,.55+.12*H.hl())*100)};
 H.line=function(){var h=act();return h?h.n+" · ⚡ "+speedOf(h)+": меньше устаёшь, легче уйти от боя":"—"};
@@ -7344,7 +7344,7 @@ function render(keep){
  '<div class="sxc" style="margin-top:10px"><small style="font-size:16px;color:#f3e3bd">🍽 Ситість: '+Math.round(sat)+'%'+(hung?' — час годувати':'')+'</small>'+bar(sat,100,sc)+'</div>'+
  '<div class="sxfd"><button data-a="f" data-k="hay">🌾 Сіно<small>+'+C.feed.hay.sat+' ситості · '+C.feed.hay.price+' 🥈</small></button><button data-a="f" data-k="oats">🌿 Овес<small>+'+C.feed.oats.sat+' ситості · '+C.feed.oats.price+' 🥈</small></button></div><div id="sxm"></div>'+
  '<div class="sxst">'+(h.id==s.act?'Кінь осідланий':'Не осідланий')+'</div>'+
- '<div class="sxe"><h3>Що дає швидкість</h3><p><i>🐾</i>Походи: '+(tired>0?'втома за крок <b>−'+tired+'</b>':'втома звичайна')+', шанс втекти з бою <b>'+H.flee()+'%</b></p><p><i>🚚</i>Наліт на обоз: '+(raidPct>0?'погоня повільніша на <b>'+raidPct+'%</b>, фора <b>+'+lead+'</b>':'без переваги')+'</p><p><i>🌾</i>Голодний кінь біжить повільніше (до −30%). Годуй його, і він росте.</p></div>'+
+ '<div class="sxe"><h3>Що дає швидкість</h3><p><i>🐾</i>Походи: '+(tired>0?'втома за крок <b>−'+tired+'</b>':'втома звичайна')+', шанс втекти з бою <b>'+H.flee()+'%</b></p><p><i>🎒</i>Мішок у нальоті: <b>'+(4+H.bagBonus())+' комірок</b> (кожен кращий кінь +1)</p><p><i>🚚</i>Наліт на обоз: '+(raidPct>0?'погоня повільніша на <b>'+raidPct+'%</b>, фора <b>+'+lead+'</b>':'без переваги')+'</p><p><i>🌾</i>Голодний кінь біжить повільніше (до −30%). Годуй його, і він росте.</p></div>'+
  '<div class="sxt">Стійла: <b>'+s.list.length+'/'+C.cap+'</b> · нові коні падають з босів</div><div class="sxg">';
  var sorted=s.list.slice().sort(function(a,b){return (b.id==s.act)-(a.id==s.act)||baseSpeed(b)-baseSpeed(a)});
  sorted.forEach(function(k){var Bk=C.breeds[k.b]||C.breeds[0],on=k.id==s.act,ask=sell==k.id;

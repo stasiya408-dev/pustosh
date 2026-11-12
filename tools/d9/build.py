@@ -1,5 +1,5 @@
 import re,subprocess,sys
-VER=int(sys.argv[1]) if len(sys.argv)>1 else 359
+VER=int(sys.argv[1]) if len(sys.argv)>1 else 361
 import os
 D=os.path.dirname(os.path.abspath(__file__))+'/'
 s=subprocess.check_output(['git','-C','/home/claude/pustosh','show','refs/heads/v358-stable:index.html']).decode('utf-8')
@@ -15,7 +15,7 @@ for pat,rep in [(r'name="ver" content="358"','name="ver" content="%d"'%VER),(r'v
 # 3. блоки
 css=open(D+'css.css',encoding='utf-8').read()
 blocks='<style id="d9css">'+css+'</style>\n'
-for n,f in [('d9core','core.js'),('d9hub','hub.js'),('d9skr','skr.js'),('d9cmb','combo.js'),('d9ar','arena.js')]:
+for n,f in [('d9core','core.js'),('d9hub','hub.js'),('d9skr','skr.js'),('d9cmb','combo.js'),('d9ar','arena.js'),('d9pet','pet.js'),('d9wh','wheel.js'),('d9sg','siege.js'),('d9x','extra.js')]:
     blocks+='<script id="%s">\n%s\n</script>\n'%(n,open(D+f,encoding='utf-8').read())
 i=s.rfind('</body>'); assert i>0
 s=s[:i]+blocks+s[i:]

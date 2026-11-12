@@ -48,7 +48,7 @@ function tick(){try{
 function chestReady(){var k=dd();return Object.keys(k.p).length>=TASKS.length&&!k.chest}
 function prevReady(){var p=T().prev;return !!(p&&p.rw&&!p.claimed)}
 function badges(){var n=(chestReady()?1:0)+(prevReady()?1:0);var e=document.querySelector("#l9btn .d9n");if(e)e.textContent=n?String(n):"";
- var s=document.querySelector("#sk9btn .d9n");if(s){var m=window.D9S?D9S.ready():0;s.textContent=m?String(m):""}}
+ var s=document.querySelector("#sk9btn .d9n");if(s){var m=P.badN();s.textContent=m?String(m):""}}
 /* ---- Літопис ---- */
 var ov,tab="sum";
 function bar(a,b){var p=Math.max(0,Math.min(100,Math.round(a/b*100)));return '<div class="dzbar"><i style="width:'+p+'%"></i></div>'}
@@ -121,6 +121,9 @@ function rec(){
  var cb=window.D9K?D9K.status():[1,1,1];if(cb.indexOf(0)>=0&&cb[0]==0)return R("🧩","Розгадай Комбо дня","Три складності, одна спроба на день",function(){D9K.open()});
  if(window.D9A&&D9A.ready()>0)return R("🏟","Збери дохід з хуторів","Хутори сами себе не збирають",function(){D9A.open()});
  if(window.D9S&&D9S.ready()>0)return R("📦","Обміняй колекцію","Один набір зібрано повністю",function(){D9S.open("col")});
+ if(window.D9W&&D9W.ready())return R("🎡","Крутни колесо фортуни","Перша крутка за день — безкоштовна",function(){D9W.open()});
+ if(window.D9G&&D9G.ready()>0)return R("🏰","Забери нагороду за облогу","Фортеця дала поживу",function(){D9G.open()});
+ if(window.D9P&&D9P.ready())return R("🐈","Кіт чекає на тебе","Погладь — дасть енергію",function(){D9P.open()});
  if((S.en||0)>=MAXEN)return R("⚡","Енергія повна — у похід","Так вона не пропаде",function(){hikeOpen()});
  var k=dd(),nxt=TASKS.filter(function(t){return !k.p[t.id]})[0];
  if(nxt)return R(nxt.ic,nxt.t,nxt.d,function(){go(nxt.go)});

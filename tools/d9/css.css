@@ -86,3 +86,32 @@ html.gfx-low #nx9,html.gfx-mid #nx9{animation:none}
 .dzlog{min-height:34px;font-size:12.5px;color:#d8c49a;text-align:center;margin-top:7px}
 .dzshk{animation:dzs .25s}
 @keyframes dzs{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+/* v361: кіт, колесо фортуни, облога, мини-список, лента в бою, гопак */
+.dzcat{font-size:44px;line-height:1;animation:dzbob 2.4s ease-in-out infinite}
+.dzcat.sad{filter:grayscale(.6);animation:none}
+@keyframes dzbob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+.dzbar.low i{background:linear-gradient(90deg,#a02a1c,#e8715a)}
+.dzfort{font-size:42px;line-height:1;display:inline-block}
+.dzwrap{position:relative;width:226px;height:236px;margin:6px auto 2px}
+.dzwp{position:absolute;left:50%;top:-2px;margin-left:-11px;font-size:22px;line-height:1;color:#e23a2a;z-index:3;text-shadow:0 1px 3px #000}
+.dzwh{position:absolute;left:3px;top:14px;width:220px;height:220px;border-radius:50%;border:4px solid #ffd978;box-shadow:0 0 0 2px #5a3a14,0 5px 16px rgba(0,0,0,.6);box-sizing:border-box}
+.dzwl{position:absolute;left:50%;top:50%;width:30px;height:30px;margin:-15px 0 0 -15px;font-size:24px;line-height:30px;text-align:center}
+.dzwc{position:absolute;left:50%;top:50%;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:radial-gradient(#ffe9a8,#b9801f);border:2px solid #5a3a14;text-align:center;font-size:24px;line-height:42px}
+.dzwr{min-height:22px;text-align:center;font-size:13.5px;font-weight:700;color:#ffd978;margin:4px 0 2px}
+#mn9{position:fixed;z-index:70;display:none;flex-direction:column;align-items:center;gap:3px;width:46px;padding:5px 3px 6px;border-radius:12px;background:rgba(30,16,8,.74);border:1px solid rgba(214,170,80,.55);color:#ffe9a8;font:700 9px/1.1 Cambria,Georgia,serif;text-align:center;cursor:pointer;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+#mn9 b{font-size:9px;color:#ffd978;letter-spacing:.2px}
+#mn9 i{font-style:normal;width:24px;height:24px;border-radius:50%;background:rgba(214,170,80,.2);border:1px solid rgba(214,170,80,.55);font-size:13px;line-height:22px}
+#mn9 i.d{background:rgba(110,180,90,.38);border-color:#8fcf7a;color:#d8ffc8;font-size:12px;font-weight:700}
+#mn9 u{text-decoration:none;color:#fff;background:#c8261c;border-radius:8px;padding:1px 4px;font-size:9px}
+#fd9{position:fixed;z-index:60;right:6px;top:34%;width:46vw;max-width:190px;display:none;flex-direction:column;align-items:flex-end;gap:3px;pointer-events:none}
+#fd9 .l{font:600 11.5px/1.2 Cambria,Georgia,serif;padding:3px 8px;border-radius:9px;background:rgba(10,5,2,.62);color:#f3e4c4;text-shadow:0 1px 2px #000;animation:fdin .25s ease-out;transition:opacity .6s}
+#fd9 .l.o{opacity:0}
+#fd9 .l.f{color:#a9d8ff}
+#fd9 .l.y{color:#ffe28a}
+#fd9 .l.c{color:#ffb15c;font-weight:700}
+#fd9 .l.m{color:#fff;background:rgba(120,30,20,.7)}
+@keyframes fdin{from{transform:translateX(14px);opacity:0}to{transform:none;opacity:1}}
+html.gfx-low #fd9 .l{animation:none}
+#hpk9{display:block;width:100%;margin-top:12px;padding:10px 8px;border:1px solid rgba(214,170,80,.6);border-radius:10px;background:rgba(120,70,20,.45);color:#ffe9a8;font:600 13.5px Cambria,Georgia,serif;cursor:pointer;text-align:center}
+#hpk9.on{background:linear-gradient(180deg,#5d8a3a,#365a1f);border-color:#a5e07c;color:#f2ffe0}
+.hpkn{font-size:11.5px;opacity:.75;margin:6px 2px 0;line-height:1.3}

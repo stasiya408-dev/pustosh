@@ -16,16 +16,18 @@ function drop(loc,n,fin){if(!SETS[loc])return;var c=C().h[loc],got=[];
  P.save();var s=SETS[loc];
  return got.map(function(i){return s.it[i][0]+" "+s.it[i][1]}).join(", ")+" ("+s.n+" "+distinct(loc)+"/7)"}
 function ready(){return ORDER.filter(full).length}
+P.reg.col=ready;
 function exch(k){if(!full(k))return;var c=C().h[k];for(var i=0;i<7;i++)c[i]--;P.cnt("cx");P.give(SETS[k].rw);P.toast("Колекція «"+SETS[k].n+"» обміняна: "+P.rewTxt(SETS[k].rw))}
 function help(k){var co=C();if(Date.now()<co.help){P.say("Збирач ще відпочиває: "+P.fmtLeft(co.help-Date.now()));return}
  if(distinct(k)<4||full(k)){P.say("Збирач допомагає, коли в наборі 4–6 з 7 предметів.");return}
  var c=co.h[k],miss=[];c.forEach(function(x,i){if(!x)miss.push(i)});var i=miss[Math.floor(Math.random()*miss.length)];c[i]++;co.help=Date.now()+HELP_CD;P.save();
  P.toast("Збирач Бульбаш витяг із кишені: "+SETS[k].it[i][0]+" "+SETS[k].it[i][1]+". «Тільки нікому, козаче».")}
 /* ---- хуки в похід ---- */
+function sn(){return .07+.015*(P.petSk?P.petSk(0):0)}
 function hook(){
- var hf=window.hFinish;if(typeof hf=="function"&&!hf._d9){var n=function(ok){var loc=window.HK&&HK.loc,r=hf.apply(this,arguments);try{if(loc){var t=drop(loc,ok?2:1,true);if(t&&window.HK&&HK.res&&HK.res.items)HK.res.items.push("🧩 Знахідка для колекції: "+t)}}catch(e){}return r};n._d9=1;window.hFinish=hFinish=n}
- var hs=window.hStep;if(typeof hs=="function"&&!hs._d9){var m=function(){var loc=window.HK&&HK.loc,s0=window.HK&&HK.step,r=hs.apply(this,arguments);try{if(loc&&window.HK&&HK.step>s0&&Math.random()<.07){var t=drop(loc,1,false);if(t)P.toast("Знахідка: "+t)}}catch(e){}return r};m._d9=1;window.hStep=hStep=m}}
- var H=window.HMAP;if(H&&typeof H.go=="function"&&!H.go._d9){var g=H.go,q=function(id){var loc=window.HK&&HK.loc,s0=window.HK&&HK.step,r=g.apply(this,arguments);try{if(loc&&window.HK&&HK.step>s0&&Math.random()<.07){var t=drop(loc,1,false);if(t)P.toast("Знахідка: "+t)}}catch(e){}return r};q._d9=1;H.go=q}
+ var hf=window.hFinish;if(typeof hf=="function"&&!hf._d9){var n=function(ok){var loc=window.HK&&HK.loc,r=hf.apply(this,arguments);try{if(loc){var t=drop(loc,(ok?2:1)+(Math.random()<.12*(P.petSk?P.petSk(0):0)?1:0),true);if(t&&window.HK&&HK.res&&HK.res.items)HK.res.items.push("🧩 Знахідка для колекції: "+t)}}catch(e){}return r};n._d9=1;window.hFinish=hFinish=n}
+ var hs=window.hStep;if(typeof hs=="function"&&!hs._d9){var m=function(){var loc=window.HK&&HK.loc,s0=window.HK&&HK.step,r=hs.apply(this,arguments);try{if(loc&&window.HK&&HK.step>s0&&Math.random()<sn()){var t=drop(loc,1,false);if(t)P.toast("Знахідка: "+t)}}catch(e){}return r};m._d9=1;window.hStep=hStep=m}}
+ var H=window.HMAP;if(H&&typeof H.go=="function"&&!H.go._d9){var g=H.go,q=function(id){var loc=window.HK&&HK.loc,s0=window.HK&&HK.step,r=g.apply(this,arguments);try{if(loc&&window.HK&&HK.step>s0&&Math.random()<sn()){var t=drop(loc,1,false);if(t)P.toast("Знахідка: "+t)}}catch(e){}return r};q._d9=1;H.go=q}
 /* ---- экраны ---- */
 var ov,view="skr";
 function colHTML(){var h="";
@@ -37,13 +39,17 @@ function colHTML(){var h="";
   h+='<button class="dzb g'+(full(k)?'':' off')+'" data-z="exch" data-k="'+k+'">Обміняти</button></div></div>'});
  h+='<small style="color:#9d8a62;display:block;margin-top:6px">Предмети знаходяться в походах цієї локації: по дорозі й коли повертаєшся. «Збирач» раз на 20 годин добиває набір, якщо в ньому вже 4+ предмети.</small>';
  return h}
+function bd(o){var n=0;try{n=o&&o.ready?o.ready():0}catch(e){}return n?' <i style="font-style:normal;background:#c8261c;color:#fff;border-radius:8px;padding:0 5px;font:700 10px system-ui">'+n+'</i>':''}
 function skrHTML(){var h='<div class="dzgrid">'+
  '<div class="dztile" data-z="col"><span>🧩</span>Колекції'+(ready()?' ('+ready()+')':'')+'</div>'+
  '<div class="dztile" data-z="junk"><span>🧰</span>Торговець</div>'+
  '<div class="dztile" data-z="trof"><span>🏆</span>Трофеї</div>'+
  '<div class="dztile" data-z="ring"><span>💍</span>Перстні</div>'+
  '<div class="dztile" data-z="smith"><span>🔨</span>Коваль</div>'+
- '<div class="dztile" data-z="lit"><span>📜</span>Літопис</div></div>';
+ '<div class="dztile" data-z="lit"><span>📜</span>Літопис</div>'+
+ '<div class="dztile" data-z="pet"><span>🐈</span>Кіт'+bd(window.D9P)+'</div>'+
+ '<div class="dztile" data-z="wheel"><span>🎡</span>Колесо'+bd(window.D9W)+'</div>'+
+ '<div class="dztile" data-z="siege"><span>🏰</span>Облога'+bd(window.D9G)+'</div></div>';
  var j=S.junk||{};h+='<div class="dzchips" style="margin-top:10px"><span>🥈 '+P.fs(S.sv||0)+'</span><span>💰 '+P.fs(S.tl||0)+'</span><span>🔩 Хлам '+(j.bal||0)+'</span><span>🔫 Самопалів '+(S.fz||0)+'</span></div>';
  return h}
 function render(){if(!ov)return;var h='<div class="dzc"><div class="dzt"><b>'+(view=="col"?'🧩 Колекції':'📦 Скриня')+'</b><button data-z="x" aria-label="Закрити">✕</button></div>';
@@ -61,7 +67,10 @@ function act(k,a){var kk=a.getAttribute("data-k");
   else if(k=="trof"&&window.TROPHY&&TROPHY.open)TROPHY.open();
   else if(k=="ring"&&window.jwOpen)jwOpen("rings");
   else if(k=="smith"&&window.jwOpen)jwOpen("forge");
-  else if(k=="lit"&&window.D9H)D9H.open()},60)}
+  else if(k=="lit"&&window.D9H)D9H.open()
+  else if(k=="pet"&&window.D9P)D9P.open()
+  else if(k=="wheel"&&window.D9W)D9W.open()
+  else if(k=="siege"&&window.D9G)D9G.open()},60)}
 function boot(){ov=P.ov("dzS",act);hook();window.D9S={open:open,ready:ready,drop:drop,state:C,sets:SETS,exch:exch}}
 if(document.readyState=="complete")setTimeout(boot,900);else window.addEventListener("load",function(){setTimeout(boot,900)});
 })();

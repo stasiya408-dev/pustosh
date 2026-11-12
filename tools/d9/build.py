@@ -1,5 +1,5 @@
 import re,subprocess,sys
-VER=int(sys.argv[1]) if len(sys.argv)>1 else 367
+VER=int(sys.argv[1]) if len(sys.argv)>1 else 368
 import os
 D=os.path.dirname(os.path.abspath(__file__))+'/'
 s=subprocess.check_output(['git','-C','/home/claude/pustosh','show','refs/heads/v358-stable:index.html']).decode('utf-8')
@@ -42,5 +42,7 @@ for n,f in [('d9core','core.js'),('d9hub','hub.js'),('d9skr','skr.js'),('d9bc','
     blocks+='<script id="%s">\n%s\n</script>\n'%(n,open(D+f,encoding='utf-8').read())
 i=s.rfind('</body>'); assert i>0
 s=s[:i]+blocks+s[i:]
+sys.path.insert(0,D); import apply_tr
+s=apply_tr.apply(s,D)
 open('/home/claude/pustosh/index.html','w',encoding='utf-8').write(s)
 print('ok',len(s))

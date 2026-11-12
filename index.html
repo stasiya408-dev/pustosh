@@ -36,9 +36,9 @@
 html.gfx-low #ldr .lsun,html.gfx-low #ldr .ldw,html.gfx-low #ldr .lgr,html.gfx-low #ldr .lem,html.gfx-low #ldr .lr1,html.gfx-low #ldr .lr2{animation:none}
 html.gfx-low #ldr .lem{display:none}
 @media (prefers-reduced-motion:reduce){#ldr *{animation:none!important}}
-</style><meta charset="UTF-8"><meta name="ver" content="365">
+</style><meta charset="UTF-8"><meta name="ver" content="366">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<script>var VER=365;(function(){try{fetch(location.pathname+"?c="+Date.now(),{headers:{Range:"bytes=0-600"},cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="ver" content="(\d+)"/);if(m&&+m[1]>VER&&sessionStorage.getItem("upd")!==m[1]){sessionStorage.setItem("upd",m[1]);location.replace(location.pathname+"?v="+m[1]+"&r="+Date.now())}}).catch(function(){})}catch(e){}})()</script>
+<script>var VER=366;(function(){try{fetch(location.pathname+"?c="+Date.now(),{headers:{Range:"bytes=0-600"},cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="ver" content="(\d+)"/);if(m&&+m[1]>VER&&sessionStorage.getItem("upd")!==m[1]){sessionStorage.setItem("upd",m[1]);location.replace(location.pathname+"?v="+m[1]+"&r="+Date.now())}}).catch(function(){})}catch(e){}})()</script>
 <script id="gfxhead">(function(){var L="high";try{var v=localStorage.getItem("gfx");if(v==="mid"||v==="low")L=v}catch(e){}
 var PR={high:{fps:60,dpr:99,strip:3,hI:30,hA:30,pq:1},mid:{fps:45,dpr:1.5,strip:4,hI:45,hA:36,pq:.75},low:{fps:30,dpr:1,strip:6,hI:60,hA:45,pq:.65}}[L];
 window.GFX={lvl:L,low:L==="low",mid:L==="mid",hres:L==="low"?.5:L==="mid"?.65:1,fps:PR.fps,iv:1000/PR.fps,strip:PR.strip,heroI:PR.hI,heroA:PR.hA,pq:PR.pq,real:0,min:0};
@@ -786,7 +786,7 @@ setTimeout(function(){if(L.boot)L.done()},20000)})();
 <div id="hud2"><div id="hbar"><div class="lau"></div><div id="hlv"><b id="lv"></b></div><div id="hname"><span id="nm"></span></div>
 <div class="hr"><i>⚡</i><span class="ho hv" id="en"></span><button class="hp" onclick="soon()" aria-label="Пополнить">+</button></div><div class="hr"><i class="cs"></i><span class="ho hv" id="sv"></span><button class="hp" onclick="soon()" aria-label="Пополнить">+</button></div><div class="hr"><i>💰</i><span class="ho hv" id="tl"></span><button class="hp" onclick="testTalers()" aria-label="Пополнить">+</button></div><div class="hr"><i>💪</i><span class="ho hv" id="pw"></span><button class="hp" onclick="soon()" aria-label="Пополнить">+</button></div>
 <div class="xpt"><i id="xp"></i></div></div>
-<button id="hgear" onclick="gearTap()" aria-label="Настройки" aria-expanded="false">⚙</button><div class="ho" id="el"></div><div class="ho" id="hver">v365</div></div>
+<button id="hgear" onclick="gearTap()" aria-label="Настройки" aria-expanded="false">⚙</button><div class="ho" id="el"></div><div class="ho" id="hver">v366</div></div>
 <div id="scene">
 
 <div id="hut"><img id="campbg" draggable="false" alt="" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 50%;z-index:0" src="data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=">
@@ -10055,6 +10055,20 @@ html.gfx-low #fd9 .l{animation:none}
 .dzchips span.sgb{border-color:rgba(120,180,225,.5);color:#bfe0f7}
 .dzchips span.sgm{border-color:rgba(255,217,120,.6);color:#ffe9a8}
 .dzchips em{font-style:normal;opacity:.8;font-size:10.5px}
+
+/* v366: підказки «?» */
+#tp9{position:fixed;right:10px;bottom:calc(env(safe-area-inset-bottom,0px) + 92px);width:30px;height:30px;border-radius:50%;z-index:99997;display:none;align-items:center;justify-content:center;padding:0;font:bold 17px/1 Cambria,Georgia,serif;color:#ffe9a8;background:rgba(30,16,8,.82);border:2px solid #d9a23c;box-shadow:0 2px 6px rgba(0,0,0,.6);cursor:pointer;-webkit-tap-highlight-color:transparent}
+#tp9.on{display:flex}
+#tp9.up{bottom:auto;top:calc(env(safe-area-inset-top,0px) + 92px)}
+#tp9.nw{animation:tp9p 1.6s ease-in-out infinite}
+@keyframes tp9p{0%,100%{box-shadow:0 2px 6px rgba(0,0,0,.6),0 0 0 0 rgba(255,217,120,.7)}50%{box-shadow:0 2px 6px rgba(0,0,0,.6),0 0 0 8px rgba(255,217,120,0)}}
+html.gfx-low #tp9.nw{animation:none}
+.dkh>div .tpt{display:block;font-size:13.5px;line-height:1.35;color:#eadfc3}
+#dzT .dkh>div b{display:inline;font-size:18px;margin-right:6px}
+#dzT .dkh>div{display:flex;align-items:flex-start;gap:4px}
+#jkx .q.gd[data-j="lv"].can{animation:jkcan 1.4s ease-in-out infinite;border-radius:14px}
+@keyframes jkcan{0%,100%{box-shadow:0 0 0 0 rgba(255,217,120,.0)}50%{box-shadow:0 0 14px 4px rgba(255,217,120,.85)}}
+html.gfx-low #jkx .q.gd[data-j="lv"].can{animation:none;box-shadow:0 0 10px 3px rgba(255,217,120,.8)}
 </style>
 <script id="d9core">
 (function(){
@@ -11026,6 +11040,89 @@ function bootMusic(){
 /* ================= запуск ================= */
 function boot(){try{bootMini()}catch(e){window._d9err=e}try{bootFeed()}catch(e){window._d9err=e}try{bootMusic()}catch(e){window._d9err=e}}
 if(document.readyState=="complete")setTimeout(boot,1200);else window.addEventListener("load",function(){setTimeout(boot,1200)});
+})();
+
+</script>
+<script id="d9tp">
+(function(){
+/* v366: ПІДКАЗКИ НА КОЖНОМУ ЕКРАНІ. Кнопка «?» (#tp9) з'являється, коли відкрито екран зі списку SC; при ПЕРШОМУ заході на екран
+   підказка показується сама (один раз, S.d9.tp[id]); поки йде Дід Охрім (html.gdon) — сама не лізе, але «?» працює.
+   Кубики не пояснюємо (за побажанням власника). Екрани з власним путівником (Колода, Облога) «?» не мають.
+   Щоб додати екран: запис у SC (id, як перевірити «відкрито», заголовок, пункти). Тексти ВСІ мої (UNAPPROVED). */
+var P=window.D9;if(!P)return;
+var T=P.T,esc=P.esc;
+function shown(el,minW,minH){if(!el)return false;try{var cs=getComputedStyle(el);if(cs.display=="none"||cs.visibility=="hidden"||parseFloat(cs.opacity)<.05)return false;var r=el.getBoundingClientRect();return r.width>=(minW||200)&&r.height>=(minH||120)}catch(e){return false}}
+function on(id){return function(){var e=document.getElementById(id);return !!e&&e.classList.contains("on")}}
+function sh(id,w,h){return function(){return shown(document.getElementById(id),w,h)}}
+/* pos: br (низ-право, за замовчуванням) | tr (право-вгорі, нижче шапки) */
+var SC=[
+ {id:"dzS",ok:on("dzS"),t:"Скриня",i:[["🧩","Колекції — предмети набору збираються в походах. Збереш усі — обміняєш на нагороду."],["🧰","Торговець, Трофеї, Перстні, Коваль — це швидкі входи в ті самі екрани."],["🔔","Червоний кружечок на плитці — там є що забрати."]]},
+ {id:"dzL",ok:on("dzL"),t:"Літопис",i:[["📜","Зведення — твоє звання, найближчі досягнення, майстерність коваля."],["✅","Справи — 5 завдань на день. Нагорода за кожне йде сама, а за всі п'ять — ще скриня."],["🏆","Тиждень — рейтинг з іншими. Місце в кінці тижня дає скриню."]]},
+ {id:"dzA",ok:on("dzA"),t:"Арена · хутори",i:[["🏚️","Хутір приносить срібло, поки ти далеко. Натисни «Зібрати все», коли накопичиться."],["⚔️","Щоб захопити хутір, переможи господаря в двобої (−2 ⚡)."],["🛡️","Ворог замахується — дивись на підказку: «високий удар» → БЛОК, «широкий замах» → УХИЛ. Вчасно відбив — контрудар ×2,4."]]},
+ {id:"dzP",ok:on("dzP"),t:"Кіт",i:[["🐈","Годуй кота (корм за срібло): ситий кіт дає навички. Голодний — навички вимкнені."],["🤚","«Погладити» раз на день дає ⚡."],["🔓","Кіт спочатку в клітці — його звільняє перемога над Мареною."]]},
+ {id:"dzW",ok:on("dzW"),t:"Колесо фортуни",i:[["🎡","Натисни «Крутити» — випаде приз. Перша крутка на день безкоштовна."],["🥈","Далі кожна крутка дорожча, усього 6 на добу."]]},
+ {id:"jkx",ok:sh("jkx"),t:"Заїжджий торговець",i:[["🔩","Хлам — валюта торговця. Його дають боси, походи й наліт на обоз."],["👆","Закупи йдуть ПО ПОРЯДКУ (усього 1000). Натисни кнопку з ціною праворуч від нагороди — купиш закуп, одразу з'явиться наступний."],["📊","Смужка зверху — скільки закупів вже куплено."],["⚡","«Купити скільки вистачить» бере кілька закупів підряд."],["🧰","Комод — 10 хламу за випадкову нагороду."]]},
+ {id:"ward",ok:sh("ward",200,60),t:"Одяг казака",i:[["👆","Угорі — значки частин тіла: взуття, руки, штани, тулуб, голова. Обери частину."],["👕","У списку натисни «Одягти» під потрібною річчю. «Зняти» — прибрати."],["🔒","Закрита річ ще не здобута: її дають за досягнення в таверні."],["💍","Персні теж тут — у вкладці «Руки»."]]},
+ {id:"jwx",ok:sh("jwx"),t:"Коваль і ювелір",i:[["🔨","Ковка: з уламків перстня виковуєш перстень. Шанс успіху показано на кнопці."],["✨","Заточка: підвищує перстень до +10 — сильніший бонус до шкоди по босах."],["💥","Розламати: перстень → уламки, якщо він вже не потрібен."],["❓","Тисни на «Як це працює» всередині — там цифри."]]},
+ {id:"stx",ok:sh("stx"),t:"Стійло",i:[["🐎","Кінь дає швидкість: у поході менше втоми, у нальоті — легше втекти."],["🌾","Годуй сіном чи вівсом: ситий кінь швидший і росте в рівні."],["🔁","Обери коня зі стійла й натисни «Осідлати». Нових коней дають боси."]]},
+ {id:"trx",ok:sh("trx"),t:"Трофеї",i:[["🏆","Трофей дають за першу перемогу над босом."],["🏠","«Повісити в хаті» — він з'явиться на головному екрані, «Прибрати» — забрати."]]},
+ {id:"gach",ok:sh("gach"),t:"Досягнення",i:[["🏅","Кожне виконане досягнення дає талери 💰 — вони з'являються самі."],["📈","Смужка під назвою — скільки ще лишилось."]]},
+ {id:"rtx",ok:sh("rtx"),t:"Рейтинг",i:[["📊","Вгорі вкладки: Походи, Шкода, Боси, Загальний."],["📅","«Сезон» — змагання на 4 тижні, «За весь час» — загальне."],["👤","Натисни на гравця — відкриється його профіль."]]},
+ {id:"talentModal",ok:sh("talentModal"),t:"Козацька майстерність",i:[["⭐","Очки талантів дає ТВІЙ власний урон по босах (не відряду)."],["👆","Натисни талант, щоб вкласти очко. Нижчі ступені відкривають вищі."],["🔄","Невитрачений досвід не пропадає."]],pos:"tr"},
+ {id:"mkt2",ok:sh("mkt2"),t:"Ринок",i:[["👆","Торкнись лавки: зброяр (самопал за талери), коваль, ювелір."],["👈","Ринок гортається вбік — свайп по картинці."],["🚪","Внизу ті самі розділи, що й на головному."]]},
+ {id:"nbx",ok:sh("nbx",200,300),t:"Боси",i:[["🔑","Бій з босом коштує ключ. Ключі дають перемоги та походи."],["👥","Режим: Соло — сам (боса менше), Відряд — з друзями (друзі теж б'ють)."],["🎯","У бою обери зброю внизу й тапай по босу. Перші 3 безкоштовні удари (кулак, нога, шабля) відкривають платну зброю."],["🏆","Переможеш — на екрані нагород заберуть усе випадене."]],pos:"tr"},
+ {id:"hike",ok:sh("hike"),t:"Похід",i:[["🎒","Перед походом візьми припаси (їжа, вода, трави) і обери маршрут."],["🗺️","На карті тисни точку: ❓ подія, ⚔️ засідка, 🏹 полювання, 🏕️ привал, 👹 бос."],["⚡","Вхід коштує енергію, а повертатися живим — вигідніше. Хлам і ключі даються за успішне повернення."],["🏴","Налітом на обоз керує червона стрічка на цьому екрані."]],pos:"tr"}
+];
+var MAIN={id:"main",t:"Головний екран",i:[["👆","Торкнись козака — відкриється одяг: шапка, жилет, шаровари, чоботи, персні."],["🧭","Внизу п'ять розділів: Похід, Ринок, Боси, Таверна, Арена."],["➡️","Справа червона стрічка зі стрілкою — з неї виїжджає панель: скриня, літопис, кінь, торговець."],["🔴","Червоний кружечок — там щось готове."]]};
+var cur=null,since=0,btn=null,ov=null;
+function seenOf(id){var d=T();return !!(d.tp&&d.tp[id])}
+function mark(id){var d=T();d.tp=d.tp||{};d.tp[id]=1;P.save()}
+function find(){
+ for(var i=0;i<SC.length;i++){var s=SC[i];try{if(s.ok())return s}catch(e){}}
+ return null}
+function mainOpen(){
+ if(P.anyOpen())return false;
+ var nav=document.getElementById("nav2");if(!nav)return false;var r=nav.getBoundingClientRect();if(r.width<50||r.height<20)return false;
+ var e=document.elementFromPoint(r.left+r.width/2,r.top+r.height/2);return !!(e&&e.closest("#nav2"))}
+function card(s){
+ var h='<div class="dzc"><div class="dzt"><b>💡 '+esc(s.t)+'</b><button data-z="x" aria-label="Закрити">✕</button></div><div class="dkh">';
+ s.i.forEach(function(x){h+='<div><b>'+x[0]+'</b><span class="tpt">'+esc(x[1])+'</span></div>'});
+ return h+'</div><button class="dzb g dzbig" style="margin-top:8px" data-z="x">Зрозуміло</button></div>'}
+function show(s){
+ if(!ov){ov=P.ov("dzT",function(){});ov.style.zIndex=99998}
+ P.show(ov,card(s));mark(s.id)}
+function busyGuide(){var h=document.documentElement;if(h.classList.contains("gdon"))return true;var g=document.getElementById("gdc");if(g&&g.classList.contains("on"))return true;var w=document.getElementById("tqw");if(w&&w.offsetParent!==null)return true;return false}
+function ensureBtn(){
+ if(btn)return;btn=document.createElement("button");btn.id="tp9";btn.type="button";btn.setAttribute("aria-label","Підказка");btn.textContent="?";
+ btn.addEventListener("click",function(e){e.stopPropagation();var s=cur;if(!s)return;if(ov&&ov.classList.contains("on")){P.shut(ov);return}show(s)});
+ document.body.appendChild(btn)}
+function tick(){
+ ensureBtn();
+ var tipOpen=ov&&ov.classList.contains("on");
+ var s=find();
+ if(!s&&!tipOpen&&mainOpen())s=MAIN;
+ if(tipOpen&&cur)s=cur;
+ if(!s){cur=null;btn.className="";since=0;return}
+ if(s.id==="main"){btn.className="";/* на головному «?» не показуємо: мінімалізм */}
+ else{btn.className="on"+(s.pos==="tr"?" up":"")+(seenOf(s.id)?"":" nw")}
+ if(!cur||cur.id!==s.id){cur=s;since=Date.now();return}
+ if(!seenOf(s.id)&&!tipOpen&&Date.now()-since>900&&!busyGuide())show(s)}
+setInterval(tick,450);
+window.TIPS={open:function(id){var s=id=="main"?MAIN:SC.filter(function(x){return x.id==id})[0];if(s)show(s)},list:function(){return SC.map(function(x){return x.id})},reset:function(){var d=T();d.tp={};P.save()},cur:function(){return cur&&cur.id}};
+/* ---- торговець: зрозуміла кнопка закупу ---- */
+var jo=null,busyJ=false;
+function fixJ(){
+ if(busyJ)return;var root=document.getElementById("jkx");if(!root)return;busyJ=true;
+ try{
+  var b=root.querySelector('[data-j="lv"]');
+  var cap=[].slice.call(root.querySelectorAll(".q.cr")).filter(function(e){return /^(Купиш цей закуп|👆|Не вистачає хламу)/.test((e.textContent||"").trim())})[0];
+  if(b){var can=!b.querySelector(".qd");b.classList.toggle("can",can);
+   if(cap){var t=can?"👆 Тисни на ціну праворуч — купиш закуп":"Не вистачає хламу — збирай з босів і походів";if(cap.textContent!==t)cap.textContent=t}}
+ }catch(e){}
+ busyJ=false}
+function watchJ(){var root=document.getElementById("jkx");if(!root){setTimeout(watchJ,1500);return}
+ jo=new MutationObserver(function(){fixJ()});jo.observe(root,{childList:true,subtree:true});fixJ()}
+setTimeout(watchJ,1200);
 })();
 
 </script>

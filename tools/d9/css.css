@@ -156,3 +156,17 @@ html.gfx-low #fd9 .l{animation:none}
 .dzchips span.sgb{border-color:rgba(120,180,225,.5);color:#bfe0f7}
 .dzchips span.sgm{border-color:rgba(255,217,120,.6);color:#ffe9a8}
 .dzchips em{font-style:normal;opacity:.8;font-size:10.5px}
+
+/* v366: підказки «?» */
+#tp9{position:fixed;right:10px;bottom:calc(env(safe-area-inset-bottom,0px) + 92px);width:30px;height:30px;border-radius:50%;z-index:99997;display:none;align-items:center;justify-content:center;padding:0;font:bold 17px/1 Cambria,Georgia,serif;color:#ffe9a8;background:rgba(30,16,8,.82);border:2px solid #d9a23c;box-shadow:0 2px 6px rgba(0,0,0,.6);cursor:pointer;-webkit-tap-highlight-color:transparent}
+#tp9.on{display:flex}
+#tp9.up{bottom:auto;top:calc(env(safe-area-inset-top,0px) + 92px)}
+#tp9.nw{animation:tp9p 1.6s ease-in-out infinite}
+@keyframes tp9p{0%,100%{box-shadow:0 2px 6px rgba(0,0,0,.6),0 0 0 0 rgba(255,217,120,.7)}50%{box-shadow:0 2px 6px rgba(0,0,0,.6),0 0 0 8px rgba(255,217,120,0)}}
+html.gfx-low #tp9.nw{animation:none}
+.dkh>div .tpt{display:block;font-size:13.5px;line-height:1.35;color:#eadfc3}
+#dzT .dkh>div b{display:inline;font-size:18px;margin-right:6px}
+#dzT .dkh>div{display:flex;align-items:flex-start;gap:4px}
+#jkx .q.gd[data-j="lv"].can{animation:jkcan 1.4s ease-in-out infinite;border-radius:14px}
+@keyframes jkcan{0%,100%{box-shadow:0 0 0 0 rgba(255,217,120,.0)}50%{box-shadow:0 0 14px 4px rgba(255,217,120,.85)}}
+html.gfx-low #jkx .q.gd[data-j="lv"].can{animation:none;box-shadow:0 0 10px 3px rgba(255,217,120,.8)}

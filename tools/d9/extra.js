@@ -15,7 +15,7 @@ function miniPos(){if(!mini)return;
  var tasks=D9H.tasks,k=D9H.state().dd,done=k&&k.p?k.p:{},h="",n=0;
  tasks.forEach(function(t){var d=!!done[t.id];if(d)n++;h+='<i class="'+(d?'d':'')+'" title="'+esc(t.t)+'">'+(d?'✓':t.ic)+'</i>'});
  var extra=0;
- try{if(window.D9K){var st=D9K.status();if(st[0]==0)extra++}}catch(e){}
+ 
  try{if(window.D9W&&D9W.ready())extra++}catch(e){}
  try{if(window.D9P&&D9P.ready())extra++}catch(e){}
  try{if(window.D9G&&D9G.ready())extra++}catch(e){}

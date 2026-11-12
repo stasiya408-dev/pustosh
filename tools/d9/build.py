@@ -1,5 +1,5 @@
 import re,subprocess,sys
-VER=int(sys.argv[1]) if len(sys.argv)>1 else 362
+VER=int(sys.argv[1]) if len(sys.argv)>1 else 363
 import os
 D=os.path.dirname(os.path.abspath(__file__))+'/'
 s=subprocess.check_output(['git','-C','/home/claude/pustosh','show','refs/heads/v358-stable:index.html']).decode('utf-8')

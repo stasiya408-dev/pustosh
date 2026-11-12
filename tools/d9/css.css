@@ -148,3 +148,11 @@ html.gfx-low #fd9 .l{animation:none}
 .dkhelp{display:block;width:100%;margin:8px 0 6px;padding:9px;font-size:13px}
 .dkhint{margin:4px 0 8px;padding:9px 11px;border-radius:11px;border:1px solid rgba(255,217,120,.6);background:rgba(214,170,80,.14);color:#fff1c8;font-size:13px;line-height:1.35}
 .dkauto{display:block;width:100%;margin-top:8px;padding:9px;font-size:13px}
+.dzbar.sg2{position:relative;height:12px;display:flex;background:rgba(255,255,255,.12)}
+.dzbar.sg2 i{border-radius:0;flex:0 0 auto;transition:width .4s}
+.dzbar.sg2 i.b{background:linear-gradient(90deg,#3d6f9e,#79b4e0)}
+.dzbar.sg2 i.m{background:linear-gradient(90deg,#c88a2a,#ffd978)}
+.dzbar.sg2 u{position:absolute;top:0;bottom:0;width:2px;background:rgba(0,0,0,.55);text-decoration:none}
+.dzchips span.sgb{border-color:rgba(120,180,225,.5);color:#bfe0f7}
+.dzchips span.sgm{border-color:rgba(255,217,120,.6);color:#ffe9a8}
+.dzchips em{font-style:normal;opacity:.8;font-size:10.5px}

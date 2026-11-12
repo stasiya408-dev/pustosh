@@ -115,24 +115,7 @@ html.gfx-low #fd9 .l{animation:none}
 #hpk9{display:block;width:100%;margin-top:12px;padding:10px 8px;border:1px solid rgba(214,170,80,.6);border-radius:10px;background:rgba(120,70,20,.45);color:#ffe9a8;font:600 13.5px Cambria,Georgia,serif;cursor:pointer;text-align:center}
 #hpk9.on{background:linear-gradient(180deg,#5d8a3a,#365a1f);border-color:#a5e07c;color:#f2ffe0}
 .hpkn{font-size:11.5px;opacity:.75;margin:6px 2px 0;line-height:1.3}
-/* v362: Колода (комбо в бою) */
-#bcb9{position:fixed;z-index:99980;display:none;border:1px solid rgba(255,217,120,.85);background:linear-gradient(180deg,rgba(168,44,32,.96),rgba(92,18,14,.97));color:#ffe9a8;border-radius:12px;padding:7px 12px;font:700 13px Cambria,Georgia,serif;box-shadow:0 2px 10px rgba(0,0,0,.55);cursor:pointer;-webkit-tap-highlight-color:transparent}
-#bcb9 small{font-weight:600;opacity:.85;margin-left:4px}
-.dkw{display:flex;gap:7px;flex-wrap:wrap}
-.dkt{flex:1 1 0;min-width:62px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:7px 4px;border-radius:11px;border:1px solid rgba(214,170,80,.35);background:rgba(255,255,255,.05);color:#e6d3a6;font:600 12.5px Cambria,Georgia,serif;cursor:pointer}
-.dkt b{font-size:14px;color:#ffd978}
-.dkt small{font-size:10.5px;color:#bfa77a;line-height:1.1}
-.dkt.on{background:linear-gradient(180deg,#e9b94a,#b9801f);border-color:#ffe08a}
-.dkt.on b,.dkt.on small{color:#2b1805}
-.dkt img{width:34px;height:34px;object-fit:contain;pointer-events:none}
-.dkt span{font-size:26px;line-height:34px}
-.dks{min-height:76px;border-style:dashed}
-.dks.fl{border-style:solid;border-color:#ffd978;background:rgba(214,170,80,.14)}
-.dkw1{flex:1 1 0;min-width:0;padding:6px 2px}.dkw1 small{font-size:9.5px}.dkw1 img{width:30px;height:30px}
-.dkt.off{opacity:.45}
-.dkt .dkc{color:#ffd978}
 .dzb[disabled]{opacity:.45;pointer-events:none}
-.dke{display:inline-block;vertical-align:middle}.dke img{width:26px;height:26px;object-fit:contain;vertical-align:middle}.dke span{font-size:20px}
 .dka{font-style:normal;color:#9d8a62;margin:0 3px;font-size:12px;vertical-align:middle}
 .dkg h3{margin:4px 0 8px;font-size:17px;color:#ffd978}
 .dkg p{margin:0 0 9px;font-size:13.5px;line-height:1.4;color:#eadfc3}

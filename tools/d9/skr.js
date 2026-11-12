@@ -49,7 +49,8 @@ function skrHTML(){var h='<div class="dzgrid">'+
  '<div class="dztile" data-z="lit"><span>📜</span>Літопис</div>'+
  '<div class="dztile" data-z="pet"><span>🐈</span>Кіт'+(window.D9P&&!D9P.own()?' 🔒':bd(window.D9P))+'</div>'+
  '<div class="dztile" data-z="wheel"><span>🎡</span>Колесо'+bd(window.D9W)+'</div>'+
- '<div class="dztile" data-z="siege"><span>🏰</span>Облога'+bd(window.D9G)+'</div></div>';
+ '<div class="dztile" data-z="siege"><span>🏰</span>Облога'+bd(window.D9G)+'</div>'+
+ '<div class="dztile" data-z="raid"><span>🐉</span>Рейд місяця'+bd(window.D9R)+'</div></div>';
  var j=S.junk||{};h+='<div class="dzchips" style="margin-top:10px"><span>🥈 '+P.fs(S.sv||0)+'</span><span>💰 '+P.fs(S.tl||0)+'</span><span>🔩 Хлам '+(j.bal||0)+'</span><span>🔫 Самопалів '+(S.fz||0)+'</span></div>';
  return h}
 function render(){if(!ov)return;var h='<div class="dzc"><div class="dzt"><b>'+(view=="col"?'🧩 Колекції':'📦 Скриня')+'</b><button data-z="x" aria-label="Закрити">✕</button></div>';
@@ -70,7 +71,8 @@ function act(k,a){var kk=a.getAttribute("data-k");
   else if(k=="lit"&&window.D9H)D9H.open()
   else if(k=="pet"&&window.D9P)D9P.open()
   else if(k=="wheel"&&window.D9W)D9W.open()
-  else if(k=="siege"&&window.D9G)D9G.open()},60)}
+  else if(k=="siege"&&window.D9G)D9G.open();
+  else if(k=="raid"&&window.D9R)D9R.open()},60)}
 function boot(){ov=P.ov("dzS",act);hook();window.D9S={open:open,ready:ready,drop:drop,state:C,sets:SETS,exch:exch}}
 if(document.readyState=="complete")setTimeout(boot,900);else window.addEventListener("load",function(){setTimeout(boot,900)});
 })();

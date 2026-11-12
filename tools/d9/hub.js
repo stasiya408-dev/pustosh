@@ -11,7 +11,7 @@ var TASKS=[
  {id:"tav",ic:"🎲",t:"Зіграй партію в кості",d:"Шинкарка Мотрона вже налила — сідай за стіл.",rw:{sv:40},go:"tav",need:1,cur:function(b){return ((S.ds&&S.ds.g)||0)-b.g}},
  {id:"hit",ic:"🎯",t:"Влуч по босу 15 разів",d:"Бос сам себе не переможе.",rw:{sv:60},go:"boss",need:15,cur:function(b){return hits()-b.h}},
  {id:"hike",ic:"🐎",t:"Сходи в похід",d:"Степ сам себе не обшукає.",rw:{sv:80},go:"hike",need:1,cur:function(b){return (S.hn||0)-b.hn}},
- {id:"cmb",ic:"🃏",t:"Зіграй Колоду в бою",d:"Постав патрони, збери руку — повернеться більше.",rw:{sv:40,en:2},go:"boss",need:1,cur:function(){return window.D9B?D9B.playedToday():0}},
+ {id:"rd",ic:"🐉",t:"Зроби внесок у рейд місяця",d:"Хоч один постріл по босу місяця — і справу зараховано.",rw:{sv:50,en:2},go:"raid",need:1,cur:function(){return window.D9R?D9R.shotsToday():0}},
  {id:"ar",ic:"🏟",t:"Виграй дуель за хутір",d:"Хутір сам не візьметься, хоч як просить.",rw:{sv:70},go:"arena",need:1,cur:function(){return window.D9A?D9A.winsToday():0}}];
 var CHEST={sv:250,tl:2,junk:5,en:5};
 var TOUR=[[3,{sv:150}],[6,{sv:400,junk:2}],[10,{sv:900,tl:2,junk:5}]];
@@ -27,7 +27,7 @@ P.mast=function(){var l=mastLv(),u=mastUses();return {l:l,u:u,disc:l*3,next:MT[l
 function botFinal(n,w){var r=P.rng(n+"|"+w),z=(r()+r()+r()+r()-2)/.577;return Math.min(2600,Math.round(420*Math.exp(.75*z)))}
 function weekFrac(){return 1-P.msToWeekEnd()/(7*864e5)}
 function standings(w,fin){var d=T(),f=fin?1:weekFrac(),pp=fin?fin.p:((d.wk&&d.wk.p)||0),a=BOT.map(function(n){return {n:n,p:Math.round(botFinal(n,w)*f)}});a.push({n:"Ти",p:pp,me:1});a.sort(function(x,y){return y.p-x.p||(x.me?-1:1)});a.forEach(function(x,i){x.pl=i+1});return a}
-function wkSources(){return [[S.bossKills||0,20],[S.hn||0,15],[(S.ds&&S.ds.w)||0,3],[Math.floor(hits()/25),1],[cnt("tasks"),8],[cnt("dkw"),10],[cnt("arw"),10],[cnt("cx"),20]]}
+function wkSources(){return [[S.bossKills||0,20],[S.hn||0,15],[(S.ds&&S.ds.w)||0,3],[Math.floor(hits()/25),1],[cnt("tasks"),8],[Math.floor(cnt("rds")/20),5],[cnt("arw"),10],[cnt("cx"),20]]}
 function wkTick(){var d=T(),w=P.week(),src=wkSources();
  if(!d.wk){d.wk={w:w,p:0,l:src.map(function(x){return x[0]})};P.save();return}
  if(d.wk.w!==w){var old=standings(d.wk.w,{p:d.wk.p}),me=old.filter(function(x){return x.me})[0];
@@ -82,7 +82,7 @@ function tWeek(){var d=T(),w=P.week(),st=standings(w),me=st.filter(function(x){r
  st.slice(0,10).forEach(function(x){h+='<div class="dzrow'+(x.me?' me':'')+'"><div class="dzn">'+x.pl+'</div><div class="dzx"><b>'+esc(x.n)+'</b></div><b style="color:#ffd978">'+fs(x.p)+'</b></div>'});
  if(me.pl>10)h+='<div class="dzrow me"><div class="dzn">'+me.pl+'</div><div class="dzx"><b>Ти</b></div><b style="color:#ffd978">'+fs(me.p)+'</b></div>';
  h+='</div>';
- h+='<div class="dzs"><h4>Як набрати очки</h4><div class="dzx"><small>Бос переможений +20 · похід +15 · перемога в кістках +3 · 25 влучань по босу +1 · справа дня +8 · Колода з бонусом +10 · дуель за хутір +10 · колекція +20.<br>Скриня за місце: 1 — '+P.rewTxt(WEEK_RW(1,99))+'; 2 — '+P.rewTxt(WEEK_RW(2,99))+'; 3 — '+P.rewTxt(WEEK_RW(3,99))+'; Топ-10 — '+P.rewTxt(WEEK_RW(10,99))+'; решта (від 40 очок) — '+P.rewTxt(WEEK_RW(30,99))+'.</small></div></div>';
+ h+='<div class="dzs"><h4>Як набрати очки</h4><div class="dzx"><small>Бос переможений +20 · похід +15 · перемога в кістках +3 · 25 влучань по босу +1 · справа дня +8 · 20 пострілів по босу місяця +5 · дуель за хутір +10 · колекція +20.<br>Скриня за місце: 1 — '+P.rewTxt(WEEK_RW(1,99))+'; 2 — '+P.rewTxt(WEEK_RW(2,99))+'; 3 — '+P.rewTxt(WEEK_RW(3,99))+'; Топ-10 — '+P.rewTxt(WEEK_RW(10,99))+'; решта (від 40 очок) — '+P.rewTxt(WEEK_RW(30,99))+'.</small></div></div>';
  return h}
 function render(){if(!ov)return;var k=dd(),dn=Object.keys(k.p).length,nb=(chestReady()?1:0);
  var h='<div class="dzc"><div class="dzt"><b>📜 Літопис героя</b><button data-z="x" aria-label="Закрити">✕</button></div><div class="dzk">'+P.kob(1)+'</div>';
@@ -90,7 +90,7 @@ function render(){if(!ov)return;var k=dd(),dn=Object.keys(k.p).length,nb=(chestR
  h+=tab=="sum"?tSum():tab=="day"?tDay():tWeek();
  h+='</div>';var sc=ov.querySelector(".dzc"),top=sc?sc.scrollTop:0;ov.innerHTML=h;var n=ov.querySelector(".dzc");if(n)n.scrollTop=top}
 function open(t){if(t)tab=t;tick();render();ov.classList.add("on")}
-function go(k){P.shut(ov);var m={tav:"tavOpen",boss:"bossOpen",hike:"hikeOpen",market:"marketOpen"};
+function go(k){P.shut(ov);var m={tav:"tavOpen",boss:"bossOpen",hike:"hikeOpen",market:"marketOpen"};if(k=="raid"){if(window.D9R)D9R.open();return}
  setTimeout(function(){if(m[k]&&window[m[k]])window[m[k]]();else if(k=="arena"&&window.D9A)D9A.open()},60)}
 function act(k,a){var kk=a.getAttribute("data-k");
  if(k=="tab"){tab=kk;render();return}
@@ -113,7 +113,7 @@ function rec(){
  try{var its=window.NTF&&NTF.items;if(typeof its=="function")its=its();if(its){for(var i=0;i<its.length;i++){if(its[i].id=="boss"&&its[i].st=="warn")return R("⏳","Бос скоро втече","Устигни добити його",function(){bossOpen()})}}}catch(e){}
  if(prevReady())return R("🏅","Забери скриню тижня","Минулий тиждень закінчився",function(){open("wk")});
  if(chestReady())return R("🎁","Забери скриню писаря","Усі справи дня виконано",function(){open("day")});
- try{if(window.D9B&&D9B.playedToday()==0&&typeof btActive=="function"&&btActive())return R("🃏","Зіграй Колоду в бою","Постав патрони — повернеться більше",function(){bossOpen()})}catch(e){}
+ try{if(window.D9R&&D9R.hint){var rh=D9R.hint();if(rh)return R(rh[0],rh[1],rh[2],function(){D9R.open()})}}catch(e){}
  if(window.D9A&&D9A.ready()>0)return R("🏟","Збери дохід з хуторів","Хутори сами себе не збирають",function(){D9A.open()});
  if(window.D9S&&D9S.ready()>0)return R("📦","Обміняй колекцію","Один набір зібрано повністю",function(){D9S.open("col")});
  if(window.D9W&&D9W.ready())return R("🎡","Крутни колесо фортуни","Перша крутка за день — безкоштовна",function(){D9W.open()});

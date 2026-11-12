@@ -19,6 +19,7 @@ function miniPos(){if(!mini)return;
  try{if(window.D9W&&D9W.ready())extra++}catch(e){}
  try{if(window.D9P&&D9P.ready())extra++}catch(e){}
  try{if(window.D9G&&D9G.ready())extra++}catch(e){}
+ try{if(window.D9R&&D9R.ready())extra++}catch(e){}
  mini.innerHTML='<b>Справи '+n+'/'+tasks.length+'</b>'+h+(extra?'<u>🔔 '+extra+'</u>':'');
  var g=document.getElementById("hgear");if(!g){mini.style.display="none";return}
  var r=g.getBoundingClientRect();

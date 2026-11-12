@@ -47,7 +47,7 @@ function skrHTML(){var h='<div class="dzgrid">'+
  '<div class="dztile" data-z="ring"><span>💍</span>Перстні</div>'+
  '<div class="dztile" data-z="smith"><span>🔨</span>Коваль</div>'+
  '<div class="dztile" data-z="lit"><span>📜</span>Літопис</div>'+
- '<div class="dztile" data-z="pet"><span>🐈</span>Кіт'+bd(window.D9P)+'</div>'+
+ '<div class="dztile" data-z="pet"><span>🐈</span>Кіт'+(window.D9P&&!D9P.own()?' 🔒':bd(window.D9P))+'</div>'+
  '<div class="dztile" data-z="wheel"><span>🎡</span>Колесо'+bd(window.D9W)+'</div>'+
  '<div class="dztile" data-z="siege"><span>🏰</span>Облога'+bd(window.D9G)+'</div></div>';
  var j=S.junk||{};h+='<div class="dzchips" style="margin-top:10px"><span>🥈 '+P.fs(S.sv||0)+'</span><span>💰 '+P.fs(S.tl||0)+'</span><span>🔩 Хлам '+(j.bal||0)+'</span><span>🔫 Самопалів '+(S.fz||0)+'</span></div>';

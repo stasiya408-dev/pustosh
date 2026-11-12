@@ -1,0 +1,88 @@
+/* v359: новые механики без сервера (Літопис, Справи дня, Скриня, Колекції, Комбо дня, Арена/Хутори) */
+.dzo{position:fixed;inset:0;z-index:99991;display:none;align-items:center;justify-content:center;background:rgba(8,4,2,.64);padding:12px;box-sizing:border-box;font-family:Cambria,Georgia,serif;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.dzo.on{display:flex}
+html.gfx-mid .dzo,html.gfx-low .dzo{-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(8,4,2,.84)}
+.dzc{width:100%;max-width:450px;max-height:90vh;overflow:auto;-webkit-overflow-scrolling:touch;background:linear-gradient(180deg,rgba(44,26,13,.97),rgba(22,12,6,.98));border:1px solid rgba(214,170,80,.5);border-radius:16px;box-shadow:0 10px 40px rgba(0,0,0,.65);color:#f3e4c4;padding:12px 12px 14px;box-sizing:border-box}
+.dzt{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.dzt b{font-size:19px;color:#ffd978;letter-spacing:.3px}
+.dzt button{background:none;border:0;color:#d8c49a;font-size:22px;line-height:1;padding:4px 8px;cursor:pointer}
+.dzk{font-size:12.5px;line-height:1.35;color:#c9b283;font-style:italic;margin:0 0 9px;padding:6px 9px;border-left:3px solid rgba(214,170,80,.55);background:rgba(255,255,255,.04);border-radius:0 8px 8px 0}
+.dztabs{display:flex;gap:5px;margin:0 0 9px}
+.dztabs button{flex:1;position:relative;border:1px solid rgba(214,170,80,.35);background:rgba(255,255,255,.05);color:#d9c598;border-radius:10px;font:600 12.5px Cambria,Georgia,serif;padding:8px 2px;cursor:pointer}
+.dztabs button.on{background:linear-gradient(180deg,#e9b94a,#b9801f);color:#2b1805;border-color:#ffe08a}
+.dztabs i{position:absolute;right:3px;top:-6px;min-width:15px;height:15px;border-radius:8px;background:#c8261c;color:#fff;font:700 10px/15px system-ui,sans-serif;text-align:center;font-style:normal;padding:0 3px;box-sizing:border-box}
+.dzs{border-top:1px solid rgba(214,170,80,.25);margin-top:11px;padding-top:9px}
+.dzs h4{margin:0 0 7px;font-size:12px;letter-spacing:1.1px;text-transform:uppercase;color:#cfae6a;font-weight:600}
+.dzrow{display:flex;align-items:center;gap:9px;padding:8px 9px;margin-bottom:6px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(214,170,80,.18)}
+.dzrow.dn{border-color:rgba(130,200,110,.5);background:rgba(90,150,70,.12)}
+.dzrow.cu{border-color:#ffd978;box-shadow:0 0 10px rgba(255,205,100,.22)}
+.dzrow.me{border-color:#ffd978;background:rgba(214,170,80,.16)}
+.dzn{flex:0 0 26px;height:26px;border-radius:50%;background:rgba(214,170,80,.2);border:1px solid rgba(214,170,80,.6);text-align:center;font:700 13px/24px system-ui,sans-serif;color:#ffd978}
+.dzrow.dn .dzn{background:rgba(110,180,90,.35);border-color:#8fcf7a;color:#d8ffc8}
+.dzx{flex:1;min-width:0}
+.dzx b{display:block;font-size:14px;color:#f7ebd0}
+.dzx small{display:block;font-size:12px;color:#b9a47b;margin-top:1px;line-height:1.25}
+.dzbar{height:7px;border-radius:4px;background:rgba(255,255,255,.1);overflow:hidden;margin-top:5px}
+.dzbar i{display:block;height:100%;background:linear-gradient(90deg,#c88a2a,#ffd978);border-radius:4px}
+.dzb{flex:0 0 auto;border:1px solid rgba(214,170,80,.7);background:rgba(120,70,20,.5);color:#ffe9a8;border-radius:10px;font:600 12.5px Cambria,Georgia,serif;padding:8px 11px;cursor:pointer}
+.dzb.g{background:linear-gradient(180deg,#e9b94a,#b9801f);color:#2b1805;border-color:#ffe08a}
+.dzb.r{background:linear-gradient(180deg,#c9442f,#8c1f12);color:#fff;border-color:#f19a8a}
+.dzb[disabled],.dzb.off{opacity:.45;pointer-events:none}
+.dzbig{display:block;width:100%;margin-top:10px;padding:12px;font-size:15px;text-align:center}
+.dzgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.dztile{border:1px solid rgba(214,170,80,.4);background:rgba(255,255,255,.06);border-radius:12px;padding:10px 4px;text-align:center;color:#f3e4c4;cursor:pointer;font:600 12.5px Cambria,Georgia,serif}
+.dztile span{display:block;font-size:26px;line-height:1.1;margin-bottom:3px}
+.dztile:active{transform:scale(.96)}
+.dzhero{display:flex;align-items:center;gap:11px;padding:10px;border-radius:14px;background:linear-gradient(180deg,rgba(214,170,80,.18),rgba(214,170,80,.06));border:1px solid rgba(214,170,80,.5)}
+.dzhero .em{font-size:38px;line-height:1}
+.dzhero b{font-size:18px;color:#ffd978}
+.dzhero small{display:block;font-size:12px;color:#d8c49a;font-style:italic}
+.dzchips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.dzchips span{font-size:11.5px;border:1px solid rgba(214,170,80,.3);border-radius:9px;padding:3px 7px;background:rgba(255,255,255,.05);color:#e1cfa4}
+.dzcell{display:inline-block;width:12.4%;min-width:38px;text-align:center;vertical-align:top;margin:2px 0}
+.dzcell span{display:block;font-size:24px;line-height:1.1;filter:grayscale(1) brightness(.55)}
+.dzcell.h span{filter:none}
+.dzcell small{display:block;font-size:9.5px;line-height:1.1;color:#9d8a62;height:22px;overflow:hidden}
+.dzcell.h small{color:#e8d6ab}
+.dzcell em{font:700 10px system-ui,sans-serif;color:#ffd978;font-style:normal}
+/* Що далі? */
+#nx9{position:fixed;left:50%;transform:translateX(-50%);z-index:70;display:none;align-items:center;gap:8px;max-width:86vw;padding:7px 15px 7px 11px;border-radius:22px;border:1.5px solid #ffd978;background:linear-gradient(180deg,rgba(94,56,24,.94),rgba(40,22,10,.95));color:#ffe9a8;font:700 14px Cambria,Georgia,serif;box-shadow:0 3px 12px rgba(0,0,0,.6),0 0 0 0 rgba(255,205,100,.6);animation:nx9p 2.6s ease-in-out infinite;cursor:pointer;-webkit-tap-highlight-color:transparent}
+#nx9 small{display:block;font:500 11px Cambria,Georgia,serif;color:#cdb98a;margin-top:1px;max-width:56vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#nx9 .e{font-size:20px}
+@keyframes nx9p{0%,100%{box-shadow:0 3px 12px rgba(0,0,0,.6),0 0 0 0 rgba(255,205,100,.0)}50%{box-shadow:0 3px 12px rgba(0,0,0,.6),0 0 14px 2px rgba(255,205,100,.55)}}
+html.gfx-low #nx9,html.gfx-mid #nx9{animation:none}
+/* правая панель 10 -> 5 */
+#app #rpan>#abtn,#app #rpan>#cvbtn,#app #rpan>#rtbtn,#app #rpan>#jkbtn,#app #rpan>#trbtn,#app #rpan>#tqbtn{display:none!important}
+#app #rpan>#l9btn,#app #rpan>#sk9btn{position:relative}
+#app #rpan>button .d9n{position:absolute;left:calc(var(--p)*-2);top:calc(var(--p)*1);min-width:14px;height:14px;padding:0 3px;border-radius:7px;background:#c8261c;color:#fff;font:700 10px/14px system-ui,sans-serif;text-align:center;box-shadow:0 0 0 1px rgba(0,0,0,.5);z-index:3;font-size:calc(var(--p)*9);box-sizing:border-box}
+#app #rpan>button .d9n:empty{display:none}
+/* комбо */
+.dzslots{display:flex;gap:7px;justify-content:center;margin:8px 0}
+.dzsl{width:48px;height:48px;border-radius:11px;border:2px dashed rgba(214,170,80,.5);background:rgba(255,255,255,.05);display:flex;align-items:center;justify-content:center;font-size:25px;cursor:pointer;position:relative}
+.dzsl img{width:34px;height:34px;object-fit:contain}
+.dzsl.f{border-style:solid}
+.dzsl.g{border-color:#79c85a;background:rgba(90,170,60,.5);box-shadow:0 0 9px rgba(120,210,90,.55)}
+.dzsl.y{border-color:#e4b83a;background:rgba(210,160,30,.5);box-shadow:0 0 9px rgba(230,185,60,.5)}
+.dzsl.n{border-color:#4a4438;background:rgba(30,26,20,.7);opacity:.6}
+.dzpal{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin:6px 0 4px}
+.dzpal .dzsl{border-style:solid;border-color:rgba(214,170,80,.55);width:46px;height:46px}
+.dzpal .dzsl.use{opacity:.35}
+.dzsl small{position:absolute;bottom:-1px;left:0;right:0;font:600 8.5px system-ui,sans-serif;color:#d8c49a;text-align:center;line-height:1}
+/* арена */
+.dzar{margin:8px 0}
+.dzhp{height:13px;border-radius:7px;background:rgba(0,0,0,.45);overflow:hidden;border:1px solid rgba(214,170,80,.3);position:relative}
+.dzhp i{display:block;height:100%;transition:width .15s}
+.dzhp.e i{background:linear-gradient(90deg,#c9442f,#e8715a)}
+.dzhp.p i{background:linear-gradient(90deg,#4a9a3a,#8bd46a)}
+.dzhp span{position:absolute;inset:0;font:700 10px/13px system-ui,sans-serif;text-align:center;color:#fff;text-shadow:0 0 3px #000}
+.dztele{text-align:center;height:92px;position:relative;margin:10px 0}
+.dztele .big{font-size:42px;line-height:1.1}
+.dztele .tx{font-size:13px;color:#ffe9a8;min-height:18px}
+.dzring{position:absolute;left:50%;top:30px;width:90px;height:90px;margin:-45px 0 0 -45px;border:3px solid #ff7a5a;border-radius:50%;opacity:0;pointer-events:none}
+.dzring.go{opacity:1;animation:dzr var(--dur,1s) linear forwards}
+@keyframes dzr{0%{transform:scale(2.1);opacity:.2}100%{transform:scale(.55);opacity:1}}
+.dzbtns{display:flex;gap:8px}
+.dzbtns .dzb{flex:1;padding:14px 4px;font-size:15px}
+.dzlog{min-height:34px;font-size:12.5px;color:#d8c49a;text-align:center;margin-top:7px}
+.dzshk{animation:dzs .25s}
+@keyframes dzs{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}

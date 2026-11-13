@@ -41,8 +41,7 @@ function Mo(){var d=T(),m=mkey(),r=d.rd;
    if(ok){MS.forEach(function(x,i){if(fr>=x[0]&&!r.c[i]){r.c[i]=1;cl++;["sv","tl","junk","en"].forEach(function(k){rw[k]+=x[1][k]||0})}});
     TIERS.forEach(function(t,i){if(r.dm>=t[0]*r.ref&&!r.pc[i]){r.pc[i]=1;cl++;["sv","tl","junk","en"].forEach(function(k){rw[k]+=t[2][k]||0});wa+=t[3]}})}
    var left=r.am||0;if(left>0)rw.sv+=left*20;
-   if(wa){S.wa=S.wa||{};S.wa[r.w]=(S.wa[r.w]||0)+wa}
-   if(cl||left){P.give(rw);note="Минулого місяця «"+boss(r.m)[0]+"»: "+(cl?"автоматично видано "+cl+" нагород. ":"")+(left?"Залишок "+left+" зарядів обміняно на срібло. ":"")+P.rewTxt(rw)+(wa?" · +"+wa+" "+wBy(r.w).uk:"")}}
+   if(cl||left){var wo={};if(wa)wo[r.w]=wa;P.addCarry(rw,wa?wo:null);note="Минулого місяця «"+boss(r.m)[0]+"»: "+(cl?"чекають у Літописі (Справи): "+cl+" нагород. ":"")+(left?"Залишок "+left+" зарядів обміняно на срібло. ":"")+P.rewTxt(rw)+(wa?" · +"+wa+" "+wBy(r.w).uk:"")}}
   var w=wid(m),W=wBy(w),u0=Math.round(unitFor(W,BASEMUL)),ref=u0*REFR;
   r=d.rd={m:m,w:w,hp:ref*HPK,ref:ref,dm:0,sh:0,am:0,kit:0,c:[0,0,0,0],pc:[0,0,0,0],snap:cur(),ea:{d:"",bk:0,hn:0,dw:0},ra:"",sd:{d:"",n:0},log:[],note:note};
   P.save()}

@@ -11,7 +11,7 @@ function Wk(){var d=T(),w=P.week();
   var old=d.sg,note="";
   if(old&&old.dm>=old.hp*NEEDME){var tot=0,rw={sv:0,tl:0,junk:0,en:0},fr=(old.dm+botDone(old,1))/old.hp;
    MS.forEach(function(m,i){if(fr>=m[0]&&!old.c[i]){old.c[i]=1;["sv","tl","junk","en"].forEach(function(k){rw[k]+=m[1][k]||0});tot++}});
-   if(tot){P.give(rw);note="Минулого тижня «"+FORTS[old.f%FORTS.length][0]+"»: автоматично забрано "+tot+" нагород: "+P.rewTxt(rw)}}
+   if(tot){P.addCarry(rw);note="Минулого тижня «"+FORTS[old.f%FORTS.length][0]+"»: "+tot+" нагород чекають у Літописі (Справи): "+P.rewTxt(rw)}}
   var u=unit();d.sg={w:w,f:w%FORTS.length,hp:Math.round(u*150),u:u,dm:0,c:[0,0,0,0],n:0,log:[],note:note};P.save()}
  return d.sg}
 function botDone(s,fin){var f=fin?1:1-P.msToWeekEnd()/(7*864e5);return Math.round(s.hp*BOTSHARE*Math.max(0,Math.min(1,f)))}

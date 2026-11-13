@@ -21,6 +21,27 @@ s=s.replace(c3,'cargoCapacity:C.cargoCap+(window.HORSE&&HORSE.bagBonus?HORSE.bag
 c4="<p><i>🚚</i>Наліт на обоз: '+(raidPct>0?"
 assert s.count(c4)==1
 s=s.replace(c4,"<p><i>🎒</i>Мішок у нальоті: <b>'+(4+H.bagBonus())+' комірок</b> (кожен кращий кінь +1)</p><p><i>🚚</i>Наліт на обоз: '+(raidPct>0?")
+# 1д. v371: награды за достижения забираются вручную
+a1='if(!S.gach)S.gach={};S.svm=Math.max(S.svm||0,S.sv||0);var s=G(),got=0;GA.forEach(function(a){if(!S.gach[a[0]]&&a[5](s)){S.gach[a[0]]=1;S.tl+=a[4];got=1;toast(achHTML(a))}})'
+assert s.count(a1)==1
+s=s.replace(a1,'if(!S.gach)S.gach={};if(!S.gcl){S.gcl={};for(var q in S.gach)S.gcl[q]=1}S.svm=Math.max(S.svm||0,S.sv||0);var s=G(),got=0;GA.forEach(function(a){if(!S.gach[a[0]]&&a[5](s)){S.gach[a[0]]=1;got=1;toast(achHTML(a))}})')
+a2="""'</em></div><u>+'+a[4]+' 💰</u></div>'};"""
+assert s.count(a2)==1
+s=s.replace(a2,"""'</em></div><u>🎁 +'+a[4]+' 💰</u></div>'};""")
+a2b='(kind||"Достижение выполнено")'
+assert s.count(a2b)==1
+s=s.replace(a2b,'(kind||"Досягнення виконано — забери нагороду")')
+a3='function chk(){var s=ST();ACH.forEach(function(a){if(!S.ach[a[0]]&&a[5](s)){S.ach[a[0]]=1;S.tl+=a[4];toast(achHTML(a,"Достижение таверны"))}})'
+assert s.count(a3)==1
+s=s.replace(a3,'function chk(){var s=ST();if(!S.acl){S.acl={};for(var q in S.ach)S.acl[q]=1}ACH.forEach(function(a){if(!S.ach[a[0]]&&a[5](s)){S.ach[a[0]]=1;toast(achHTML(a,"Досягнення таверни — забери нагороду"))}})')
+tail="""+(on?'<u class="ck">✔</u>':'<u>+'+a[4]+' <span class="tl">💰</span></u>')+'</div>'});"""
+for var,flag,c in [('var on=S.gach[a[0]];if(on)n++;','S.gcl','g'),('var on=S.ach[a[0]];if(on)n++;','S.acl','a')]:
+    assert s.count(var)==1,var
+    s=s.replace(var,var.replace('var on=','var cl=%s&&%s[a[0]],on=' % (flag,flag)))
+    i=s.find(var.replace('var on=','var cl=%s&&%s[a[0]],on=' % (flag,flag)))
+    j=s.find(tail,i)
+    assert 0<j-i<400,(var,j-i)
+    s=s[:j]+"""+(on?(cl?'<u class="ck">✔</u>':'<button class="ack" data-c="%s" data-id="'+a[0]+'">Забрати +'+a[4]+' 💰</button>'):'<u>+'+a[4]+' <span class="tl">💰</span></u>')+'</div>'});"""%c+s[j+len(tail):]
 # 2. версия
 for pat,rep in [(r'name="ver" content="358"','name="ver" content="%d"'%VER),(r'var VER=358','var VER=%d'%VER),(r'id="hver">v358<','id="hver">v%d<'%VER)]:
     assert len(re.findall(pat,s))==1,pat

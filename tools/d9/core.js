@@ -53,5 +53,6 @@ if(typeof _say=="function"){
 /* смешные названия оружия (только подписи) */
 try{var L=GAME_CONFIG.BOSSCFG.WEAPONS.LIST;L.forEach(function(w){if(w.id=="fist")w.uk="Дуля";if(w.id=="foot")w.uk="Копняк"})}catch(e){}
 /* прогресс ближайших достижений */
+P.addCarry=function(rw,wa){var d=S.d9;if(!d)return;var c=d.carry||{};for(var k in rw)if(rw[k])c[k]=(c[k]||0)+rw[k];if(wa){c.wa=c.wa||{};for(var w in wa)c.wa[w]=(c.wa[w]||0)+wa[w]}d.carry=c;P.save()};
 P.near=function(n){var out=[];try{var pr=window.GPROG||{},g=S.gach||{},A={};(window.GACH||[]).forEach(function(a){A[a[0]]=a});var fam={};Object.keys(pr).forEach(function(id){if(g[id]||!A[id])return;var v=0;try{v=pr[id][0]()}catch(e){return}var t=pr[id][1];if(v>=t)return;var f=id.replace(/\d+$/,"");if(!fam[f]||t<fam[f].t)fam[f]={id:id,a:A[id],v:v,t:t,r:v/t}});out=Object.keys(fam).map(function(k){return fam[k]});out.sort(function(a,b){return b.r-a.r||a.t-b.t})}catch(e){}return out.slice(0,n||3)};
 })();

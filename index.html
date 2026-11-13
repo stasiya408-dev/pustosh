@@ -36,9 +36,9 @@
 html.gfx-low #ldr .lsun,html.gfx-low #ldr .ldw,html.gfx-low #ldr .lgr,html.gfx-low #ldr .lem,html.gfx-low #ldr .lr1,html.gfx-low #ldr .lr2{animation:none}
 html.gfx-low #ldr .lem{display:none}
 @media (prefers-reduced-motion:reduce){#ldr *{animation:none!important}}
-</style><meta charset="UTF-8"><meta name="ver" content="373">
+</style><meta charset="UTF-8"><meta name="ver" content="374">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<script>var VER=373;(function(){try{fetch(location.pathname+"?c="+Date.now(),{headers:{Range:"bytes=0-600"},cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="ver" content="(\d+)"/);if(m&&+m[1]>VER&&sessionStorage.getItem("upd")!==m[1]){sessionStorage.setItem("upd",m[1]);location.replace(location.pathname+"?v="+m[1]+"&r="+Date.now())}}).catch(function(){})}catch(e){}})()</script>
+<script>var VER=374;(function(){try{fetch(location.pathname+"?c="+Date.now(),{headers:{Range:"bytes=0-600"},cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="ver" content="(\d+)"/);if(m&&+m[1]>VER&&sessionStorage.getItem("upd")!==m[1]){sessionStorage.setItem("upd",m[1]);location.replace(location.pathname+"?v="+m[1]+"&r="+Date.now())}}).catch(function(){})}catch(e){}})()</script>
 <script id="gfxhead">(function(){var L="high";try{var v=localStorage.getItem("gfx");if(v==="mid"||v==="low")L=v}catch(e){}
 var PR={high:{fps:60,dpr:99,strip:3,hI:30,hA:30,pq:1},mid:{fps:45,dpr:1.5,strip:4,hI:45,hA:36,pq:.75},low:{fps:30,dpr:1,strip:6,hI:60,hA:45,pq:.65}}[L];
 window.GFX={lvl:L,low:L==="low",mid:L==="mid",hres:L==="low"?.5:L==="mid"?.65:1,fps:PR.fps,iv:1000/PR.fps,strip:PR.strip,heroI:PR.hI,heroA:PR.hA,pq:PR.pq,real:0,min:0};
@@ -786,7 +786,7 @@ setTimeout(function(){if(L.boot)L.done()},20000)})();
 <div id="hud2"><div id="hbar"><div class="lau"></div><div id="hlv"><b id="lv"></b></div><div id="hname"><span id="nm"></span></div>
 <div class="hr"><i>⚡</i><span class="ho hv" id="en"></span><button class="hp" onclick="soon()" aria-label="Поповнити">+</button></div><div class="hr"><i class="cs"></i><span class="ho hv" id="sv"></span><button class="hp" onclick="soon()" aria-label="Поповнити">+</button></div><div class="hr"><i>💰</i><span class="ho hv" id="tl"></span><button class="hp" onclick="testTalers()" aria-label="Поповнити">+</button></div><div class="hr"><i>💪</i><span class="ho hv" id="pw"></span><button class="hp" onclick="soon()" aria-label="Поповнити">+</button></div>
 <div class="xpt"><i id="xp"></i></div></div>
-<button id="hgear" onclick="gearTap()" aria-label="Налаштування" aria-expanded="false">⚙</button><div class="ho" id="el"></div><div class="ho" id="hver">v373</div></div>
+<button id="hgear" onclick="gearTap()" aria-label="Налаштування" aria-expanded="false">⚙</button><div class="ho" id="el"></div><div class="ho" id="hver">v374</div></div>
 <div id="scene">
 
 <div id="hut"><img id="campbg" draggable="false" alt="" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 50%;z-index:0" src="data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=">
@@ -11368,6 +11368,76 @@ var css=document.createElement("style");
 css.textContent=".ig{width:1.1em;height:1.1em;vertical-align:-.2em;display:inline-block;overflow:visible;filter:drop-shadow(0 1px 1px rgba(0,0,0,.55));flex:none}"
  +"img.ic{width:1.15em;height:1.15em;vertical-align:-.22em;display:inline-block}";
 document.head.appendChild(css);
+})();
+
+</script>
+<script id="d9gv">
+/* d9gv v374: голос Діда Охріма — бормотання при появі хмарки + кнопка «прочитати вголос» (Web Speech, uk-UA).
+   Гучність = VOL × SFXVOL. Нічого не вантажить, файлів немає. */
+(function(){
+var cl=null,last="",busy=0,spk=0;
+function vol(){var v=(typeof window.VOL==="number"?window.VOL:1),s=(typeof window.SFXVOL==="number"?window.SFXVOL:1);return Math.min(1,v)*s}
+function ctx(){try{return window._ac&&window._ac()}catch(e){return null}}
+/* бормотання: серія низьких «бу-бу» зі зміною висоти, довжина від довжини тексту */
+function mumble(txt){
+ var A=ctx(),V=vol();if(!A||V<=0.01)return;
+ try{if(A.state==="suspended")A.resume()}catch(e){}
+ var n=Math.max(4,Math.min(16,Math.round((txt||"").length/7)));
+ var t=A.currentTime+.02,base=105+Math.random()*18;
+ var g=A.createGain();g.gain.value=1;g.connect(A.destination);
+ for(var i=0;i<n;i++){
+  var f=base*(0.85+Math.random()*.5),d=.075+Math.random()*.05;
+  var o=A.createOscillator(),fl=A.createBiquadFilter(),e=A.createGain();
+  o.type="sawtooth";o.frequency.setValueAtTime(f,t);o.frequency.linearRampToValueAtTime(f*(0.8+Math.random()*.35),t+d);
+  fl.type="bandpass";fl.Q.value=4;fl.frequency.setValueAtTime(380+Math.random()*320,t);fl.frequency.linearRampToValueAtTime(520+Math.random()*420,t+d);
+  e.gain.setValueAtTime(0,t);e.gain.linearRampToValueAtTime(.2*V,t+.02);e.gain.linearRampToValueAtTime(0,t+d);
+  o.connect(fl);fl.connect(e);e.connect(g);o.start(t);o.stop(t+d+.02);
+  t+=d+.03+(Math.random()<.2?.09:0);
+ }
+}
+function txtOf(){if(!cl)return"";var a=cl.querySelector(".gdt"),b=cl.querySelector(".gdx");return((a?a.textContent+". ":"")+(b?b.textContent:"")).replace(/\s+/g," ").trim()}
+function speak(){
+ var T=txtOf();if(!T)return;
+ if(!window.speechSynthesis||!window.SpeechSynthesisUtterance){if(window.say)window.say("На цьому телефоні немає голосу");return}
+ try{
+  var ss=window.speechSynthesis;
+  if(spk){ss.cancel();spk=0;paint();return}
+  var u=new SpeechSynthesisUtterance(T);u.lang="uk-UA";u.rate=.88;u.pitch=.6;u.volume=Math.max(.3,vol());
+  var vs=ss.getVoices()||[];for(var i=0;i<vs.length;i++){if(/^uk/i.test(vs[i].lang)){u.voice=vs[i];break}}
+  u.onend=u.onerror=function(){spk=0;paint()};
+  spk=1;ss.cancel();ss.speak(u);paint();
+ }catch(e){spk=0}
+}
+function paint(){var b=cl&&cl.querySelector(".gdsp");if(b)b.classList.toggle("on",!!spk)}
+function sync(){
+ if(!cl||busy)return;
+ busy=1;
+ try{
+  var bt=cl.querySelector(".gdbt");
+  if(bt&&!bt.querySelector(".gdsp")){
+   var b=document.createElement("button");b.className="gdsp";b.type="button";b.setAttribute("aria-label","Прочитати вголос");
+   b.innerHTML="🔊";b.addEventListener("click",function(e){e.stopPropagation();speak()});
+   bt.insertBefore(b,bt.firstChild);paint();
+  }
+  var T=txtOf();
+  if(cl.classList.contains("on")&&T&&T!==last){last=T;try{window.speechSynthesis&&window.speechSynthesis.cancel()}catch(e){}spk=0;mumble(T)}
+  if(!cl.classList.contains("on"))last="";
+ }catch(e){}
+ if(window.MutationObserver)try{mo.takeRecords()}catch(e){}
+ busy=0;
+}
+var mo=null;
+function init(){
+ cl=document.getElementById("gdc");
+ if(!cl){setTimeout(init,700);return}
+ var st=document.createElement("style");
+ st.textContent="#gdc .gdbt .gdsp{width:34px;height:34px;padding:0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0}#gdc .gdbt .gdsp .ig{width:18px;height:18px}#gdc .gdbt .gdsp.on{box-shadow:0 0 12px rgba(255,200,80,.6);background:rgba(120,80,30,.95)}";
+ document.head.appendChild(st);
+ mo=new MutationObserver(sync);mo.observe(cl,{childList:true,subtree:true,attributes:true,attributeFilter:["class"]});
+ sync();
+}
+window.D9V={mumble:mumble,speak:speak};
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
 })();
 
 </script>

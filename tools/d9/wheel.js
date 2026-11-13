@@ -46,7 +46,7 @@ function wheelHTML(){var seg=[],lab="";
  return '<div class="dzwp">▼</div><div class="dzwh" id="dzWh" style="background:conic-gradient('+seg.join(",")+');transform:rotate('+rot+'deg)">'+lab+'<div class="dzwc">🎡</div></div>'}
 function render(){if(!ov)return;var w=W(),c=cost(),h="";
  h+='<div class="dzc"><div class="dzt"><b>🎡 Колесо фортуни</b><button data-z="x" aria-label="Закрити">✕</button></div>';
- h+='<div class="dzk">'+(w.n===0?'Перша крутка сьогодні — за рахунок шинкарки. «Крути, поки Мотрона добра».':'Кожна наступна крутка дорожча. «Азарт — він як борг: спершу весело».')+'</div>';
+ h+='<div class="dzk">'+(w.n===0?'Перша крутка — <b>безкоштовно</b>':'Далі дорожче')+'</div>';
  h+='<div class="dzwrap">'+wheelHTML()+'</div>';
  h+='<div class="dzwr" id="dzWr">'+(lastTxt||'&nbsp;')+'</div>';
  h+='<button class="dzb g dzbig'+(c===null||spinning?' off':'')+'" data-z="spin">'+(c===null?'Колесо зламалось на сьогодні':(c===0?'Крутити — безкоштовно':'Крутити · '+fs(c)+' 🥈'))+' <small style="font-weight:400">(крутка '+Math.min(w.n+1,COST.length)+' з '+COST.length+')</small></button>';

@@ -60,5 +60,6 @@ i=s.rfind('</body>'); assert i>0
 s=s[:i]+blocks+s[i:]
 sys.path.insert(0,D); import apply_tr
 s=apply_tr.apply(s,D)
+import short; s=short.apply(s)
 open('/home/claude/pustosh/index.html','w',encoding='utf-8').write(s)
 print('ok',len(s))

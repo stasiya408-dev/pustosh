@@ -5,9 +5,9 @@ var T=P.T,esc=P.esc,fs=P.fs;
 var NAMES=["Мурзик","Пан Котовський","Пампушка","Кіт Баюн","Шельма","Отаман Мурко","Бровко","Тарас Мурченко","Сірко","Мотрона","Кошовий","Булька"];
 var FOOD=[["🥛","Молочко",40,10,25],["🌭","Ковбаска",160,45,55],["🐟","Чумацька тараня",600,170,100]];
 var SK=[
- {ic:"🐽",n:"Нюх на ніштяки",d:"Частіше знаходить речі для колекцій у поході: +1,5% до шансу на кожному кроці й шанс на ще одну знахідку в кінці."},
- {ic:"🛡",n:"Сторожа хуторів",d:"Бот рідше відбиває твої хутори: кожен ранг зменшує шанс на 17%."},
- {ic:"🎶",n:"Мур-р",d:"Гладиш кота раз на день — отримуєш ⚡. Чим вище ранг, тим більше. З 3-го рангу гладити можна двічі на день."}];
+ {ic:"🐽",n:"Нюх на ніштяки",d:"Більше знахідок у поході: +1,5% на крок."},
+ {ic:"🛡",n:"Сторожа хуторів",d:"Хутори рідше відбивають: −17% за ранг."},
+ {ic:"🎶",n:"Мур-р",d:"Погладити — ⚡. З 3-го рангу двічі на день."}];
 var LVMAX=16,SKMAX=5,BOSS="marena";
 function C(){var d=T();if(!d.pet)d.pet={n:0,xp:0,lv:1,sk:[0,0,0],sat:70,at:Date.now(),pat:{d:"",n:0}};var c=d.pet;if(!c.sk)c.sk=[0,0,0];return c}
 function need(l){return 30+20*l}
@@ -42,9 +42,9 @@ function bar(a,b,cls){var p=Math.max(0,Math.min(100,Math.round(a/b*100)));return
 function lockHTML(){var dev=window.JUNK_DEV&&JUNK_DEV.always;
  return '<div class="dzc"><div class="dzt"><b>🐈 Кіт</b><button data-z="x" aria-label="Закрити">✕</button></div>'+
  '<div class="dzk">'+P.kob(5)+'</div>'+
- '<div class="dzhero"><div class="em dzcat sad">🔒</div><div style="flex:1"><b>Кіт у клітці</b><small>Його тримає відьма Марена для своїх чарів. Така істота — не для кожного.</small></div></div>'+
- '<div class="dzs"><h4>Як отримати</h4><div class="dzrow"><div class="dzn" style="font-size:16px">🧙</div><div class="dzx"><b>Переможи Марену</b><small>Будь-яка ярість, соло чи з відрядом. Після першої перемоги клітка відчиниться, кіт піде з тобою й оселиться у Скрині.</small></div></div>'+
- '<small style="color:#9d8a62;display:block;margin-top:6px">Кіт дає навички: частіші знахідки в поході, захист хуторів і щоденну енергію від гладження.</small></div>'+
+ '<div class="dzhero"><div class="em dzcat sad">🔒</div><div style="flex:1"><b>Кіт у клітці</b><small>Звільни його перемогою над <b>Мареною</b>.</small></div></div>'+
+ '<div class="dzs"><h4>Як отримати</h4><div class="dzrow"><div class="dzn" style="font-size:16px">🧙</div><div class="dzx"><b>Переможи Марену</b><small>Будь-яка ярість.</small></div></div>'+
+ '</div>'+
  (dev?'<button class="dzb dzbig" data-z="free">🛠 Тест: звільнити кота зараз</button>':'')+'</div>'}
 function render(){if(!ov)return;if(!own()){ov.innerHTML=lockHTML();return}
  var c=C(),s=sat(),h="",nm=NAMES[c.n%NAMES.length],pts=sp(),pl=patsLeft();
@@ -56,11 +56,11 @@ if(!c.seen)h+='<div class="dzk" style="border-color:#ffd978">🎉 Кіт Мар�
  h+='<small style="margin-top:4px">Ситість '+Math.round(s)+'%</small>'+bar(s,100,s<20?'low':'')+'</div></div>';
  h+='<div class="dzs"><h4>Годування</h4><div class="dzgrid">';
  FOOD.forEach(function(f,i){h+='<div class="dztile" data-z="feed" data-k="'+i+'"><span>'+f[0]+'</span>'+f[1]+'<small style="display:block;color:#b9a47b;font-weight:400">'+fs(f[2])+' 🥈 · +'+f[3]+' дос.</small></div>'});
- h+='</div><button class="dzb g dzbig'+(pl?'':' off')+'" data-z="pat">Погладити ('+pl+' з '+patMax()+' сьогодні) · +'+(2+rank(2))+' ⚡</button><small style="color:#9d8a62;display:block;margin-top:4px">Гладити — кнопка вище, раз на добу. Голодного кота не погладиш.</small></div>';
+ h+='</div><button class="dzb g dzbig'+(pl?'':' off')+'" data-z="pat">Погладити ('+pl+' з '+patMax()+' сьогодні) · +'+(2+rank(2))+' ⚡</button><small style="color:#9d8a62;display:block;margin-top:4px">Раз на добу. Голодного не гладити.</small></div>';
  h+='<div class="dzs"><h4>Навички · вільних очок: '+pts+'</h4>';
  SK.forEach(function(k,i){var r=c.sk[i]|0,pips="";for(var j=0;j<SKMAX;j++)pips+=j<r?'●':'○';
   h+='<div class="dzrow"><div class="dzn" style="font-size:16px">'+k.ic+'</div><div class="dzx"><b>'+k.n+' <span style="color:#ffd978;letter-spacing:1px;font-size:12px">'+pips+'</span></b><small>'+k.d+'</small></div>'+(pts>0&&r<SKMAX?'<button class="dzb g" data-z="up" data-k="'+i+'">+1</button>':'')+'</div>'});
- h+='<small style="color:#9d8a62;display:block;margin-top:4px">Очко навички дає кожен новий рівень кота. Навички не працюють, поки кіт голодний.</small></div>';
+ h+='<small style="color:#9d8a62;display:block;margin-top:4px">Навичка = новий рівень. Голодний кіт — без навичок.</small></div>';
  h+='<button class="dzb dzbig" data-z="name">Інше ім\'я</button></div>';
  var sc=ov.querySelector(".dzc"),top=sc?sc.scrollTop:0;ov.innerHTML=h;var n=ov.querySelector(".dzc");if(n)n.scrollTop=top}
 function open(){render();ov.classList.add("on")}

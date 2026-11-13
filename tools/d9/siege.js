@@ -50,21 +50,17 @@ function claim(i){var s=Wk();if(s.dm<s.hp*NEEDME){P.say("Щоб брати на�
 function msTable(){var h='<div class="dkh">';
  MS.forEach(function(m){h+='<div><b>'+Math.round(m[0]*100)+'% фортеці</b><small>'+P.rewTxt(m[1])+'</small></div>'});return h+'</div>'}
 var GUIDE=[
- {t:"Що це і навіщо",b:function(){return ''+
-  '<p>Щотижня (з понеділка до неділі) з’являється <b>одна фортеця</b> — спільна ціль тижня. У неї є «міцність» (HP). Мета: <b>зруйнувати її до кінця тижня</b>.</p>'+
-  '<p>Руйнують її <b>двоє</b>: <b>🤖 козаки-боти</b> (самі, поволі, рівномірно за тиждень — до 60% міцності) і <b>ти</b> (штурмами за ⚡).</p>'+
-  '<div class="dzhero"><div class="em">🏰</div><div style="flex:1"><b>Навіщо це тобі</b><small>За кожен рубіж (25%, 50%, 75%, 100%) дають нагороду: срібло, талери, мотлох, енергію. Чим більше зруйновано — тим краща.</small></div></div>'+
-  '<p><b>Чесно про ботів.</b> Це умовні козаки, що імітують допомогу друзів. Живі гравці з’являться, коли буде сервер. Поки що боти — просто «фон», який бере на себе перші 60%.</p>'}},
- {t:"Твій штурм",b:function(){var s=Wk();return ''+
-  '<p>Один штурм коштує <b>'+COST+' ⚡</b>. Шкода залежить від твого <b>рівня</b> і <b>сили</b> (чим більше — тим сильніше б’єш). Розкид ±20%, а у 12% випадків — <b>крит ×2</b>.</p>'+
-  '<p>Силу удару гра <b>фіксує на початку тижня</b>. Зараз це ≈ <b>'+fs(Math.round(s.u))+'</b> за штурм, а вся фортеця має <b>'+fs(s.hp)+'</b>.</p>'+
-  '<div class="dzhero"><div class="em">⚔</div><div style="flex:1"><b>У цифрах</b><small>Один штурм ≈ 0,7% фортеці. Щоб зняти 10% — близько 15 штурмів (≈45 ⚡).</small></div></div>'+
-  '<p>Є кнопка <b>«Штурм ×5»</b> — п’ять ударів підряд за раз (15 ⚡), щоб не тицяти по сто разів.</p>'}},
- {t:"Нагороди і твоя частка",b:function(){var s=Wk(),h='<p>Чотири рубежі:</p>'+msTable();
-  h+='<p style="margin-top:9px"><b>Головне правило.</b> Щоб <b>брати</b> нагороди, ти маєш сам нанести <b>не менше '+Math.round(NEEDME*100)+'%</b> міцності (≈'+strikesFor({hp:s.hp,dm:0,u:s.u},NEEDME)+' штурмів, ≈'+strikesFor({hp:s.hp,dm:0,u:s.u},NEEDME)*COST+' ⚡). Без цього навіть повна смужка нагород не дасть.</p>';
-  h+='<p><b>Що роблять боти:</b> до 25% і 50% вони дойдуть <b>самі</b> (25% — приблизно в четвер, 50% — близько суботи), тобі треба лише свої '+Math.round(NEEDME*100)+'%.</p>';
-  h+='<p>До <b>75%</b> боти <b>самі не дістануть</b> — решту (≥'+Math.round(needMe(s,.75)*100)+'% тобі) добиваєш ти. А для <b>100%</b> від тебе треба ≥'+Math.round(needMe(s,1)*100)+'% — це ≈'+strikesFor({hp:s.hp,dm:0,u:s.u},needMe(s,1))+' штурмів, ≈'+strikesFor({hp:s.hp,dm:0,u:s.u},needMe(s,1))*COST+' ⚡ за тиждень.</p>';
-  h+='<p><b>Не встиг забрати?</b> Коли тиждень закінчується, усе, що вже було досягнуто, <b>видається само</b> (якщо в тебе було ≥'+Math.round(NEEDME*100)+'%).</p>';
+ {t:"Що це",b:function(){return ''+
+  '<div class="dzhero"><div class="em">🏰</div><div style="flex:1"><b>Фортеця тижня</b><small>Зруйнуй до кінця тижня.</small></div></div>'+
+  '<p>Руйнують двоє: <b>🤖 боти</b> (до 60%) і <b>ти</b> — штурмами.</p>'+
+  '<p>Рубежі <b>25 · 50 · 75 · 100%</b> — нагороди.</p>'}},
+ {t:"Штурм",b:function(){var s=Wk();return ''+
+  '<p>1 штурм = <b>'+COST+' ⚡</b>. Шкода залежить від <b>рівня</b> і <b>сили</b>.</p>'+
+  '<div class="dzhero"><div class="em">⚔</div><div style="flex:1"><b>≈ '+fs(Math.round(s.u))+' за штурм</b><small>Фортеця: '+fs(s.hp)+'. <b>×5</b> — п’ять ударів за раз.</small></div></div>'}},
+ {t:"Нагороди",b:function(){var s=Wk(),h=msTable();
+  h+='<p style="margin-top:9px">Щоб <b>брати</b>: свій внесок <b>≥'+Math.round(NEEDME*100)+'%</b> (≈'+strikesFor({hp:s.hp,dm:0,u:s.u},NEEDME)+' штурмів).</p>';
+  h+='<p>Боти самі: <b>25%</b> і <b>50%</b>. <b>75%</b> і <b>100%</b> — добиваєш ти.</p>';
+  h+='<p>Не встиг — <b>видасться саме</b> в кінці тижня.</p>';
   return h}}];
 function guideHtml(){var g=GUIDE[gp],n=GUIDE.length;
  var s='<div class="dzc"><div class="dzt"><b>📖 Путівник · '+(gp+1)+'/'+n+'</b><button data-z="x" aria-label="Закрити">✕</button></div>';
@@ -114,8 +110,8 @@ function render(){if(!ov)return;
   else{sub='Від тебе до кінця тижня ≥'+Math.round(nm*100)+'%'+(k>0?' · ще ≈'+k+' шт. (≈'+k*COST+' ⚡)':' · вже достатньо');
    if(m[0]<=BOTSHARE){var bt=botsAt(m[0]);if(bt>0)sub+=' · боти самі: через ~'+P.fmtLeft(bt)}else sub+=' · боти самі не дойдуть'}
   h+='<div class="dzrow'+(got?' dn':(can?' cu':''))+'"><div class="dzn">'+(got?'✓':Math.round(m[0]*100)+'')+'</div><div class="dzx"><b>'+Math.round(m[0]*100)+'% фортеці</b><small>'+P.rewTxt(m[1])+'</small><small style="color:#bfa77a">'+esc(sub)+'</small></div>'+(got?'<span style="color:#8fcf7a">✓</span>':(can?'<button class="dzb g" data-z="cl" data-k="'+i+'">Забрати</button>':'<span style="color:#9d8a62">'+(ok?'🔒':'')+'</span>'))+'</div>'});
- h+='<small style="color:#9d8a62;display:block;margin-top:4px">Не встиг забрати до кінця тижня — усе досягнуте видасться само (якщо в тебе ≥'+Math.round(NEEDME*100)+'%).</small></div>';
- h+='<div class="dzs"><small style="color:#9d8a62;display:block">🤖 Козаки-боти умовні: вони імітують допомогу друзів. Живі гравці з’являться, коли буде сервер.</small></div></div>';
+ h+='</div>';
+ h+='<div class="dzs"><small style="color:#9d8a62;display:block">🤖 Боти умовні — живі гравці з’являться з сервером.</small></div></div>';
  var sc=ov.querySelector(".dzc"),tp=sc?sc.scrollTop:0;ov.innerHTML=h;var n=ov.querySelector(".dzc");if(n)n.scrollTop=tp}
 function open(){var d=T();if(!d.sgSeen){d.sgSeen=1;gp=0;P.save()}else gp=-1;render();ov.classList.add("on")}
 function act(k,a){var kk=+a.getAttribute("data-k");

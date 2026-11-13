@@ -36,9 +36,9 @@
 html.gfx-low #ldr .lsun,html.gfx-low #ldr .ldw,html.gfx-low #ldr .lgr,html.gfx-low #ldr .lem,html.gfx-low #ldr .lr1,html.gfx-low #ldr .lr2{animation:none}
 html.gfx-low #ldr .lem{display:none}
 @media (prefers-reduced-motion:reduce){#ldr *{animation:none!important}}
-</style><meta charset="UTF-8"><meta name="ver" content="372">
+</style><meta charset="UTF-8"><meta name="ver" content="373">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<script>var VER=372;(function(){try{fetch(location.pathname+"?c="+Date.now(),{headers:{Range:"bytes=0-600"},cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="ver" content="(\d+)"/);if(m&&+m[1]>VER&&sessionStorage.getItem("upd")!==m[1]){sessionStorage.setItem("upd",m[1]);location.replace(location.pathname+"?v="+m[1]+"&r="+Date.now())}}).catch(function(){})}catch(e){}})()</script>
+<script>var VER=373;(function(){try{fetch(location.pathname+"?c="+Date.now(),{headers:{Range:"bytes=0-600"},cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="ver" content="(\d+)"/);if(m&&+m[1]>VER&&sessionStorage.getItem("upd")!==m[1]){sessionStorage.setItem("upd",m[1]);location.replace(location.pathname+"?v="+m[1]+"&r="+Date.now())}}).catch(function(){})}catch(e){}})()</script>
 <script id="gfxhead">(function(){var L="high";try{var v=localStorage.getItem("gfx");if(v==="mid"||v==="low")L=v}catch(e){}
 var PR={high:{fps:60,dpr:99,strip:3,hI:30,hA:30,pq:1},mid:{fps:45,dpr:1.5,strip:4,hI:45,hA:36,pq:.75},low:{fps:30,dpr:1,strip:6,hI:60,hA:45,pq:.65}}[L];
 window.GFX={lvl:L,low:L==="low",mid:L==="mid",hres:L==="low"?.5:L==="mid"?.65:1,fps:PR.fps,iv:1000/PR.fps,strip:PR.strip,heroI:PR.hI,heroA:PR.hA,pq:PR.pq,real:0,min:0};
@@ -786,7 +786,7 @@ setTimeout(function(){if(L.boot)L.done()},20000)})();
 <div id="hud2"><div id="hbar"><div class="lau"></div><div id="hlv"><b id="lv"></b></div><div id="hname"><span id="nm"></span></div>
 <div class="hr"><i>⚡</i><span class="ho hv" id="en"></span><button class="hp" onclick="soon()" aria-label="Поповнити">+</button></div><div class="hr"><i class="cs"></i><span class="ho hv" id="sv"></span><button class="hp" onclick="soon()" aria-label="Поповнити">+</button></div><div class="hr"><i>💰</i><span class="ho hv" id="tl"></span><button class="hp" onclick="testTalers()" aria-label="Поповнити">+</button></div><div class="hr"><i>💪</i><span class="ho hv" id="pw"></span><button class="hp" onclick="soon()" aria-label="Поповнити">+</button></div>
 <div class="xpt"><i id="xp"></i></div></div>
-<button id="hgear" onclick="gearTap()" aria-label="Налаштування" aria-expanded="false">⚙</button><div class="ho" id="el"></div><div class="ho" id="hver">v372</div></div>
+<button id="hgear" onclick="gearTap()" aria-label="Налаштування" aria-expanded="false">⚙</button><div class="ho" id="el"></div><div class="ho" id="hver">v373</div></div>
 <div id="scene">
 
 <div id="hut"><img id="campbg" draggable="false" alt="" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 50%;z-index:0" src="data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=">
@@ -8062,10 +8062,10 @@ html.gfx-mid #tqx,html.gfx-mid #tqw,html.gfx-low #tqx,html.gfx-low #tqw{-webkit-
 var CFG={
  /* ВСЕ числа — черновик (UNAPPROVED) */
  steps:[
-  {id:"mkt",t:"Загляни на Ринок",d:"Там торгують самопалами, травами й перстнями.",go:"market",nav:"market",rw:{sv:30}},
-  {id:"boss",t:"Відкрий список Босів",d:"Бос падає швидше, якщо б’єш разом із друзями.",go:"boss",nav:"boss",rw:{sv:30}},
-  {id:"tav",t:"Зіграй партію в кості",d:"У Таверні. Перемога дає +2 сили, поразка +1.",go:"tav",nav:"tav",rw:{sv:50}},
-  {id:"shot",t:"Вистріль по босу",d:"Обери боса, натисни «У бій» і стріляй — шкода копичиться в таланти.",go:"boss",nav:"boss",rw:{sv:60}},
+  {id:"mkt",t:"Загляни на Ринок",d:"Лавки: зброя, трави, персні.",go:"market",nav:"market",rw:{sv:30}},
+  {id:"boss",t:"Відкрий список Босів",d:"З друзями швидше.",go:"boss",nav:"boss",rw:{sv:30}},
+  {id:"tav",t:"Зіграй партію в кості",d:"Перемога: +2 💪",go:"tav",nav:"tav",rw:{sv:50}},
+  {id:"shot",t:"Вистріль по босу",d:"«У бій» → тапай по босу.",go:"boss",nav:"boss",rw:{sv:60}},
   {id:"hike",t:"Піди в перший похід",d:"",go:"hike",nav:"hike",rw:{sv:100,tl:3}}
  ],
  fin:{tl:5},
@@ -8091,7 +8091,7 @@ function claimable(){var u=T(),n=0;CFG.steps.forEach(function(s){if(done(s.id)&&
  if(allClaimed()&&!u.c.fin)n++;if(dailyInfo().can)n++;return n}
 function allClaimed(){var u=T();return CFG.steps.every(function(s){return u.c[s.id]})}
 var ov,wv;
-function hikeTxt(){var p=0;try{p=HLOC.field.pw}catch(e){}return "Потрібна сила "+(p||50)+" — набирай її в кості й боях із босами."}
+function hikeTxt(){var p=0;try{p=HLOC.field.pw}catch(e){}return "Треба "+(p||50)+" 💪 — кості й боси."}
 function render(){if(!ov)return;var u=T(),d=dailyInfo(),h="";
  h+='<div class="tqc"><div class="tqt"><b>Перші кроки</b><button data-a="x" aria-label="Закрити">✕</button></div>';
  h+='<div class="tqs" style="border:0;margin:0;padding:0"><h4>Щоденний вхід</h4><div class="tqdots">';
@@ -8476,9 +8476,9 @@ function scr(){
 function energyAdv(need,why){
  need=need||hikeCost();var have=S.en|0,mx=MAXEN,L=[],b1=null,b2=null;
  L.push("Потрібно <b>"+need+" ⚡</b>, у тебе "+have+" з "+mx+".");
- if(!bootsOn()){L.push("• <b>Вдягни чоботи</b> — це +10 ⚡ одразу, і максимум росте.");b1={l:"Вдягти чоботи",f:function(){wardOpen(5)}}}
+ if(!bootsOn()){L.push("• <b>Вдягни чоботи</b> — +10 ⚡");b1={l:"Вдягти чоботи",f:function(){wardOpen(5)}}}
  var w=Math.max(0,need-have)*5;
- L.push("• <b>Зачекай</b>: енергія росте на 1 кожні 5 хвилин. До потрібного ≈ "+fmtMin(w)+".");
+ L.push("• <b>Зачекай</b> ≈ "+fmtMin(w)+".");
  if(need>(HLOC.field&&HLOC.field.en||30))L.push("• Припаси теж коштують ⚡ (+2 за предмет): у підготовці візьми менше.");
  var u=S.nsU|0;if(u<3&&bootsOn())L.push("• Шаровари й жилет відкриваються за досягнення Таверни (18 і 28, зараз "+ach()+") — кожна частина сету дає +10 ⚡ назавжди.");
  if(!b1)b1={l:"До таверни",f:function(){goNav("tav")}};
@@ -8486,7 +8486,7 @@ function energyAdv(need,why){
  return {id:"en",gen:S.hn|0,title:"Не вистачає енергії ⚡",text:L.join("<br>"),tg:function(){return sh("dice")?[pick("#dh_ach")]:(bootsOn()?[navBtn("tav")]:[])},b1:b1,b2:b2}}
 function powerAdv(need){
  need=need||hikePw();var have=S.pw|0,d=Math.max(1,need-have);
- return {id:"pw",title:"Не вистачає сили 💪",text:"Для цього походу потрібна сила <b>"+need+"</b>, у тебе "+have+".<br>• <b>Бій із босом</b>: перемога дає близько +25 сили (і срібло) — найшвидший шлях.<br>• <b>Кості</b> у Таверні: +2 за перемогу й +1 за поразку (близько "+Math.ceil(d/2)+" перемог).<br>Сила ще й посилює кожен твій удар.",tg:function(){return [navBtn("boss"),navBtn("tav")]},b1:{l:"До босів",f:function(){goNav("boss")}},b2:{l:"До таверни",f:function(){goNav("tav")}}}}
+ return {id:"pw",title:"Не вистачає сили 💪",text:"Потрібна сила <b>"+need+"</b>, є "+have+".<br>• <b>Бос</b>: ≈ +25 💪<br>• <b>Кості</b>: +2 за перемогу",tg:function(){return [navBtn("boss"),navBtn("tav")]},b1:{l:"До босів",f:function(){goNav("boss")}},b2:{l:"До таверни",f:function(){goNav("tav")}}}}
 function silverAdv(need){
  return {id:"sv",title:"Не вистачає срібла 🥈",text:"На припаси потрібно "+(need||"більше")+" 🥈, у тебе "+(S.sv|0)+".<br>• Натискай «−» біля їжі й води, поки ціна не стане 0: у перший похід можна йти налегке (але на привалі не буде їжі й води).<br>• Срібло приносять перемоги над босами, походи й напади на обоз.",tg:function(){return pickAll("#hike [onclick=\"hPs('food',-1)\"],#hike [onclick=\"hPs('wat',-1)\"]")},b1:{l:"До припасів",f:function(){try{hGo("prep")}catch(e){}}},b2:{l:"До босів",f:function(){try{hikeClose()}catch(e){}goNav("boss")}}}}
 function cargoAdv(){
@@ -8505,10 +8505,10 @@ var SCR=0,CUR={key:"",pg:0,open:false,adv:null,sc:"",html:"",rep:null};
 function praise(txt){FL={a:{id:"pr"+Date.now(),fl:1,title:"Молодець, козаче!",text:txt,tg:function(){return []}},until:Date.now()+22000};CUR.key=""}
 function watch(){var g=G(),sc=CUR.sc;
  if(g.vet)return;
- if(bootsOn()&&!g.bd){g.bd=1;sv();if(g.intro)praise("Чоботи вдягнено: максимум енергії тепер <b>"+MAXEN+" ⚡</b>, і вона вже поповнена.<br>Наступний крок — Таверна.")}
- if(diceDone()&&!g.dd){g.dd=1;sv();praise("Першу партію зіграно! Сила росте з кожною.<br>Тепер до босів: за них — срібло, сила й ключі.")}
- if(wins()>=1&&!g.bw){g.bw=1;sv();praise("Боса повалено! Срібло й сила вже в тебе.<br>Для першого походу потрібна сила <b>"+hikePw()+"</b> — дивись значок 💪 угорі.")}
- if(hikeDone()&&!g.hd){g.hd=1;sv();praise("Перший похід пройдено!<br>Енергію витрачено — я підкажу, як її повернути.")}}
+ if(bootsOn()&&!g.bd){g.bd=1;sv();if(g.intro)praise("Максимум енергії: <b>"+MAXEN+" ⚡</b>.<br>Далі — Таверна.")}
+ if(diceDone()&&!g.dd){g.dd=1;sv();praise("Партію зіграно! <b>+💪</b><br>Далі — Боси.")}
+ if(wins()>=1&&!g.bw){g.bw=1;sv();praise("Боса повалено!<br>Для походу треба <b>"+hikePw()+" 💪</b>.")}
+ if(hikeDone()&&!g.hd){g.hd=1;sv();praise("Похід пройдено!<br>Енергія росте: +1 за 5 хв.")}}
 function compute(sc){
  var g=G(),a=null;
  if(FL&&Date.now()<FL.until)return FL.a;FL=null;
@@ -8517,55 +8517,55 @@ function compute(sc){
  if(!g.intro){
   if(sc!="room")return null;
   return {id:"intro",title:"Слава Україні, козаче!",pages:[
-   {t:"Слава Україні, козаче!",x:"Я — <b>Дід Охрім</b>. Перші хвилини побуду поруч: скажу, куди йти й що натискати.<br>Потрібну кнопку я обведу <b>золотим кільцем</b>, а якщо чогось не вистачить — поясню, де це взяти.",tg:function(){return []}},
-   {t:"Твої запаси",x:"⚡ <b>Енергія</b> — витрачається на походи, сама росте: +1 кожні 5 хвилин.<br>🥈 <b>Срібло</b> — припаси й кування.<br>💰 <b>Талери</b> — зброя й особливі покупки.<br>💪 <b>Сила</b> — відкриває походи й посилює удари.",tg:function(){return pickAll("#hbar .hr")}},
-   {t:"Головне меню",x:"Унизу: ⚔️ <b>Похід</b>, 🛒 <b>Ринок</b>, 🕌 <b>Боси</b>, 🍺 <b>Таверна</b>, 🏟️ Арена (скоро).<br>Почнемо з малого: вдягнемо чоботи — це одразу дасть +10 ⚡.",tg:function(){return pickAll("#nav2 .nb")}}],intro:1}}
+   {t:"Слава Україні, козаче!",x:"Я — <b>Дід Охрім</b>. Покажу, куди йти.<br>Що тиснути — обведу <b>золотим кільцем</b>.",tg:function(){return []}},
+   {t:"Твої запаси",x:"⚡ <b>Енергія</b> — на походи, +1 за 5 хв<br>🥈 <b>Срібло</b> — припаси, ковка<br>💰 <b>Талери</b> — зброя<br>💪 <b>Сила</b> — відкриває походи",tg:function(){return pickAll("#hbar .hr")}},
+   {t:"Головне меню",x:"⚔️ <b>Похід</b> · 🛒 <b>Ринок</b> · 🕌 <b>Боси</b> · 🍺 <b>Таверна</b><br>Спершу вдягни <b>чоботи</b> — це +10 ⚡",tg:function(){return pickAll("#nav2 .nb")}}],intro:1}}
  /* контексты экранов: показываются один раз */
  var c=ctx(sc);if(c&&!g.cd[c.id])return c;
  /* цепочка */
  if(!bootsOn()){
   var wo=sc=="ward"&&pick('#wl [data-wa="eq"][data-k="shoes"]');
-  return {id:"boots",title:"Крок 1 · Взуйся",text:wo?"Натисни <b>«Вдягнути»</b> у Чобіт — і енергія зросте.":"<b>Чоботи</b> дають одразу +10 ⚡ до енергії та +20 до шкоди.<br>Натисни на кнопку нижче (або на чоботи козака) і вибери <b>«Вдягнути»</b> у Чобіт.",tg:function(){return [pick('#wl [data-wa="eq"][data-k="shoes"]')]},b1:wo?null:{l:"Відкрити шафу",f:function(){wardOpen(5)}},auto:["room","ward"]}}
- if(!diceDone()&&sc=="tav")return {id:"dice_in",quiet:1,title:"Зіграй партію",text:"Натисни <b>«Почати партію»</b>, потім <b>«Кинути»</b>. Перемога дає +2 сили.",tg:function(){return pickAll("#dsbtn,#thb,#keb,#reb,#dbuy")}}
- if(!diceDone())return {id:"dice",title:"Крок 2 · Таверна",text:"Загляни до <b>Таверни</b> й зіграй партію в кості.<br>Перемога дає <b>+2 сили</b>, поразка — усе одно +1. Сила потрібна для походів і босів.",tg:function(){return [navBtn("tav")]},b1:sc=="tav"?null:{l:"До таверни",f:function(){goNav("tav")}},auto:["room"]}
+  return {id:"boots",title:"Крок 1 · Взуйся",text:wo?"Тисни <b>«Вдягнути»</b> біля Чобіт":"<b>Чоботи</b>: +10 ⚡, +20 шкоди.<br>Тисни <b>«Вдягнути»</b>",tg:function(){return [pick('#wl [data-wa="eq"][data-k="shoes"]')]},b1:wo?null:{l:"Відкрити шафу",f:function(){wardOpen(5)}},auto:["room","ward"]}}
+ if(!diceDone()&&sc=="tav")return {id:"dice_in",quiet:1,title:"Зіграй партію",text:"<b>Почати партію</b> → <b>Кинути</b>. Перемога: +2 💪",tg:function(){return pickAll("#dsbtn,#thb,#keb,#reb,#dbuy")}}
+ if(!diceDone())return {id:"dice",title:"Крок 2 · Таверна",text:"Зіграй у <b>кості</b> в Таверні.<br>Перемога: <b>+2 💪</b>",tg:function(){return [navBtn("tav")]},b1:sc=="tav"?null:{l:"До таверни",f:function(){goNav("tav")}},auto:["room"]}
  if(!dmg()&&sc=="nbL")return {id:"boss_l",quiet:1,title:"Обери боса",text:"Натисни на першого боса зверху — відкриється вікно бою.",tg:function(){return [pick(".nbBossRow")]}}
- if(!dmg()&&sc=="nbI")return {id:"boss_i",quiet:1,title:"Почни бій",text:"Натисни <b>«В бій»</b> — це витрачає один ключ 🔑.",tg:function(){return [pick(".niSt:not(.off),.stz:not(.off)")]}}
+ if(!dmg()&&sc=="nbI")return {id:"boss_i",quiet:1,title:"Почни бій",text:"<b>«В бій»</b> = 1 🔑",tg:function(){return [pick(".niSt:not(.off),.stz:not(.off)")]}}
  if(!dmg()&&sc=="nbF")return {id:"boss_f",quiet:1,title:"Стріляй!",text:"Тисни по босу — кожне натискання це удар.",tg:function(){return [pick("#nbFg")]}}
- if(!dmg())return {id:"boss",title:"Крок 3 · Боси",text:"Бос — головна здобич степу. Зайди в <b>«Боси»</b>, обери боса й натисни «У бій».<br>Ключі 🔑 та зброя в тебе вже є.",tg:function(){return [navBtn("boss")]},b1:{l:"До босів",f:function(){goNav("boss")}},auto:["room","tav"]}
+ if(!dmg())return {id:"boss",title:"Крок 3 · Боси",text:"Зайди в <b>«Боси»</b> → «У бій».<br>🔑 і зброя вже є.",tg:function(){return [navBtn("boss")]},b1:{l:"До босів",f:function(){goNav("boss")}},auto:["room","tav"]}
  if(!hikeDone()&&(S.pw|0)<hikePw()){var al=powerAdv();al.id="pwc";al.title="Крок 4 · Набери силу";al.auto=["room","tav"];return al}
  if(!hikeDone()&&!window.HK){
   var ec=hikeCost();
   if((S.en|0)<ec){var e1=energyAdv(ec);e1.id="en1";e1.auto=["room","hikehome","prep","route"];return e1}
-  if(sc=="hikehome")return {id:"h_home",title:"Крок 5 · Перший похід",text:"Тут збирають похід. Натисни <b>«Почати похід»</b>.",tg:function(){return [pick("#hike .hbn:not(.alt)")]},auto:["hikehome"]}
-  if(sc=="prep"&&provCost()>(S.sv|0))return {id:"h_prep0",title:"Припаси коштують срібла",text:"На їжу та воду потрібно <b>"+provCost()+" 🥈</b>, а в тебе "+(S.sv|0)+".<br>Натискай <b>«−»</b> біля їжі й води, поки ціна не стане 0: у перший похід можна йти налегке (на привалах тоді нічого їсти й пити). Срібло здобудеш із босів і в походах.",tg:function(){return pickAll("#hike [onclick=\"hPs('food',-1)\"],#hike [onclick=\"hPs('wat',-1)\"]")},auto:["prep"]}
-  if(sc=="prep")return {id:"h_prep",title:"Припаси",text:"🍖 <b>Їжа</b> і 💧 <b>вода</b> потрібні на привалах. Кожен предмет додає +2 ⚡ до ціни походу.<br>🔫 Самопали стануть у пригоді в бою по дорозі. Можна лишити як є й натиснути <b>«Вирушити»</b>.",tg:function(){return [pick("#hike .hbn:not(.alt)")]},auto:["prep"]}
-  if(sc=="route")return {id:"h_route",title:"Маршрут",text:"Обери <b>Дике поле</b> — найлегший маршрут. Решта відкриється, коли виросте сила.",tg:function(){return [pick("#hike .rtb.ok")]},auto:["route"]}
-  return {id:"hike",title:"Крок 5 · Перший похід",text:"Сила є! Похід приносить <b>срібло, ключі та здобич</b>. Він коштує "+ec+" ⚡ (у тебе "+(S.en|0)+").<br>Натисни <b>«Похід»</b>.",tg:function(){return [navBtn("hike")]},b1:{l:"У похід",f:function(){goNav("hike")}},auto:["room","tav"]}}
+  if(sc=="hikehome")return {id:"h_home",title:"Крок 5 · Перший похід",text:"<b>«Почати похід»</b>",tg:function(){return [pick("#hike .hbn:not(.alt)")]},auto:["hikehome"]}
+  if(sc=="prep"&&provCost()>(S.sv|0))return {id:"h_prep0",title:"Припаси коштують срібла",text:"Припаси: <b>"+provCost()+" 🥈</b>, є "+(S.sv|0)+".<br>Тисни <b>«−»</b> біля 🍖 і 💧, поки ціна 0.",tg:function(){return pickAll("#hike [onclick=\"hPs('food',-1)\"],#hike [onclick=\"hPs('wat',-1)\"]")},auto:["prep"]}
+  if(sc=="prep")return {id:"h_prep",title:"Припаси",text:"🍖 і 💧 — для привалів.<br>Тисни <b>«Вирушити»</b>.",tg:function(){return [pick("#hike .hbn:not(.alt)")]},auto:["prep"]}
+  if(sc=="route")return {id:"h_route",title:"Маршрут",text:"Обери <b>Дике поле</b>.",tg:function(){return [pick("#hike .rtb.ok")]},auto:["route"]}
+  return {id:"hike",title:"Крок 5 · Перший похід",text:"Похід: <b>срібло, ключі, здобич</b>.<br>Ціна "+ec+" ⚡ (є "+(S.en|0)+").",tg:function(){return [navBtn("hike")]},b1:{l:"У похід",f:function(){goNav("hike")}},auto:["room","tav"]}}
  /* после первого похода: энергия */
  if(hikeDone()&&!window.HK){var ec2=hikeCost();if((S.en|0)<ec2&&sc!="busy"&&sc!="map"){var e2=energyAdv(ec2);e2.id="en2";e2.auto=["room","hikehome","prep"];return e2}}
  return null}
 function ctx(sc){
  var g=G();
  if(sc=="tav")return {id:"c_tav",once:1,title:"Кості",pages:[
-  {t:"Кості",x:"Натисни <b>«Почати партію»</b>, потім <b>«Кинути»</b>. Після кидка можна <b>залишити</b> вдалі кубики й <b>перекинути</b> решту. Чия комбінація сильніша — той виграв.<br>«Ризик» подвоює очки або обнуляє — поки не вмикай.",tg:function(){var t=pickAll("#dsbtn,#thb,#keb,#reb,#dbuy");return t}},
-  {t:"Досягнення й сет",x:"Кнопка <b>🏆</b> угорі — досягнення Таверни. За них відкриваються частини сету: кожна дає <b>+10 ⚡</b> і +20 шкоди назавжди. Чоботи доступні одразу, шаровари — за 18 досягнень, жилет — за 28.",tg:function(){return [pick("#dh_ach")]}}]}
- if(sc=="nbL")return {id:"c_nbl",once:1,title:"Список босів",text:"Обери боса — починай із першого зверху. Чим далі бос, тим більше в нього здоров’я й тим багатша нагорода.<br>Перемога дає срібло, силу та <b>ключі</b> 🔑, а кожен удар копичить очки талантів.",tg:function(){return [pick(".nbBossRow")]}}
+  {t:"Кості",x:"<b>Почати партію</b> → <b>Кинути</b>.<br>Вдалі кубики <b>лишай</b>, решту <b>перекинь</b>.",tg:function(){var t=pickAll("#dsbtn,#thb,#keb,#reb,#dbuy");return t}},
+  {t:"Досягнення й сет",x:"🏆 угорі — досягнення.<br>Кожна частина сету: <b>+10 ⚡</b> і +20 шкоди.",tg:function(){return [pick("#dh_ach")]}}]}
+ if(sc=="nbL")return {id:"c_nbl",once:1,title:"Список босів",text:"Починай із <b>першого</b> зверху.<br>Нагорода: 🥈 💪 🔑",tg:function(){return [pick(".nbBossRow")]}}
  if(sc=="nbI"){
   var off=pick(".niSt.off,.stz.off");
-  if(off){var lt=(off.textContent||"").toUpperCase();return {id:"c_nbi_off",title:/ЛІМІТ/.test(lt)?"Ліміт нападів":"Немає ключів",text:/ЛІМІТ/.test(lt)?"На кожного боса — обмежена кількість нападів на добу. Ліміт скинеться за кілька годин — тим часом сходи в похід або до таверни.":"Кожен бій витрачає <b>ключ</b> 🔑. Ключі падають за перемоги над іншими босами та в походах (на особливих точках).",tg:function(){return []},auto:["nbI"]}}
+  if(off){var lt=(off.textContent||"").toUpperCase();return {id:"c_nbi_off",title:/ЛІМІТ/.test(lt)?"Ліміт нападів":"Немає ключів",text:/ЛІМІТ/.test(lt)?"Ліміт на добу. Іди в похід або в таверну.":"Бій = 1 🔑. Ключі — з босів і походів.",tg:function(){return []},auto:["nbI"]}}
   return {id:"c_nbi",once:1,title:"Перед боєм",pages:[
-   {t:"Режим",x:"<b>Соло</b> — б’єш сам, у боса вчетверо менше здоров’я.<br><b>Загін</b> — бос здоровіший, але друзі б’ють разом із тобою, і чим їх більше, тим легше.",tg:function(){return pickAll(".niMb:not(.niRg)")}},
-   {t:"Лють",x:"Чим вища лють, тим сильніший бос — і тим багатша нагорода. Для початку вистачить звичайної.",tg:function(){return pickAll(".niRg")}},
-   {t:"У бій",x:"Кнопка <b>«В бій»</b> витрачає один ключ 🔑. Ключі в тебе є — тисни!",tg:function(){return [pick(".niSt,.stz")]}}]}}
+   {t:"Режим",x:"<b>Соло</b> — сам, бос слабший<br><b>Загін</b> — з друзями, чим більше, тим легше",tg:function(){return pickAll(".niMb:not(.niRg)")}},
+   {t:"Лють",x:"Вища лють — сильніший бос і <b>більша нагорода</b>.",tg:function(){return pickAll(".niRg")}},
+   {t:"У бій",x:"<b>«В бій»</b> = 1 🔑",tg:function(){return [pick(".niSt,.stz")]}}]}}
  if(sc=="nbF")return {id:"c_nbf",once:1,title:"Бій!",pages:[
-  {t:"Бій",x:"<b>Тисни по босу</b> — це постріл. У тебе 8 годин, щоб його здолати; смужка зверху — його здоров’я.",tg:function(){return [pick("#nbFg")]}},
-  {t:"Зброя",x:"Спершу завдай <b>три різні безкоштовні удари</b>: кулак, нога, шабля (кожен по разу). Потім відкриється решта: кинджал, самопал, рушниця, залп, гармата — у них обмежені заряди, але б’ють сильніше. Безкоштовні потім відпочивають 8 годин.",tg:function(){var r=pick(".wsc");return r?[r]:[]}},
-  {t:"Таланти",x:"За шкоду по босах копичаться очки. Відкрий <b>«Таланти»</b> ліворуч — там можна витрачати їх на посилення.",tg:function(){return [pick('[data-a="tal"]')]}}]}
+  {t:"Бій",x:"<b>Тисни по босу</b> — це постріл. Є 8 год.",tg:function(){return [pick("#nbFg")]}},
+  {t:"Зброя",x:"Спершу <b>3 безкоштовні удари</b>: кулак, нога, шабля.<br>Потім відкриється решта зброї.",tg:function(){var r=pick(".wsc");return r?[r]:[]}},
+  {t:"Таланти",x:"<b>«Таланти»</b> ліворуч — витрать очки.",tg:function(){return [pick('[data-a="tal"]')]}}]}
  if(sc=="nbW")return {id:"c_nbw",once:1,title:"Перемога!",text:"Це екран нагород: срібло, сила, ключі, а іноді й рідкісні предмети. Усе вже в тебе.<br>Перевір значок 💪 угорі: від сили залежить, куди пускають у похід.",tg:function(){return []}}
  if(sc=="market")return {id:"c_mkt",once:1,title:"Ринок",text:"Тут лавки: зброя, трави, ювелір і коваль. Перстні кують з уламків, що падають з босів, і вони дають відсоток до шкоди.<br>Поки можеш просто роззирнутися.",tg:function(){return []}}
  if(sc=="map")return {id:"c_map",once:1,title:"Мапа походу",pages:[
-  {t:"Мапа",x:"Ти їдеш знизу вгору по точках. <b>Світяться</b> ті, куди можна поїхати зараз.<br>❓ подія · ⚔️ засідка · 🏹 полювання · 🏕️ привал · 🛒 торговець · 💧 струмок · 📦 схованка · 👹 бос · 🏁 фініш.",tg:function(){return pickAll("#hc .hmn.av")}},
-  {t:"Сили",x:"Кожен перехід витрачає 🏃 сили коня й бійця. Коли вони скінчаться — привал. Стеж за ❤️ здоров’ям, 🍖 їжею та 💧 водою.<br><b>«Роззирнутися»</b> відкриває точки далі.",tg:function(){return pickAll("#hc .hmbt button:first-child")}}]}
+  {t:"Мапа",x:"Тисни точку, що <b>світиться</b>.<br>❓ ⚔️ 🏹 🏕️ 🛒 💧 📦 👹 🏁",tg:function(){return pickAll("#hc .hmn.av")}},
+  {t:"Сили",x:"Крок = 🏃. Скінчилась — <b>привал</b>.<br><b>Роззирнутися</b> — видно далі.",tg:function(){return pickAll("#hc .hmbt button:first-child")}}]}
  return null}
 /* ---------- рисунок ---------- */
 var AV='<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#3a2410" stroke="#d9a441" stroke-width="3"/><ellipse cx="32" cy="37" rx="14" ry="16" fill="#e2b48a"/><path d="M15 27 Q15 8 32 8 Q49 8 49 27 Q41 21 32 21 Q23 21 15 27Z" fill="#8a2216" stroke="#2a0e08" stroke-width="1"/><path d="M15 27 Q32 19 49 27 L48.5 31 Q32 24 15.5 31Z" fill="#26211e"/><circle cx="26" cy="35" r="1.9" fill="#2a1608"/><circle cx="38" cy="35" r="1.9" fill="#2a1608"/><path d="M21 31.5 Q26 29 29.5 31.5M34.5 31.5 Q38 29 43 31.5" stroke="#ececec" stroke-width="2.2" fill="none" stroke-linecap="round"/><path d="M32 37 l-2.6 6 h5.2z" fill="#cf9568"/><path d="M32 45 Q22 40 11 51 Q21 49 30 48Z M32 45 Q42 40 53 51 Q43 49 34 48Z" fill="#f4f4f4" stroke="#b9b9b9" stroke-width=".8"/><path d="M25 51 Q32 58 39 51 Q32 54 25 51Z" fill="#f4f4f4"/></svg>';
@@ -10058,6 +10058,7 @@ html.gfx-low #jkx .q.gd[data-j="lv"].can{animation:none;box-shadow:0 0 10px 3px 
 .dzdot{position:absolute;top:3px;right:6px;min-width:17px;height:17px;border-radius:9px;background:#d8362a;color:#fff;font:700 11px/17px Arial,sans-serif;font-style:normal;text-align:center;padding:0 4px}
 .dztile{position:relative}
 .ack{margin-left:auto;border:0;border-radius:10px;background:linear-gradient(#f2c14e,#c58a1c);color:#2a1604;font:700 12px Cambria,Georgia,serif;padding:7px 10px;cursor:pointer;white-space:nowrap}
+.dkh>div .tpt b.hlt,.hlt{display:inline;font-size:inherit;margin:0;color:#ffd978;font-weight:700}
 </style>
 <script id="d9core">
 (function(){
@@ -10557,9 +10558,9 @@ var T=P.T,esc=P.esc,fs=P.fs;
 var NAMES=["Мурзик","Пан Котовський","Пампушка","Кіт Баюн","Шельма","Отаман Мурко","Бровко","Тарас Мурченко","Сірко","Мотрона","Кошовий","Булька"];
 var FOOD=[["🥛","Молочко",40,10,25],["🌭","Ковбаска",160,45,55],["🐟","Чумацька тараня",600,170,100]];
 var SK=[
- {ic:"🐽",n:"Нюх на ніштяки",d:"Частіше знаходить речі для колекцій у поході: +1,5% до шансу на кожному кроці й шанс на ще одну знахідку в кінці."},
- {ic:"🛡",n:"Сторожа хуторів",d:"Бот рідше відбиває твої хутори: кожен ранг зменшує шанс на 17%."},
- {ic:"🎶",n:"Мур-р",d:"Гладиш кота раз на день — отримуєш ⚡. Чим вище ранг, тим більше. З 3-го рангу гладити можна двічі на день."}];
+ {ic:"🐽",n:"Нюх на ніштяки",d:"Більше знахідок у поході: +1,5% на крок."},
+ {ic:"🛡",n:"Сторожа хуторів",d:"Хутори рідше відбивають: −17% за ранг."},
+ {ic:"🎶",n:"Мур-р",d:"Погладити — ⚡. З 3-го рангу двічі на день."}];
 var LVMAX=16,SKMAX=5,BOSS="marena";
 function C(){var d=T();if(!d.pet)d.pet={n:0,xp:0,lv:1,sk:[0,0,0],sat:70,at:Date.now(),pat:{d:"",n:0}};var c=d.pet;if(!c.sk)c.sk=[0,0,0];return c}
 function need(l){return 30+20*l}
@@ -10594,9 +10595,9 @@ function bar(a,b,cls){var p=Math.max(0,Math.min(100,Math.round(a/b*100)));return
 function lockHTML(){var dev=window.JUNK_DEV&&JUNK_DEV.always;
  return '<div class="dzc"><div class="dzt"><b>🐈 Кіт</b><button data-z="x" aria-label="Закрити">✕</button></div>'+
  '<div class="dzk">'+P.kob(5)+'</div>'+
- '<div class="dzhero"><div class="em dzcat sad">🔒</div><div style="flex:1"><b>Кіт у клітці</b><small>Його тримає відьма Марена для своїх чарів. Така істота — не для кожного.</small></div></div>'+
- '<div class="dzs"><h4>Як отримати</h4><div class="dzrow"><div class="dzn" style="font-size:16px">🧙</div><div class="dzx"><b>Переможи Марену</b><small>Будь-яка ярість, соло чи з відрядом. Після першої перемоги клітка відчиниться, кіт піде з тобою й оселиться у Скрині.</small></div></div>'+
- '<small style="color:#9d8a62;display:block;margin-top:6px">Кіт дає навички: частіші знахідки в поході, захист хуторів і щоденну енергію від гладження.</small></div>'+
+ '<div class="dzhero"><div class="em dzcat sad">🔒</div><div style="flex:1"><b>Кіт у клітці</b><small>Звільни його перемогою над <b>Мареною</b>.</small></div></div>'+
+ '<div class="dzs"><h4>Як отримати</h4><div class="dzrow"><div class="dzn" style="font-size:16px">🧙</div><div class="dzx"><b>Переможи Марену</b><small>Будь-яка ярість.</small></div></div>'+
+ '</div>'+
  (dev?'<button class="dzb dzbig" data-z="free">🛠 Тест: звільнити кота зараз</button>':'')+'</div>'}
 function render(){if(!ov)return;if(!own()){ov.innerHTML=lockHTML();return}
  var c=C(),s=sat(),h="",nm=NAMES[c.n%NAMES.length],pts=sp(),pl=patsLeft();
@@ -10608,11 +10609,11 @@ if(!c.seen)h+='<div class="dzk" style="border-color:#ffd978">🎉 Кіт Мар�
  h+='<small style="margin-top:4px">Ситість '+Math.round(s)+'%</small>'+bar(s,100,s<20?'low':'')+'</div></div>';
  h+='<div class="dzs"><h4>Годування</h4><div class="dzgrid">';
  FOOD.forEach(function(f,i){h+='<div class="dztile" data-z="feed" data-k="'+i+'"><span>'+f[0]+'</span>'+f[1]+'<small style="display:block;color:#b9a47b;font-weight:400">'+fs(f[2])+' 🥈 · +'+f[3]+' дос.</small></div>'});
- h+='</div><button class="dzb g dzbig'+(pl?'':' off')+'" data-z="pat">Погладити ('+pl+' з '+patMax()+' сьогодні) · +'+(2+rank(2))+' ⚡</button><small style="color:#9d8a62;display:block;margin-top:4px">Гладити — кнопка вище, раз на добу. Голодного кота не погладиш.</small></div>';
+ h+='</div><button class="dzb g dzbig'+(pl?'':' off')+'" data-z="pat">Погладити ('+pl+' з '+patMax()+' сьогодні) · +'+(2+rank(2))+' ⚡</button><small style="color:#9d8a62;display:block;margin-top:4px">Раз на добу. Голодного не гладити.</small></div>';
  h+='<div class="dzs"><h4>Навички · вільних очок: '+pts+'</h4>';
  SK.forEach(function(k,i){var r=c.sk[i]|0,pips="";for(var j=0;j<SKMAX;j++)pips+=j<r?'●':'○';
   h+='<div class="dzrow"><div class="dzn" style="font-size:16px">'+k.ic+'</div><div class="dzx"><b>'+k.n+' <span style="color:#ffd978;letter-spacing:1px;font-size:12px">'+pips+'</span></b><small>'+k.d+'</small></div>'+(pts>0&&r<SKMAX?'<button class="dzb g" data-z="up" data-k="'+i+'">+1</button>':'')+'</div>'});
- h+='<small style="color:#9d8a62;display:block;margin-top:4px">Очко навички дає кожен новий рівень кота. Навички не працюють, поки кіт голодний.</small></div>';
+ h+='<small style="color:#9d8a62;display:block;margin-top:4px">Навичка = новий рівень. Голодний кіт — без навичок.</small></div>';
  h+='<button class="dzb dzbig" data-z="name">Інше ім\'я</button></div>';
  var sc=ov.querySelector(".dzc"),top=sc?sc.scrollTop:0;ov.innerHTML=h;var n=ov.querySelector(".dzc");if(n)n.scrollTop=top}
 function open(){render();ov.classList.add("on")}
@@ -10676,7 +10677,7 @@ function wheelHTML(){var seg=[],lab="";
  return '<div class="dzwp">▼</div><div class="dzwh" id="dzWh" style="background:conic-gradient('+seg.join(",")+');transform:rotate('+rot+'deg)">'+lab+'<div class="dzwc">🎡</div></div>'}
 function render(){if(!ov)return;var w=W(),c=cost(),h="";
  h+='<div class="dzc"><div class="dzt"><b>🎡 Колесо фортуни</b><button data-z="x" aria-label="Закрити">✕</button></div>';
- h+='<div class="dzk">'+(w.n===0?'Перша крутка сьогодні — за рахунок шинкарки. «Крути, поки Мотрона добра».':'Кожна наступна крутка дорожча. «Азарт — він як борг: спершу весело».')+'</div>';
+ h+='<div class="dzk">'+(w.n===0?'Перша крутка — <b>безкоштовно</b>':'Далі дорожче')+'</div>';
  h+='<div class="dzwrap">'+wheelHTML()+'</div>';
  h+='<div class="dzwr" id="dzWr">'+(lastTxt||'&nbsp;')+'</div>';
  h+='<button class="dzb g dzbig'+(c===null||spinning?' off':'')+'" data-z="spin">'+(c===null?'Колесо зламалось на сьогодні':(c===0?'Крутити — безкоштовно':'Крутити · '+fs(c)+' 🥈'))+' <small style="font-weight:400">(крутка '+Math.min(w.n+1,COST.length)+' з '+COST.length+')</small></button>';
@@ -10759,21 +10760,17 @@ function claim(i){var s=Wk();if(s.dm<s.hp*NEEDME){P.say("Щоб брати на�
 function msTable(){var h='<div class="dkh">';
  MS.forEach(function(m){h+='<div><b>'+Math.round(m[0]*100)+'% фортеці</b><small>'+P.rewTxt(m[1])+'</small></div>'});return h+'</div>'}
 var GUIDE=[
- {t:"Що це і навіщо",b:function(){return ''+
-  '<p>Щотижня (з понеділка до неділі) з’являється <b>одна фортеця</b> — спільна ціль тижня. У неї є «міцність» (HP). Мета: <b>зруйнувати її до кінця тижня</b>.</p>'+
-  '<p>Руйнують її <b>двоє</b>: <b>🤖 козаки-боти</b> (самі, поволі, рівномірно за тиждень — до 60% міцності) і <b>ти</b> (штурмами за ⚡).</p>'+
-  '<div class="dzhero"><div class="em">🏰</div><div style="flex:1"><b>Навіщо це тобі</b><small>За кожен рубіж (25%, 50%, 75%, 100%) дають нагороду: срібло, талери, мотлох, енергію. Чим більше зруйновано — тим краща.</small></div></div>'+
-  '<p><b>Чесно про ботів.</b> Це умовні козаки, що імітують допомогу друзів. Живі гравці з’являться, коли буде сервер. Поки що боти — просто «фон», який бере на себе перші 60%.</p>'}},
- {t:"Твій штурм",b:function(){var s=Wk();return ''+
-  '<p>Один штурм коштує <b>'+COST+' ⚡</b>. Шкода залежить від твого <b>рівня</b> і <b>сили</b> (чим більше — тим сильніше б’єш). Розкид ±20%, а у 12% випадків — <b>крит ×2</b>.</p>'+
-  '<p>Силу удару гра <b>фіксує на початку тижня</b>. Зараз це ≈ <b>'+fs(Math.round(s.u))+'</b> за штурм, а вся фортеця має <b>'+fs(s.hp)+'</b>.</p>'+
-  '<div class="dzhero"><div class="em">⚔</div><div style="flex:1"><b>У цифрах</b><small>Один штурм ≈ 0,7% фортеці. Щоб зняти 10% — близько 15 штурмів (≈45 ⚡).</small></div></div>'+
-  '<p>Є кнопка <b>«Штурм ×5»</b> — п’ять ударів підряд за раз (15 ⚡), щоб не тицяти по сто разів.</p>'}},
- {t:"Нагороди і твоя частка",b:function(){var s=Wk(),h='<p>Чотири рубежі:</p>'+msTable();
-  h+='<p style="margin-top:9px"><b>Головне правило.</b> Щоб <b>брати</b> нагороди, ти маєш сам нанести <b>не менше '+Math.round(NEEDME*100)+'%</b> міцності (≈'+strikesFor({hp:s.hp,dm:0,u:s.u},NEEDME)+' штурмів, ≈'+strikesFor({hp:s.hp,dm:0,u:s.u},NEEDME)*COST+' ⚡). Без цього навіть повна смужка нагород не дасть.</p>';
-  h+='<p><b>Що роблять боти:</b> до 25% і 50% вони дойдуть <b>самі</b> (25% — приблизно в четвер, 50% — близько суботи), тобі треба лише свої '+Math.round(NEEDME*100)+'%.</p>';
-  h+='<p>До <b>75%</b> боти <b>самі не дістануть</b> — решту (≥'+Math.round(needMe(s,.75)*100)+'% тобі) добиваєш ти. А для <b>100%</b> від тебе треба ≥'+Math.round(needMe(s,1)*100)+'% — це ≈'+strikesFor({hp:s.hp,dm:0,u:s.u},needMe(s,1))+' штурмів, ≈'+strikesFor({hp:s.hp,dm:0,u:s.u},needMe(s,1))*COST+' ⚡ за тиждень.</p>';
-  h+='<p><b>Не встиг забрати?</b> Коли тиждень закінчується, усе, що вже було досягнуто, <b>видається само</b> (якщо в тебе було ≥'+Math.round(NEEDME*100)+'%).</p>';
+ {t:"Що це",b:function(){return ''+
+  '<div class="dzhero"><div class="em">🏰</div><div style="flex:1"><b>Фортеця тижня</b><small>Зруйнуй до кінця тижня.</small></div></div>'+
+  '<p>Руйнують двоє: <b>🤖 боти</b> (до 60%) і <b>ти</b> — штурмами.</p>'+
+  '<p>Рубежі <b>25 · 50 · 75 · 100%</b> — нагороди.</p>'}},
+ {t:"Штурм",b:function(){var s=Wk();return ''+
+  '<p>1 штурм = <b>'+COST+' ⚡</b>. Шкода залежить від <b>рівня</b> і <b>сили</b>.</p>'+
+  '<div class="dzhero"><div class="em">⚔</div><div style="flex:1"><b>≈ '+fs(Math.round(s.u))+' за штурм</b><small>Фортеця: '+fs(s.hp)+'. <b>×5</b> — п’ять ударів за раз.</small></div></div>'}},
+ {t:"Нагороди",b:function(){var s=Wk(),h=msTable();
+  h+='<p style="margin-top:9px">Щоб <b>брати</b>: свій внесок <b>≥'+Math.round(NEEDME*100)+'%</b> (≈'+strikesFor({hp:s.hp,dm:0,u:s.u},NEEDME)+' штурмів).</p>';
+  h+='<p>Боти самі: <b>25%</b> і <b>50%</b>. <b>75%</b> і <b>100%</b> — добиваєш ти.</p>';
+  h+='<p>Не встиг — <b>видасться саме</b> в кінці тижня.</p>';
   return h}}];
 function guideHtml(){var g=GUIDE[gp],n=GUIDE.length;
  var s='<div class="dzc"><div class="dzt"><b>📖 Путівник · '+(gp+1)+'/'+n+'</b><button data-z="x" aria-label="Закрити">✕</button></div>';
@@ -10823,8 +10820,8 @@ function render(){if(!ov)return;
   else{sub='Від тебе до кінця тижня ≥'+Math.round(nm*100)+'%'+(k>0?' · ще ≈'+k+' шт. (≈'+k*COST+' ⚡)':' · вже достатньо');
    if(m[0]<=BOTSHARE){var bt=botsAt(m[0]);if(bt>0)sub+=' · боти самі: через ~'+P.fmtLeft(bt)}else sub+=' · боти самі не дойдуть'}
   h+='<div class="dzrow'+(got?' dn':(can?' cu':''))+'"><div class="dzn">'+(got?'✓':Math.round(m[0]*100)+'')+'</div><div class="dzx"><b>'+Math.round(m[0]*100)+'% фортеці</b><small>'+P.rewTxt(m[1])+'</small><small style="color:#bfa77a">'+esc(sub)+'</small></div>'+(got?'<span style="color:#8fcf7a">✓</span>':(can?'<button class="dzb g" data-z="cl" data-k="'+i+'">Забрати</button>':'<span style="color:#9d8a62">'+(ok?'🔒':'')+'</span>'))+'</div>'});
- h+='<small style="color:#9d8a62;display:block;margin-top:4px">Не встиг забрати до кінця тижня — усе досягнуте видасться само (якщо в тебе ≥'+Math.round(NEEDME*100)+'%).</small></div>';
- h+='<div class="dzs"><small style="color:#9d8a62;display:block">🤖 Козаки-боти умовні: вони імітують допомогу друзів. Живі гравці з’являться, коли буде сервер.</small></div></div>';
+ h+='</div>';
+ h+='<div class="dzs"><small style="color:#9d8a62;display:block">🤖 Боти умовні — живі гравці з’являться з сервером.</small></div></div>';
  var sc=ov.querySelector(".dzc"),tp=sc?sc.scrollTop:0;ov.innerHTML=h;var n=ov.querySelector(".dzc");if(n)n.scrollTop=tp}
 function open(){var d=T();if(!d.sgSeen){d.sgSeen=1;gp=0;P.save()}else gp=-1;render();ov.classList.add("on")}
 function act(k,a){var kk=+a.getAttribute("data-k");
@@ -10940,22 +10937,19 @@ var gp=-1,ov;
 function msTable(){var h='<div class="dkh">';MS.forEach(function(m){h+='<div><b>'+Math.round(m[0]*100)+'% боса</b><small>'+P.rewTxt(m[1])+'</small></div>'});return h+'</div>'}
 function tierTable(r){var h='<div class="dkh">';TIERS.forEach(function(t){h+='<div><b>«'+t[1]+'» · '+fp(pctOf(r,t[0]*r.ref))+'% боса</b><small>≈'+shotsFor({dm:0,w:r.w,kit:r.kit},t[0]*r.ref)+' пострілів · '+P.rewTxt(t[2])+(t[3]?' · +'+t[3]+' зарядів':'')+'</small></div>'});return h+'</div>'}
 var GUIDE=[
- {t:"Що це і навіщо",b:function(){var r=Mo(),b=boss(r.m);return ''+
-  '<p>Щомісяця з’являється <b>один великий бос</b> — спільна ціль усіх козаків. Цього місяця це <b>«'+b[0]+'»</b> '+b[1]+'. Міцність у нього величезна, зламати треба <b>до кінця місяця</b>.</p>'+
-  '<p>Б’ють його <b>двоє</b>: <b>🤖 козаки-боти</b> (самі, поволі, до '+Math.round(BOTSHARE*100)+'% міцності) і <b>ти</b>.</p>'+
-  '<div class="dzhero"><div class="em">🐉</div><div style="flex:1"><b>Навіщо тобі</b><small>За кожен рубіж (25, 50, 75 і 100% боса) дають нагороди, а ще окремі нагороди за твій власний внесок.</small></div></div>'+
-  '<p><b>Чесно про ботів.</b> Це умовні козаки, що імітують допомогу інших гравців. Живі гравці з’являться, коли буде сервер.</p>'}},
- {t:"Зброя місяця і заряди",b:function(){var r=Mo(),W=wBy(r.w);return ''+
-  '<p>У рейді б’ють лише <b>зброєю місяця</b> — цього місяця це <b>'+esc(W.uk)+'</b> '+WIC[r.w]+'. Вона дає <b>×'+BASEMUL+' до шкоди</b> (з Набором рейду — ×'+KITMUL+'), але <b>тільки в рейді</b>.</p>'+
-  '<p>Стріляти треба <b>зарядами</b> цієї зброї. Їх <b>фармлять увесь місяць</b>:</p>'+
-  '<div class="dkh"><div><b>🆓 Безкоштовно</b><small>Пайок: +'+RATION+' на день · Перемога над босом: +'+SRC.bk.per+' (до '+SRC.bk.cap+' на день) · Похід: +'+SRC.hn.per+' (до '+SRC.hn.cap+') · Перемога в кістках: +'+SRC.dw.per+' (до '+SRC.dw.cap+')</small></div>'+
-  '<div class="dkh" style="margin:0"><div><b>💰 За талери — швидше</b><small>Пачки: 10 за '+SHOP[0][1]+', 50 за '+SHOP[1][1]+', 200 за '+SHOP[2][1]+' · Набір рейду ('+KIT.tl+' 💰): шкода ×'+KITMUL+' і +'+KIT.am+' зарядів</small></div></div></div>'+
-  '<p>Заряди рейду — окремі, вони не чіпають твою звичайну зброю. Що не витратив до кінця місяця — обміняється на срібло.</p>'}},
- {t:"Нагороди і твій внесок",b:function(){var r=Mo();return '<p><b>Рубежі боса</b> (спільний прогрес):</p>'+msTable()+
-  '<p style="margin-top:9px"><b>Головне правило.</b> Щоб <b>брати</b> нагороди, ти маєш сам нанести <b>≥'+fp(pctOf(r,need(r)))+'%</b> міцності боса (≈'+shotsFor({dm:0,w:r.w,kit:r.kit},need(r))+' пострілів) — це <b>нагорода за участь</b>: її реально зібрати безкоштовно за кілька тижнів.</p>'+
-  '<p><b>Особисті щаблі</b> (за твою власну шкоду; найвищий — стеля):</p>'+tierTable(r)+
-  '<p>Боти самі дійдуть до '+Math.round(BOTSHARE*100)+'%, тож <b>75%</b> візьмеш, коли додаси свою частку, а для <b>100%</b> від гравців треба ≈'+fp((1-BOTSHARE)*100)+'% — це зусилля «Легенди». Платні гравці роблять це швидше, але безкоштовні теж стабільно беруть участь і дістають свої нагороди.</p>'+
-  '<p><b>Не встиг забрати?</b> Коли місяць закінчується, усе, що вже досягнуто, видається само (якщо ти набив хоч «Учасника»).</p>'}}];
+ {t:"Що це",b:function(){var r=Mo(),b=boss(r.m);return ''+
+  '<div class="dzhero"><div class="em">🐉</div><div style="flex:1"><b>«'+b[0]+'» '+b[1]+'</b><small>Один бос на <b>весь місяць</b>. Зламай його до кінця місяця.</small></div></div>'+
+  '<p>Б’ють двоє: <b>🤖 боти</b> (до '+Math.round(BOTSHARE*100)+'%) і <b>ти</b>.</p>'+
+  '<p>Рубежі <b>25 · 50 · 75 · 100%</b> — нагороди.</p>'}},
+ {t:"Зброя і заряди",b:function(){var r=Mo(),W=wBy(r.w);return ''+
+  '<p>Б’ємо лише <b>'+esc(W.uk)+'</b> '+WIC[r.w]+' — <b>×'+BASEMUL+'</b> шкоди (з Набором ×'+KITMUL+').</p>'+
+  '<div class="dkh"><div><b>🆓 Заряди безкоштовно</b><small>Пайок +'+RATION+'/день · Бос +'+SRC.bk.per+' · Похід +'+SRC.hn.per+' · Кості +'+SRC.dw.per+'</small></div>'+
+  '<div><b>💰 За талери</b><small>10 за '+SHOP[0][1]+' · 50 за '+SHOP[1][1]+' · 200 за '+SHOP[2][1]+' · Набір '+KIT.tl+' 💰: ×'+KITMUL+', +'+KIT.am+'</small></div></div>'+
+  '<p>Залишок у кінці місяця → 🥈.</p>'}},
+ {t:"Нагороди",b:function(){var r=Mo();return msTable()+
+  '<p style="margin-top:9px">Щоб <b>брати</b>: свій внесок <b>≥'+fp(pctOf(r,need(r)))+'%</b> (≈'+shotsFor({dm:0,w:r.w,kit:r.kit},need(r))+' пострілів).</p>'+
+  tierTable(r)+
+  '<p>Не встиг — <b>видасться саме</b> в кінці місяця.</p>'}}];
 function guideHtml(){var g=GUIDE[gp],n=GUIDE.length;
  var s='<div class="dzc"><div class="dzt"><b>📖 Путівник · '+(gp+1)+'/'+n+'</b><button data-z="x" aria-label="Закрити">✕</button></div>';
  s+='<div class="dkg"><h3>'+g.t+'</h3>'+g.b()+'</div><div class="dkdots">';for(var i=0;i<n;i++)s+='<i class="'+(i==gp?'on':'')+'"></i>';s+='</div>';
@@ -11004,8 +10998,8 @@ function render(){if(!ov)return;
  h+='<div class="dzs"><h4>Твій внесок (особисті щаблі)</h4>';
  TIERS.forEach(function(t,i){var goal=t[0]*r.ref,ok=r.dm>=goal,got=r.pc[i],can=ok&&!got,pr=Math.min(100,r.dm/goal*100);
   h+='<div class="dzrow'+(got?' dn':(can?' cu':''))+'"><div class="dzn">'+(got?'✓':(i+1))+'</div><div class="dzx"><b>«'+t[1]+'» · '+fp(pctOf(r,goal))+'% боса</b><small>'+P.rewTxt(t[2])+(t[3]?' · +'+t[3]+' зарядів':'')+'</small><div class="dzbar" style="height:5px"><i style="width:'+pr.toFixed(0)+'%"></i></div></div>'+(got?'<span style="color:#8fcf7a">✓</span>':(can?'<button class="dzb g" data-z="ct" data-k="'+i+'">Забрати</button>':'<span style="opacity:.5;font-size:11px">'+fs(Math.max(0,goal-r.dm))+'</span>'))+'</div>'});
- h+='<small style="color:#9d8a62;display:block;margin-top:4px">«Легенда» — стеля: понад неї особистих нагород немає, але ти й далі допомагаєш спільному прогресу. Не встиг забрати до кінця місяця — усе досягнуте видасться само.</small></div>';
- h+='<div class="dzs"><small style="color:#9d8a62;display:block">🤖 Козаки-боти умовні: вони імітують допомогу інших гравців. Живі гравці з’являться, коли буде сервер.</small></div></div>';
+ h+='</div>';
+ h+='<div class="dzs"><small style="color:#9d8a62;display:block">🤖 Боти умовні — живі гравці з’являться з сервером.</small></div></div>';
  var sc=ov.querySelector(".dzc"),tp=sc?sc.scrollTop:0;ov.innerHTML=h;var n=ov.querySelector(".dzc");if(n)n.scrollTop=tp}
 function open(){earn();var d=T(),r=Mo();if(!d.rdSeen){d.rdSeen=1;gp=0;P.save()}else gp=-1;render();ov.classList.add("on")}
 function act(k,a){var kk=+a.getAttribute("data-k");
@@ -11138,24 +11132,24 @@ function on(id){return function(){var e=document.getElementById(id);return !!e&&
 function sh(id,w,h){return function(){return shown(document.getElementById(id),w,h)}}
 /* pos: br (низ-право, за замовчуванням) | tr (право-вгорі, нижче шапки) */
 var SC=[
- {id:"dzS",ok:on("dzS"),t:"Скриня",i:[["🧩","Колекції — предмети набору збираються в походах. Збереш усі — обміняєш на нагороду."],["🧰","Торговець, Трофеї, Перстні, Коваль — це швидкі входи в ті самі екрани."],["🔔","Червоний кружечок на плитці — там є що забрати."]]},
- {id:"dzL",ok:on("dzL"),t:"Літопис",i:[["📜","Зведення — твоє звання, найближчі досягнення, майстерність коваля."],["✅","Справи — 5 завдань на день. Нагорода за кожне йде сама, а за всі п'ять — ще скриня."],["🏆","Тиждень — рейтинг з іншими. Місце в кінці тижня дає скриню."]]},
- {id:"dzA",ok:on("dzA"),t:"Арена · хутори",i:[["🏚️","Хутір приносить срібло, поки ти далеко. Натисни «Зібрати все», коли накопичиться."],["⚔️","Щоб захопити хутір, переможи господаря в двобої (−2 ⚡)."],["🛡️","Ворог замахується — дивись на підказку: «високий удар» → БЛОК, «широкий замах» → УХИЛ. Вчасно відбив — контрудар ×2,4."]]},
- {id:"dzP",ok:on("dzP"),t:"Кіт",i:[["🐈","Годуй кота (корм за срібло): ситий кіт дає навички. Голодний — навички вимкнені."],["🤚","«Погладити» раз на день дає ⚡."],["🔓","Кіт спочатку в клітці — його звільняє перемога над Мареною."]]},
- {id:"dzW",ok:on("dzW"),t:"Колесо фортуни",i:[["🎡","Натисни «Крутити» — випаде приз. Перша крутка на день безкоштовна."],["🥈","Далі кожна крутка дорожча, усього 6 на добу."]]},
- {id:"jkx",ok:sh("jkx"),t:"Заїжджий торговець",i:[["🔩","Хлам — валюта торговця. Його дають боси, походи й наліт на обоз."],["👆","Закупи йдуть ПО ПОРЯДКУ (усього 1000). Натисни кнопку з ціною праворуч від нагороди — купиш закуп, одразу з'явиться наступний."],["📊","Смужка зверху — скільки закупів вже куплено."],["⚡","«Купити скільки вистачить» бере кілька закупів підряд."],["🧰","Комод — 10 хламу за випадкову нагороду."]]},
- {id:"ward",ok:sh("ward",200,60),t:"Одяг казака",i:[["👆","Угорі — значки частин тіла: взуття, руки, штани, тулуб, голова. Обери частину."],["👕","У списку натисни «Одягти» під потрібною річчю. «Зняти» — прибрати."],["🔒","Закрита річ ще не здобута: її дають за досягнення в таверні."],["💍","Персні теж тут — у вкладці «Руки»."]]},
- {id:"jwx",ok:sh("jwx"),t:"Коваль і ювелір",i:[["🔨","Ковка: з уламків перстня виковуєш перстень. Шанс успіху показано на кнопці."],["✨","Заточка: підвищує перстень до +10 — сильніший бонус до шкоди по босах."],["💥","Розламати: перстень → уламки, якщо він вже не потрібен."],["❓","Тисни на «Як це працює» всередині — там цифри."]]},
- {id:"stx",ok:sh("stx"),t:"Стійло",i:[["🐎","Кінь дає швидкість: у поході менше втоми, у нальоті — легше втекти."],["🌾","Годуй сіном чи вівсом: ситий кінь швидший і росте в рівні."],["🔁","Обери коня зі стійла й натисни «Осідлати». Нових коней дають боси."]]},
- {id:"trx",ok:sh("trx"),t:"Трофеї",i:[["🏆","Трофей дають за першу перемогу над босом."],["🏠","«Повісити в хаті» — він з'явиться на головному екрані, «Прибрати» — забрати."]]},
- {id:"gach",ok:sh("gach"),t:"Досягнення",i:[["🏅","Кожне виконане досягнення дає талери 💰 — вони з'являються самі."],["📈","Смужка під назвою — скільки ще лишилось."]]},
- {id:"rtx",ok:sh("rtx"),t:"Рейтинг",i:[["📊","Вгорі вкладки: Походи, Шкода, Боси, Загальний."],["📅","«Сезон» — змагання на 4 тижні, «За весь час» — загальне."],["👤","Натисни на гравця — відкриється його профіль."]]},
- {id:"talentModal",ok:sh("talentModal"),t:"Козацька майстерність",i:[["⭐","Очки талантів дає ТВІЙ власний урон по босах (не відряду)."],["👆","Натисни талант, щоб вкласти очко. Нижчі ступені відкривають вищі."],["🔄","Невитрачений досвід не пропадає."]],pos:"tr"},
- {id:"mkt2",ok:sh("mkt2"),t:"Ринок",i:[["👆","Торкнись лавки: зброяр (самопал за талери), коваль, ювелір."],["👈","Ринок гортається вбік — свайп по картинці."],["🚪","Внизу ті самі розділи, що й на головному."]]},
- {id:"nbx",ok:sh("nbx",200,300),t:"Боси",i:[["🔑","Бій з босом коштує ключ. Ключі дають перемоги та походи."],["👥","Режим: Соло — сам (боса менше), Відряд — з друзями (друзі теж б'ють)."],["🎯","У бою обери зброю внизу й тапай по босу. Перші 3 безкоштовні удари (кулак, нога, шабля) відкривають платну зброю."],["🏆","Переможеш — на екрані нагород заберуть усе випадене."]],pos:"tr"},
- {id:"hike",ok:sh("hike"),t:"Похід",i:[["🎒","Перед походом візьми припаси (їжа, вода, трави) і обери маршрут."],["🗺️","На карті тисни точку: ❓ подія, ⚔️ засідка, 🏹 полювання, 🏕️ привал, 👹 бос."],["⚡","Вхід коштує енергію, а повертатися живим — вигідніше. Хлам і ключі даються за успішне повернення."],["🏴","Налітом на обоз керує червона стрічка на цьому екрані."]],pos:"tr"}
+ {id:"dzS",ok:on("dzS"),t:"Скриня",i:[["🧩","**Колекції** — збирай у походах, обмінюй на нагороду"],["🔒","Сіра плитка — відкриється на вказаному **рівні**"],["🔴","Кружечок — є що забрати"]]},
+ {id:"dzL",ok:on("dzL"),t:"Літопис",i:[["✅","**Справи** — 5 на день, за всі — скриня"],["🏆","**Тиждень** — рейтинг, нагорода за місце"],["🔴","**Забрати** — натисни кнопку"]]},
+ {id:"dzA",ok:on("dzA"),t:"Арена",i:[["🏚️","**Хутір** дає 🥈, поки ти далеко — «Зібрати все»"],["⚔️","Захопи двобоєм (−2 ⚡)"],["🛡️","Замах зверху — **блок**, широкий — **ухил**"]]},
+ {id:"dzP",ok:on("dzP"),t:"Кіт",i:[["🐈","**Годуй** — ситий кіт дає навички"],["🤚","**Погладити** раз на день — ⚡"],["🔓","Звільни перемогою над **Мареною**"]]},
+ {id:"dzW",ok:on("dzW"),t:"Колесо",i:[["🎡","**Крутити** — перша крутка безкоштовна"],["🥈","Далі дорожче, **6** на добу"]]},
+ {id:"jkx",ok:sh("jkx"),t:"Торговець",i:[["🔩","**Хлам** — з босів, походів, налітів"],["👆","Натисни **ціну** — купиш закуп"],["🎁","**Комод** — випадкова нагорода"]]},
+ {id:"ward",ok:sh("ward",200,60),t:"Одяг",i:[["👆","Угорі — **частина тіла**"],["👕","**Одягти** / **Зняти**"],["🔒","Закрите — здобудеш пізніше"]]},
+ {id:"jwx",ok:sh("jwx"),t:"Коваль",i:[["🔨","**Ковка** — перстень з уламків"],["✨","**Заточка** — до +10, більше шкоди"],["💥","**Розламати** — назад в уламки"]]},
+ {id:"stx",ok:sh("stx"),t:"Стійло",i:[["🐎","Швидший кінь — менше втоми, легше втекти"],["🌾","**Годуй** — кінь росте"],["🔁","**Осідлати** — обрати коня"]]},
+ {id:"trx",ok:sh("trx"),t:"Трофеї",i:[["🏆","Дає **перша перемога** над босом"],["🏠","**Повісити** в хаті"]]},
+ {id:"gach",ok:sh("gach"),t:"Досягнення",i:[["🏅","Виконав — **Забрати** 💰"],["📈","Смужка — скільки лишилось"]]},
+ {id:"rtx",ok:sh("rtx"),t:"Рейтинг",i:[["📊","Вкладки: походи, шкода, боси"],["📅","**Сезон** — 4 тижні"],["👤","Тисни на гравця — профіль"]]},
+ {id:"talentModal",ok:sh("talentModal"),t:"Таланти",i:[["⭐","Очки — за **власну** шкоду по босах"],["👆","Тисни талант — **вклади очко**"],["🔓","Нижні ступені відкривають вищі"]]},
+ {id:"mkt2",ok:sh("mkt2"),t:"Ринок",i:[["👆","Тисни **лавку**"],["👈","Свайп — далі по ринку"]]},
+ {id:"nbx",ok:sh("nbx",200,300),t:"Боси",i:[["🔑","Бій = **1 ключ**"],["👥","**Соло** або **Відряд** з друзями"],["🎯","Обери зброю, **тапай по босу**"],["🔒","Платна зброя — після **3** безкоштовних ударів"]]},
+ {id:"hike",ok:sh("hike"),t:"Похід",i:[["🎒","Візьми **їжу**, **воду**, трави"],["🗺️","Тисни точку на карті"],["⚡","Вхід — енергія, вихід — **живим**"]]}
 ];
-var MAIN={id:"main",t:"Головний екран",i:[["👆","Торкнись козака — відкриється одяг: шапка, жилет, шаровари, чоботи, персні."],["🧭","Внизу п'ять розділів: Похід, Ринок, Боси, Таверна, Арена."],["➡️","Справа червона стрічка зі стрілкою — з неї виїжджає панель: скриня, літопис, кінь, торговець."],["🔴","Червоний кружечок — там щось готове."]]};
+var MAIN={id:"main",t:"Головний екран",i:[["👆","**Козак** — одяг і персні"],["🧭","Внизу: **Похід · Ринок · Боси · Таверна · Арена**"],["➡️","Стрічка справа — **Скриня, Літопис**"],["🔴","Кружечок — є що **забрати**"]]};
 var cur=null,since=0,btn=null,ov=null;
 function seenOf(id){var d=T();return !!(d.tp&&d.tp[id])}
 function mark(id){var d=T();d.tp=d.tp||{};d.tp[id]=1;P.save()}
@@ -11166,9 +11160,10 @@ function mainOpen(){
  if(P.anyOpen())return false;
  var nav=document.getElementById("nav2");if(!nav)return false;var r=nav.getBoundingClientRect();if(r.width<50||r.height<20)return false;
  var e=document.elementFromPoint(r.left+r.width/2,r.top+r.height/2);return !!(e&&e.closest("#nav2"))}
+function hl(t){return esc(t).replace(/\*\*(.+?)\*\*/g,'<b class="hlt">$1</b>')}
 function card(s){
  var h='<div class="dzc"><div class="dzt"><b>💡 '+esc(s.t)+'</b><button data-z="x" aria-label="Закрити">✕</button></div><div class="dkh">';
- s.i.forEach(function(x){h+='<div><b>'+x[0]+'</b><span class="tpt">'+esc(x[1])+'</span></div>'});
+ s.i.forEach(function(x){h+='<div><b>'+x[0]+'</b><span class="tpt">'+hl(x[1])+'</span></div>'});
  return h+'</div><button class="dzb g dzbig" style="margin-top:8px" data-z="x">Зрозуміло</button></div>'}
 function show(s){
  if(!ov){ov=P.ov("dzT",function(){});ov.style.zIndex=99998}

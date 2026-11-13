@@ -102,22 +102,19 @@ var gp=-1,ov;
 function msTable(){var h='<div class="dkh">';MS.forEach(function(m){h+='<div><b>'+Math.round(m[0]*100)+'% боса</b><small>'+P.rewTxt(m[1])+'</small></div>'});return h+'</div>'}
 function tierTable(r){var h='<div class="dkh">';TIERS.forEach(function(t){h+='<div><b>«'+t[1]+'» · '+fp(pctOf(r,t[0]*r.ref))+'% боса</b><small>≈'+shotsFor({dm:0,w:r.w,kit:r.kit},t[0]*r.ref)+' пострілів · '+P.rewTxt(t[2])+(t[3]?' · +'+t[3]+' зарядів':'')+'</small></div>'});return h+'</div>'}
 var GUIDE=[
- {t:"Що це і навіщо",b:function(){var r=Mo(),b=boss(r.m);return ''+
-  '<p>Щомісяця з’являється <b>один великий бос</b> — спільна ціль усіх козаків. Цього місяця це <b>«'+b[0]+'»</b> '+b[1]+'. Міцність у нього величезна, зламати треба <b>до кінця місяця</b>.</p>'+
-  '<p>Б’ють його <b>двоє</b>: <b>🤖 козаки-боти</b> (самі, поволі, до '+Math.round(BOTSHARE*100)+'% міцності) і <b>ти</b>.</p>'+
-  '<div class="dzhero"><div class="em">🐉</div><div style="flex:1"><b>Навіщо тобі</b><small>За кожен рубіж (25, 50, 75 і 100% боса) дають нагороди, а ще окремі нагороди за твій власний внесок.</small></div></div>'+
-  '<p><b>Чесно про ботів.</b> Це умовні козаки, що імітують допомогу інших гравців. Живі гравці з’являться, коли буде сервер.</p>'}},
- {t:"Зброя місяця і заряди",b:function(){var r=Mo(),W=wBy(r.w);return ''+
-  '<p>У рейді б’ють лише <b>зброєю місяця</b> — цього місяця це <b>'+esc(W.uk)+'</b> '+WIC[r.w]+'. Вона дає <b>×'+BASEMUL+' до шкоди</b> (з Набором рейду — ×'+KITMUL+'), але <b>тільки в рейді</b>.</p>'+
-  '<p>Стріляти треба <b>зарядами</b> цієї зброї. Їх <b>фармлять увесь місяць</b>:</p>'+
-  '<div class="dkh"><div><b>🆓 Безкоштовно</b><small>Пайок: +'+RATION+' на день · Перемога над босом: +'+SRC.bk.per+' (до '+SRC.bk.cap+' на день) · Похід: +'+SRC.hn.per+' (до '+SRC.hn.cap+') · Перемога в кістках: +'+SRC.dw.per+' (до '+SRC.dw.cap+')</small></div>'+
-  '<div class="dkh" style="margin:0"><div><b>💰 За талери — швидше</b><small>Пачки: 10 за '+SHOP[0][1]+', 50 за '+SHOP[1][1]+', 200 за '+SHOP[2][1]+' · Набір рейду ('+KIT.tl+' 💰): шкода ×'+KITMUL+' і +'+KIT.am+' зарядів</small></div></div></div>'+
-  '<p>Заряди рейду — окремі, вони не чіпають твою звичайну зброю. Що не витратив до кінця місяця — обміняється на срібло.</p>'}},
- {t:"Нагороди і твій внесок",b:function(){var r=Mo();return '<p><b>Рубежі боса</b> (спільний прогрес):</p>'+msTable()+
-  '<p style="margin-top:9px"><b>Головне правило.</b> Щоб <b>брати</b> нагороди, ти маєш сам нанести <b>≥'+fp(pctOf(r,need(r)))+'%</b> міцності боса (≈'+shotsFor({dm:0,w:r.w,kit:r.kit},need(r))+' пострілів) — це <b>нагорода за участь</b>: її реально зібрати безкоштовно за кілька тижнів.</p>'+
-  '<p><b>Особисті щаблі</b> (за твою власну шкоду; найвищий — стеля):</p>'+tierTable(r)+
-  '<p>Боти самі дійдуть до '+Math.round(BOTSHARE*100)+'%, тож <b>75%</b> візьмеш, коли додаси свою частку, а для <b>100%</b> від гравців треба ≈'+fp((1-BOTSHARE)*100)+'% — це зусилля «Легенди». Платні гравці роблять це швидше, але безкоштовні теж стабільно беруть участь і дістають свої нагороди.</p>'+
-  '<p><b>Не встиг забрати?</b> Коли місяць закінчується, усе, що вже досягнуто, видається само (якщо ти набив хоч «Учасника»).</p>'}}];
+ {t:"Що це",b:function(){var r=Mo(),b=boss(r.m);return ''+
+  '<div class="dzhero"><div class="em">🐉</div><div style="flex:1"><b>«'+b[0]+'» '+b[1]+'</b><small>Один бос на <b>весь місяць</b>. Зламай його до кінця місяця.</small></div></div>'+
+  '<p>Б’ють двоє: <b>🤖 боти</b> (до '+Math.round(BOTSHARE*100)+'%) і <b>ти</b>.</p>'+
+  '<p>Рубежі <b>25 · 50 · 75 · 100%</b> — нагороди.</p>'}},
+ {t:"Зброя і заряди",b:function(){var r=Mo(),W=wBy(r.w);return ''+
+  '<p>Б’ємо лише <b>'+esc(W.uk)+'</b> '+WIC[r.w]+' — <b>×'+BASEMUL+'</b> шкоди (з Набором ×'+KITMUL+').</p>'+
+  '<div class="dkh"><div><b>🆓 Заряди безкоштовно</b><small>Пайок +'+RATION+'/день · Бос +'+SRC.bk.per+' · Похід +'+SRC.hn.per+' · Кості +'+SRC.dw.per+'</small></div>'+
+  '<div><b>💰 За талери</b><small>10 за '+SHOP[0][1]+' · 50 за '+SHOP[1][1]+' · 200 за '+SHOP[2][1]+' · Набір '+KIT.tl+' 💰: ×'+KITMUL+', +'+KIT.am+'</small></div></div>'+
+  '<p>Залишок у кінці місяця → 🥈.</p>'}},
+ {t:"Нагороди",b:function(){var r=Mo();return msTable()+
+  '<p style="margin-top:9px">Щоб <b>брати</b>: свій внесок <b>≥'+fp(pctOf(r,need(r)))+'%</b> (≈'+shotsFor({dm:0,w:r.w,kit:r.kit},need(r))+' пострілів).</p>'+
+  tierTable(r)+
+  '<p>Не встиг — <b>видасться саме</b> в кінці місяця.</p>'}}];
 function guideHtml(){var g=GUIDE[gp],n=GUIDE.length;
  var s='<div class="dzc"><div class="dzt"><b>📖 Путівник · '+(gp+1)+'/'+n+'</b><button data-z="x" aria-label="Закрити">✕</button></div>';
  s+='<div class="dkg"><h3>'+g.t+'</h3>'+g.b()+'</div><div class="dkdots">';for(var i=0;i<n;i++)s+='<i class="'+(i==gp?'on':'')+'"></i>';s+='</div>';
@@ -166,8 +163,8 @@ function render(){if(!ov)return;
  h+='<div class="dzs"><h4>Твій внесок (особисті щаблі)</h4>';
  TIERS.forEach(function(t,i){var goal=t[0]*r.ref,ok=r.dm>=goal,got=r.pc[i],can=ok&&!got,pr=Math.min(100,r.dm/goal*100);
   h+='<div class="dzrow'+(got?' dn':(can?' cu':''))+'"><div class="dzn">'+(got?'✓':(i+1))+'</div><div class="dzx"><b>«'+t[1]+'» · '+fp(pctOf(r,goal))+'% боса</b><small>'+P.rewTxt(t[2])+(t[3]?' · +'+t[3]+' зарядів':'')+'</small><div class="dzbar" style="height:5px"><i style="width:'+pr.toFixed(0)+'%"></i></div></div>'+(got?'<span style="color:#8fcf7a">✓</span>':(can?'<button class="dzb g" data-z="ct" data-k="'+i+'">Забрати</button>':'<span style="opacity:.5;font-size:11px">'+fs(Math.max(0,goal-r.dm))+'</span>'))+'</div>'});
- h+='<small style="color:#9d8a62;display:block;margin-top:4px">«Легенда» — стеля: понад неї особистих нагород немає, але ти й далі допомагаєш спільному прогресу. Не встиг забрати до кінця місяця — усе досягнуте видасться само.</small></div>';
- h+='<div class="dzs"><small style="color:#9d8a62;display:block">🤖 Козаки-боти умовні: вони імітують допомогу інших гравців. Живі гравці з’являться, коли буде сервер.</small></div></div>';
+ h+='</div>';
+ h+='<div class="dzs"><small style="color:#9d8a62;display:block">🤖 Боти умовні — живі гравці з’являться з сервером.</small></div></div>';
  var sc=ov.querySelector(".dzc"),tp=sc?sc.scrollTop:0;ov.innerHTML=h;var n=ov.querySelector(".dzc");if(n)n.scrollTop=tp}
 function open(){earn();var d=T(),r=Mo();if(!d.rdSeen){d.rdSeen=1;gp=0;P.save()}else gp=-1;render();ov.classList.add("on")}
 function act(k,a){var kk=+a.getAttribute("data-k");

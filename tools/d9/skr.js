@@ -40,17 +40,20 @@ function colHTML(){var h="";
  h+='<small style="color:#9d8a62;display:block;margin-top:6px">Предмети знаходяться в походах цієї локації: по дорозі й коли повертаєшся. «Збирач» раз на 20 годин добиває набір, якщо в ньому вже 4+ предмети.</small>';
  return h}
 function bd(o){var n=0;try{n=o&&o.ready?o.ready():0}catch(e){}return n?' <i style="font-style:normal;background:#c8261c;color:#fff;border-radius:8px;padding:0 5px;font:700 10px system-ui">'+n+'</i>':''}
-function skrHTML(){var h='<div class="dzgrid">'+
- '<div class="dztile" data-z="col"><span>🧩</span>Колекції'+(ready()?' ('+ready()+')':'')+'</div>'+
- '<div class="dztile" data-z="junk"><span>🧰</span>Торговець</div>'+
- '<div class="dztile" data-z="trof"><span>🏆</span>Трофеї</div>'+
- '<div class="dztile" data-z="ring"><span>💍</span>Перстні</div>'+
- '<div class="dztile" data-z="smith"><span>🔨</span>Коваль</div>'+
+function L(k){return window.D9L?D9L.cls(k):''}
+function U(k,o){return window.D9L&&!D9L.ok(k)?'':bd(o)}
+function TG(k){return window.D9L?D9L.tag(k):''}
+function skrHTML(){var h=(window.D9L?D9L.strip():'')+'<div class="dzgrid">'+
+ '<div class="dztile'+L('col')+'" data-z="col"><span>🧩</span>Колекції'+(ready()&&(!window.D9L||D9L.ok('col'))?' ('+ready()+')':'')+''+TG('col')+'</div>'+
+ '<div class="dztile'+L('junk')+'" data-z="junk"><span>🧰</span>Торговець'+TG('junk')+'</div>'+
+ '<div class="dztile'+L('trof')+'" data-z="trof"><span>🏆</span>Трофеї'+TG('trof')+'</div>'+
+ '<div class="dztile'+L('ring')+'" data-z="ring"><span>💍</span>Перстні'+TG('ring')+'</div>'+
+ '<div class="dztile'+L('smith')+'" data-z="smith"><span>🔨</span>Коваль'+TG('smith')+'</div>'+
  '<div class="dztile" data-z="lit"><span>📜</span>Літопис</div>'+
  '<div class="dztile" data-z="pet"><span>🐈</span>Кіт'+(window.D9P&&!D9P.own()?' 🔒':bd(window.D9P))+'</div>'+
- '<div class="dztile" data-z="wheel"><span>🎡</span>Колесо'+bd(window.D9W)+'</div>'+
- '<div class="dztile" data-z="siege"><span>🏰</span>Облога'+bd(window.D9G)+'</div>'+
- '<div class="dztile" data-z="raid"><span>🐉</span>Рейд місяця'+bd(window.D9R)+'</div></div>';
+ '<div class="dztile'+L('wheel')+'" data-z="wheel"><span>🎡</span>Колесо'+U('wheel',window.D9W)+''+TG('wheel')+'</div>'+
+ '<div class="dztile'+L('siege')+'" data-z="siege"><span>🏰</span>Облога'+U('siege',window.D9G)+''+TG('siege')+'</div>'+
+ '<div class="dztile'+L('raid')+'" data-z="raid"><span>🐉</span>Рейд місяця'+U('raid',window.D9R)+TG('raid')+'</div></div>';
  var j=S.junk||{};h+='<div class="dzchips" style="margin-top:10px"><span>🥈 '+P.fs(S.sv||0)+'</span><span>💰 '+P.fs(S.tl||0)+'</span><span>🔩 Хлам '+(j.bal||0)+'</span><span>🔫 Самопалів '+(S.fz||0)+'</span></div>';
  return h}
 function render(){if(!ov)return;var h='<div class="dzc"><div class="dzt"><b>'+(view=="col"?'🧩 Колекції':'📦 Скриня')+'</b><button data-z="x" aria-label="Закрити">✕</button></div>';
@@ -58,6 +61,7 @@ function render(){if(!ov)return;var h='<div class="dzc"><div class="dzt"><b>'+(v
  h+='</div>';var sc=ov.querySelector(".dzc"),top=sc?sc.scrollTop:0;ov.innerHTML=h;var n=ov.querySelector(".dzc");if(n)n.scrollTop=top}
 function open(v){view=v||"skr";render();ov.classList.add("on")}
 function act(k,a){var kk=a.getAttribute("data-k");
+ if(window.D9L&&D9L.gate(k))return;
  if(k=="col"){view="col";render();return}
  if(k=="back"){view="skr";render();return}
  if(k=="exch"){exch(kk);render();return}

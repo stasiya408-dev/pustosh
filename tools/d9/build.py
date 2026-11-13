@@ -28,7 +28,7 @@ for pat,rep in [(r'name="ver" content="358"','name="ver" content="%d"'%VER),(r'v
 # 3. блоки
 css=open(D+'css.css',encoding='utf-8').read()
 blocks='<style id="d9css">'+css+'</style>\n'
-for n,f in [('d9core','core.js'),('d9hub','hub.js'),('d9skr','skr.js'),('d9ar','arena.js'),('d9pet','pet.js'),('d9wh','wheel.js'),('d9sg','siege.js'),('d9rd','raid.js'),('d9x','extra.js'),('d9tp','tips.js')]:
+for n,f in [('d9core','core.js'),('d9lk','locks.js'),('d9hub','hub.js'),('d9skr','skr.js'),('d9ar','arena.js'),('d9pet','pet.js'),('d9wh','wheel.js'),('d9sg','siege.js'),('d9rd','raid.js'),('d9x','extra.js'),('d9tp','tips.js')]:
     blocks+='<script id="%s">\n%s\n</script>\n'%(n,open(D+f,encoding='utf-8').read())
 i=s.rfind('</body>'); assert i>0
 s=s[:i]+blocks+s[i:]

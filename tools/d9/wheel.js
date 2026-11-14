@@ -6,20 +6,30 @@ var PRICE=8,JP=7;
 function base(){return 300+30*(S.lv||1)}
 function BS(){try{return ["ostap","nahai","grom"]}catch(e){return ["ostap"]}}
 var SEC=[
- {id:"silver",n:function(){return base()},w:24,c:"#6e4a22"},
+ {id:"silver",n:function(){return base()},w:22,c:"#6e4a22"},
  {id:"energy",n:function(){return 8},w:14,c:"#3f6b2a"},
- {id:"junk",n:function(){return 4},w:15,c:"#53402e"},
- {id:"silver",n:function(){return base()*4},w:12,c:"#8f3a1a"},
- {id:"pistol",n:function(){return 3},w:10,c:"#2f5470"},
- {id:"ring_shard",n:function(){return 25},w:10,c:"#5e2f66"},
- {id:"taler",n:function(){return 10},w:13,c:"#a07a10"},
- {id:"chest",n:function(){return 0},w:2,c:"#a81f1f",jp:1}];
+ {id:"junk",n:function(){return 4},w:20,c:"#53402e"},
+ {id:"silver",n:function(){return base()*4},w:10,c:"#8f3a1a"},
+ {id:"pistol",g:1,n:function(){return 3},w:10,c:"#2f5470"},
+ {id:"ring_shard",g:1,n:function(){return 25},w:8,c:"#5e2f66"},
+ {id:"taler",g:1,n:function(){return 10},w:12,c:"#a07a10"},
+ {id:"chest",n:function(){return 0},w:.025,c:"#a81f1f",jp:1}];
 function icon(id){try{return window.ICO(id)||""}catch(e){return""}}
 function W(){var d=T();if(!d.wh||typeof d.wh.tot!=="number")d.wh={tot:0,my:[]};return d.wh}
 function cost(){return PRICE}
 function ready(){return 0}
 P.reg.wheel=ready;
-function pick(r){var sum=SEC.reduce(function(a,b){return a+b.w},0),x=r*sum,i=0;for(;i<SEC.length-1;i++){x-=SEC[i].w;if(x<0)break}return i}
+/* v387: БАЛАНС. Ціни в талерах за магазином (мої оцінки v343): хлам 1.7, самопал 6, кинджал 3, рушниця 12, залп 24, гармата 48, уламок перстня 1, уламок кристала 5, срібло 1000=1, енергія 0.5.
+   Вартість секторів (рів.20): срібло 0.9, енергія 8=4, хлам 4=6.8, срібло×4=3.6 | самопал×3=18, уламки×25=25, талери 10=10 | джекпот ≈3130.
+   Очікування за крутку: вночі ≈8.6 💰, у пік ≈10.5 💰 (ціна 8). Ціннi сектори (g) і джекпот ростуть із «онлайном».
+   Онлайну без сервера немає: це ОЦІНКА за годиною доби (Київ), пік ≈300 гравців. Коли з'явиться сервер, підставити справжнє число в online(). */
+var CURVE=[.30,.20,.14,.10,.08,.08,.12,.20,.30,.38,.45,.52,.60,.62,.60,.62,.68,.75,.85,.92,1,1,.95,.60],PEAK=300,KG=.6;
+function kyivHM(){try{var f=new Intl.DateTimeFormat("en-GB",{timeZone:"Europe/Kyiv",hour:"numeric",minute:"numeric",hour12:false}).formatToParts(new Date()),h=0,m=0;f.forEach(function(x){if(x.type=="hour")h=+x.value%24;if(x.type=="minute")m=+x.value});return h+m/60}catch(e){var d=new Date();return d.getHours()+d.getMinutes()/60}}
+function share(h){if(window._whHour!=null)h=window._whHour;if(h==null)h=kyivHM();var a=Math.floor(h)%24,b=(a+1)%24,f=h-Math.floor(h);return CURVE[a]*(1-f)+CURVE[b]*f}
+function online(){return Math.round(PEAK*share())}
+function gmul(){return 1+KG*share()}
+function eff(s){return s.jp?s.w*(1+share()):(s.g?s.w*gmul():s.w)}
+function pick(r){var sum=SEC.reduce(function(a,b){return a+eff(b)},0),x=r*sum,i=0;for(;i<SEC.length-1;i++){x-=eff(SEC[i]);if(x<0)break}return i}
 /* список выданного: [[iconId,count],...] */
 function jackpotItems(){return [["chest",1],["pistol",60],["w_dagger",50],["w_rifle",30],["w_volley",20],["w_cannon",12],["ring_shard",300],["gem_shard",150],["gem",3],["silver",base()*30],["taler",40]]}
 function award(i){var s=SEC[i],b=base();
@@ -42,6 +52,7 @@ var st=document.createElement("style");st.textContent=
 ".wf .wx{position:absolute;right:12px;top:calc(env(safe-area-inset-top,0px) + 10px);width:42px;height:42px;border-radius:50%;border:1.5px solid rgba(255,214,120,.6);background:rgba(0,0,0,.45);color:#ffd678;font-size:20px;z-index:5}"+
 ".wf .wbal{align-self:flex-start;display:flex;align-items:center;gap:6px;height:42px;padding:0 14px;border-radius:21px;border:1.5px solid rgba(255,214,120,.55);background:rgba(0,0,0,.45);color:#ffe9a8;font:700 18px Cambria,Georgia,serif}"+
 ".wf .wbal .ic,.wf .wbtn .ic{width:1.2em;height:1.2em}"+
+".wf .won{width:100%;margin-top:8px;display:flex;align-items:center;gap:8px;color:#ffe9a8;font:700 13px Cambria,serif}.wf .won i{flex:1;height:8px;border-radius:4px;background:rgba(0,0,0,.5);border:1px solid rgba(255,214,120,.4);overflow:hidden}.wf .won b{display:block;height:100%;background:linear-gradient(90deg,#3f8f3a,#ffcf4d,#e0302b)}"+
 ".wf .wjp{margin-top:10px;width:100%;display:flex;align-items:center;justify-content:center;gap:10px;padding:8px 10px;border-radius:14px;border:1.5px solid #ffcf4d;background:linear-gradient(180deg,rgba(255,200,60,.26),rgba(120,40,10,.35));animation:wjg 1.6s ease-in-out infinite;box-sizing:border-box}"+
 ".wf .wjp .big{width:46px;height:46px}.wf .wjp .it{display:flex;align-items:center;gap:2px;color:#fff;font:700 13px Cambria,serif}.wf .wjp .it .ic{width:22px;height:22px}"+
 "@keyframes wjg{50%{box-shadow:0 0 22px 3px rgba(255,200,60,.55)}}"+
@@ -82,6 +93,7 @@ function wheelHTML(){var seg=[],lab="",A=360/SEC.length;
 function render(){if(!ov)return;var c=cost(),can=(S.tl||0)>=c;
  var h='<div class="wf"><button class="wx" data-z="x" aria-label="Закрити">✕</button>';
  h+='<div class="wbal">'+icon("taler")+'<span id="wBal">'+fs(S.tl||0)+'</span></div>';
+ var sh=share();h+='<div class="won" title="Оцінка за часом доби"><span>Активність зараз ≈ '+online()+' з '+PEAK+'</span><i><b style="width:'+Math.round(sh*100)+'%"></b></i><span>цінне ×'+gmul().toFixed(1)+'</span></div>';
  h+='<div class="wjp">'+icon("chest").replace('class="ic','class="ic big')+jackpotItems().slice(1,6).map(function(a){return '<span class="it">'+icon(a[0])+(a[1]>=1e4?Math.round(a[1]/1e3)+"к":a[1])+'</span>'}).join("")+'</div>';
  h+='<div class="wst"><div class="wrap">'+wheelHTML()+'</div></div>';
  h+='<div class="wr" id="dzWr">'+lastHTML+'</div>';
@@ -116,6 +128,6 @@ function spin(){if(spinning)return;var c=cost();
 function open(){lastHTML="&nbsp;";render();ov.classList.add("on")}
 function act(k){if(k=="spin")spin();else if(k=="jk"){var j=ov.querySelector("#wjk");if(j)j.classList.remove("on");lastHTML=chips([["chest",1]]);render()}}
 function boot(){ov=P.ov("dzW",act);ov._onclose=function(){};
- window.D9W={open:open,ready:ready,spin:spin,state:W,cost:cost,SEC:SEC,pick:pick,award:award,busy:function(){return spinning}}}
+ window.D9W={online:online,gmul:gmul,open:open,ready:ready,spin:spin,state:W,cost:cost,SEC:SEC,pick:pick,award:award,busy:function(){return spinning}}}
 if(document.readyState=="complete")setTimeout(boot,900);else window.addEventListener("load",function(){setTimeout(boot,900)});
 })();

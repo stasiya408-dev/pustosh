@@ -36,9 +36,9 @@
 html.gfx-low #ldr .lsun,html.gfx-low #ldr .ldw,html.gfx-low #ldr .lgr,html.gfx-low #ldr .lem,html.gfx-low #ldr .lr1,html.gfx-low #ldr .lr2{animation:none}
 html.gfx-low #ldr .lem{display:none}
 @media (prefers-reduced-motion:reduce){#ldr *{animation:none!important}}
-</style><meta charset="UTF-8"><meta name="ver" content="382">
+</style><meta charset="UTF-8"><meta name="ver" content="383">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<script>var VER=382;(function(){try{fetch(location.pathname+"?c="+Date.now(),{headers:{Range:"bytes=0-600"},cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="ver" content="(\d+)"/);if(m&&+m[1]>VER&&sessionStorage.getItem("upd")!==m[1]){sessionStorage.setItem("upd",m[1]);location.replace(location.pathname+"?v="+m[1]+"&r="+Date.now())}}).catch(function(){})}catch(e){}})()</script>
+<script>var VER=383;(function(){try{fetch(location.pathname+"?c="+Date.now(),{headers:{Range:"bytes=0-600"},cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="ver" content="(\d+)"/);if(m&&+m[1]>VER&&sessionStorage.getItem("upd")!==m[1]){sessionStorage.setItem("upd",m[1]);location.replace(location.pathname+"?v="+m[1]+"&r="+Date.now())}}).catch(function(){})}catch(e){}})()</script>
 <script id="gfxhead">(function(){var L="high";try{var v=localStorage.getItem("gfx");if(v==="mid"||v==="low")L=v}catch(e){}
 var PR={high:{fps:60,dpr:99,strip:3,hI:30,hA:30,pq:1},mid:{fps:45,dpr:1.5,strip:4,hI:45,hA:36,pq:.75},low:{fps:30,dpr:1,strip:6,hI:60,hA:45,pq:.65}}[L];
 window.GFX={lvl:L,low:L==="low",mid:L==="mid",hres:L==="low"?.5:L==="mid"?.65:1,fps:PR.fps,iv:1000/PR.fps,strip:PR.strip,heroI:PR.hI,heroA:PR.hA,pq:PR.pq,real:0,min:0};
@@ -786,7 +786,7 @@ setTimeout(function(){if(L.boot)L.done()},20000)})();
 <div id="hud2"><div id="hbar"><div class="lau"></div><div id="hlv"><b id="lv"></b></div><div id="hname"><span id="nm"></span></div>
 <div class="hr"><i>⚡</i><span class="ho hv" id="en"></span><button class="hp" onclick="soon()" aria-label="Поповнити">+</button></div><div class="hr"><i class="cs"></i><span class="ho hv" id="sv"></span><button class="hp" onclick="soon()" aria-label="Поповнити">+</button></div><div class="hr"><i>💰</i><span class="ho hv" id="tl"></span><button class="hp" onclick="testTalers()" aria-label="Поповнити">+</button></div><div class="hr"><i>💪</i><span class="ho hv" id="pw"></span><button class="hp" onclick="soon()" aria-label="Поповнити">+</button></div>
 <div class="xpt"><i id="xp"></i></div></div>
-<button id="hgear" onclick="gearTap()" aria-label="Налаштування" aria-expanded="false">⚙</button><div class="ho" id="el"></div><div class="ho" id="hver">v382</div></div>
+<button id="hgear" onclick="gearTap()" aria-label="Налаштування" aria-expanded="false">⚙</button><div class="ho" id="el"></div><div class="ho" id="hver">v383</div></div>
 <div id="scene">
 
 <div id="hut"><img id="campbg" draggable="false" alt="" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 50%;z-index:0" src="data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=">
@@ -11626,6 +11626,52 @@ st.textContent="#nbF.i-nag_fight::after{content:'';position:absolute;left:0;top:
 "#nbF.i-nag_fight #nbNg{filter:drop-shadow(0 0 22px rgba(255,170,90,.38)) drop-shadow(0 0 3px rgba(255,220,170,.35))}";
 document.head.appendChild(st);
 window.D9NG={arm:arm};
+})();
+
+</script>
+<script id="d9dt">
+(function(){
+if(window.D9DT)return;
+function pip(n,x,y,s){var P={1:[[.5,.5]],2:[[.28,.28],[.72,.72]],3:[[.26,.26],[.5,.5],[.74,.74]],4:[[.28,.28],[.72,.28],[.28,.72],[.72,.72]],5:[[.26,.26],[.74,.26],[.5,.5],[.26,.74],[.74,.74]],6:[[.3,.25],[.7,.25],[.3,.5],[.7,.5],[.3,.75],[.7,.75]]}[n],h="";
+P.forEach(function(p){h+='<circle cx="'+(x+p[0]*s).toFixed(1)+'" cy="'+(y+p[1]*s).toFixed(1)+'" r="'+(s*.09).toFixed(1)+'" fill="#2a1608"/>'});return h}
+function dice(a,b){var s=26,g=6,h='<svg viewBox="0 0 '+(s*2+g)+' '+s+'" width="'+(s*2+g)*.9+'" height="'+s*.9+'" style="display:block">';
+[[a,0],[b,s+g]].forEach(function(d){h+='<rect x="'+(d[1]+.8)+'" y=".8" width="'+(s-1.6)+'" height="'+(s-1.6)+'" rx="5" fill="#f3e6c4" stroke="#7a4a1c" stroke-width="1.6"/>'+pip(d[0],d[1],0,s)});return h+'</svg>'}
+var CB=[
+ {id:"six",n:"Дві шістки",a:6,b:6,p:25,m:function(a,b){return a==6&&b==6}},
+ {id:"dbl",n:"Дубль",a:4,b:4,p:10,m:function(a,b){return a==b&&a!=6}},
+ {id:"hi",n:"Старші кості",a:6,b:5,p:5,m:function(a,b){return a!=b&&a+b>=10}},
+ {id:"sev",n:"Сімка",a:4,b:3,p:3,m:function(a,b){return a+b==7}}];
+var st=document.createElement("style");st.id="d9dtcss";
+st.textContent='#dc383{position:absolute;left:6px;right:6px;top:4px;z-index:6;pointer-events:none;display:flex;flex-direction:column;gap:3px}'
++'#dc383 .dch{display:flex;justify-content:space-between;align-items:center;font:700 10px Georgia,serif;letter-spacing:1.5px;color:#f6d27a;text-transform:uppercase;text-shadow:0 1px 3px #000;padding:0 4px}'
++'#dc383 .dch b{font-size:11px;color:#ffe9a8;letter-spacing:.5px;text-transform:none}'
++'#dc383 .dcr{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}'
++'#dc383 .dcc{display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 2px 3px;border-radius:10px;background:rgba(24,12,5,.74);border:1px solid rgba(200,148,60,.45);transition:all .25s;opacity:.88}'
++'#dc383 .dcc small{font:600 9.5px Georgia,serif;color:#e8d3a4;line-height:1.1;text-align:center}'
++'#dc383 .dcc u{text-decoration:none;font:800 12px Georgia,serif;color:#f6d27a}'
++'#dc383 .dcc.on{opacity:1;background:linear-gradient(#7a4a12,#3d2108);border:1.5px solid #ffd870;box-shadow:0 0 14px rgba(255,200,80,.85),inset 0 0 8px rgba(255,210,120,.35);transform:scale(1.07);animation:dc383p 1s ease-in-out infinite}'
++'#dc383 .dcc.on small{color:#fff3cf}#dc383 .dcc.on u{color:#fff;font-size:13px}'
++'@keyframes dc383p{50%{box-shadow:0 0 22px rgba(255,220,110,1),inset 0 0 10px rgba(255,210,120,.5)}}'
++'html.gfx-low #dc383 .dcc.on{animation:none}';
+document.head.appendChild(st);
+var el=null,key="";
+function build(){var dg=document.querySelector("#dice .dg");if(!dg)return null;
+if(getComputedStyle(dg).position=="static")dg.style.position="relative";
+if(!el||el.parentNode!==dg){el=document.createElement("div");el.id="dc383";
+var h='<div class="dch"><span>Комбінації</span><b id="dc383t"></b></div><div class="dcr">';
+CB.forEach(function(c){h+='<div class="dcc" data-c="'+c.id+'">'+dice(c.a,c.b)+'<small>'+c.n+'</small><u>+'+c.p+'</u></div>'});
+el.innerHTML=h+'</div>';dg.appendChild(el);key=""}return el}
+function tick(){try{var d=document.getElementById("dice");if(!d||d.style.display!="flex")return;var e=build();if(!e)return;
+var a=0,b=0,tot=0,hold=false,kb=document.getElementById("keb"),r=document.getElementById("dr"),mt=r&&/Випало (\d) и (\d).*?(\d+) очок/.exec(r.textContent||"");
+if(mt&&kb&&kb.style.display!="none"&&kb.offsetParent){hold=true;a=+mt[1];b=+mt[2];tot=+mt[3]}
+var f=hold?CB.filter(function(c){return c.m(a,b)})[0]:null;var k=hold?(f?f.id:"none")+a+b+tot:"";
+if(k===key)return;key=k;
+[].forEach.call(e.querySelectorAll(".dcc"),function(c){c.classList.toggle("on",!!(f&&f.id==c.getAttribute("data-c")))});
+var t=document.getElementById("dc383t");
+if(hold){var bn=(a==6&&b==6)?25:a==b?10:(a+b==7)?3:(a+b>=10)?5:0;
+t.textContent=a+" + "+b+(bn?" + бонус "+bn:"")+" = "+tot+" очок"}else t.textContent=""}catch(x){}}
+setInterval(tick,200);
+window.D9DT={tick:tick};
 })();
 
 </script>

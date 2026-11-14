@@ -54,7 +54,7 @@ for pat,rep in [(r'name="ver" content="358"','name="ver" content="%d"'%VER),(r'v
 # 3. блоки
 css=open(D+'css.css',encoding='utf-8').read()
 blocks='<style id="d9css">'+css+'</style>\n'
-for n,f in [('d9core','core.js'),('d9lk','locks.js'),('d9hub','hub.js'),('d9skr','skr.js'),('d9ar','arena.js'),('d9pet','pet.js'),('d9wh','wheel.js'),('d9sg','siege.js'),('d9rd','raid.js'),('d9x','extra.js'),('d9tp','tips.js'),('d9ic','icons.js'),('d9gv','voice.js'),('d9np','nopct.js'),('d9ld','loader.js'),('d9cp','camp.js'),('d9du','duel.js'),('d9ng','nagai.js')]:
+for n,f in [('d9core','core.js'),('d9lk','locks.js'),('d9hub','hub.js'),('d9skr','skr.js'),('d9ar','arena.js'),('d9pet','pet.js'),('d9wh','wheel.js'),('d9sg','siege.js'),('d9rd','raid.js'),('d9x','extra.js'),('d9tp','tips.js'),('d9ic','icons.js'),('d9gv','voice.js'),('d9np','nopct.js'),('d9ld','loader.js'),('d9cp','camp.js'),('d9du','duel.js'),('d9ng','nagai.js'),('d9dt','dicetab.js')]:
     blocks+='<script id="%s">\n%s\n</script>\n'%(n,open(D+f,encoding='utf-8').read())
 o='var IDS=["hike","gach","rtx","stx","rdx","ward","dice","gtoast","hdg","jwx","nbmd","nbmp","talentModal","mkt2","vfx"];'
 assert s.count(o)==1

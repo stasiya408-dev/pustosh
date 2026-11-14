@@ -36,9 +36,9 @@
 html.gfx-low #ldr .lsun,html.gfx-low #ldr .ldw,html.gfx-low #ldr .lgr,html.gfx-low #ldr .lem,html.gfx-low #ldr .lr1,html.gfx-low #ldr .lr2{animation:none}
 html.gfx-low #ldr .lem{display:none}
 @media (prefers-reduced-motion:reduce){#ldr *{animation:none!important}}
-</style><meta charset="UTF-8"><meta name="ver" content="380">
+</style><meta charset="UTF-8"><meta name="ver" content="381">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<script>var VER=380;(function(){try{fetch(location.pathname+"?c="+Date.now(),{headers:{Range:"bytes=0-600"},cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="ver" content="(\d+)"/);if(m&&+m[1]>VER&&sessionStorage.getItem("upd")!==m[1]){sessionStorage.setItem("upd",m[1]);location.replace(location.pathname+"?v="+m[1]+"&r="+Date.now())}}).catch(function(){})}catch(e){}})()</script>
+<script>var VER=381;(function(){try{fetch(location.pathname+"?c="+Date.now(),{headers:{Range:"bytes=0-600"},cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="ver" content="(\d+)"/);if(m&&+m[1]>VER&&sessionStorage.getItem("upd")!==m[1]){sessionStorage.setItem("upd",m[1]);location.replace(location.pathname+"?v="+m[1]+"&r="+Date.now())}}).catch(function(){})}catch(e){}})()</script>
 <script id="gfxhead">(function(){var L="high";try{var v=localStorage.getItem("gfx");if(v==="mid"||v==="low")L=v}catch(e){}
 var PR={high:{fps:60,dpr:99,strip:3,hI:30,hA:30,pq:1},mid:{fps:45,dpr:1.5,strip:4,hI:45,hA:36,pq:.75},low:{fps:30,dpr:1,strip:6,hI:60,hA:45,pq:.65}}[L];
 window.GFX={lvl:L,low:L==="low",mid:L==="mid",hres:L==="low"?.5:L==="mid"?.65:1,fps:PR.fps,iv:1000/PR.fps,strip:PR.strip,heroI:PR.hI,heroA:PR.hA,pq:PR.pq,real:0,min:0};
@@ -786,7 +786,7 @@ setTimeout(function(){if(L.boot)L.done()},20000)})();
 <div id="hud2"><div id="hbar"><div class="lau"></div><div id="hlv"><b id="lv"></b></div><div id="hname"><span id="nm"></span></div>
 <div class="hr"><i>⚡</i><span class="ho hv" id="en"></span><button class="hp" onclick="soon()" aria-label="Поповнити">+</button></div><div class="hr"><i class="cs"></i><span class="ho hv" id="sv"></span><button class="hp" onclick="soon()" aria-label="Поповнити">+</button></div><div class="hr"><i>💰</i><span class="ho hv" id="tl"></span><button class="hp" onclick="testTalers()" aria-label="Поповнити">+</button></div><div class="hr"><i>💪</i><span class="ho hv" id="pw"></span><button class="hp" onclick="soon()" aria-label="Поповнити">+</button></div>
 <div class="xpt"><i id="xp"></i></div></div>
-<button id="hgear" onclick="gearTap()" aria-label="Налаштування" aria-expanded="false">⚙</button><div class="ho" id="el"></div><div class="ho" id="hver">v380</div></div>
+<button id="hgear" onclick="gearTap()" aria-label="Налаштування" aria-expanded="false">⚙</button><div class="ho" id="el"></div><div class="ho" id="hver">v381</div></div>
 <div id="scene">
 
 <div id="hut"><img id="campbg" draggable="false" alt="" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 50%;z-index:0" src="data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=">
@@ -11576,6 +11576,36 @@ function wrap2(){
 }
 wrap2();
 window.D9CP={busy:function(){return busy}};
+})();
+
+</script>
+<script id="d9du">
+(function(){
+if(window.D9DU)return;
+var C="#f3e6c4";
+function svg(k,sz,col){col=col||C;var p={
+left:'<path d="M40 8 12 32l28 24v-15h18V23H40z" fill="'+col+'"/>',
+right:'<path d="M24 8l28 24-28 24V41H6V23h18z" fill="'+col+'"/>',
+block:'<path d="M32 5 10 13v17c0 14 9 24 22 29 13-5 22-15 22-29V13z" fill="'+col+'" stroke="#2a1608" stroke-width="3"/><path d="M32 12v40c-9-4-15-12-15-22V18z" fill="rgba(0,0,0,.25)"/>',
+atk:'<path d="M50 6 56 12 26 42l-6-6zM18 38l8 8-6 4-6 6-6-6 6-6zM10 54l6-6 4 4-6 6z" fill="'+col+'" stroke="#2a1608" stroke-width="2"/>'}[k];
+return '<svg viewBox="0 0 64 64" width="'+sz+'" height="'+sz+'" style="display:block">'+p+'</svg>'}
+var st=document.createElement("style");st.id="dducss";
+st.textContent='.hdw .hdbt{gap:8px}.hdw .hdbt button{height:clamp(120px,21vh,190px);font-size:15px;padding:6px 2px;justify-content:center;gap:6px;border-radius:14px;border-width:2px}.hdw .hdbt button small{font-size:13px;opacity:1}.hdw .hda{min-height:110px}.hdw .hdr{width:150px;height:150px;margin:-75px 0 0 -75px;background:rgba(10,5,2,.55)}.hdw .hdr.on{display:flex}.hdw .hda:has(.hdr.on) .hdem{opacity:.22}.hdw .hdbt button.atk svg path{fill:#fff}';
+document.head.appendChild(st);
+var side="left";
+function fix(){try{fix0()}catch(e){}}
+function fix0(){var h=document.getElementById("hc");if(!h)return;
+var b=h.querySelectorAll(".hdbt button");
+if(b.length==4&&!b[0].getAttribute("data-d9")){var k=["left","block","right","atk"],t=["ухил","блок","ухил","удар"];
+for(var i=0;i<4;i++){b[i].innerHTML=svg(k[i],64)+"<small>"+t[i]+"</small>";b[i].setAttribute("data-d9","1")}}
+var r=document.getElementById("hdr");
+if(r&&r.classList.contains("on")){var kind=r.classList.contains("sw")?"sw":"hi";var key=kind+(kind=="sw"?side:"");
+if(r.getAttribute("data-k")!=key){r.setAttribute("data-k",key);r.innerHTML=svg(kind=="hi"?"block":side,92,kind=="hi"?"#ffd9a0":"#ffe27a")}}
+else if(r&&r.innerHTML&&!r.classList.contains("on")){r.innerHTML="";r.removeAttribute("data-k");side=Math.random()<.5?"left":"right"}}
+var mo=new MutationObserver(function(){fix();mo.takeRecords()});
+function go(){var h=document.getElementById("hc");if(!h){setTimeout(go,500);return}mo.observe(h,{childList:true,subtree:true,attributes:true,attributeFilter:["class"]});fix()}
+go();setInterval(fix,300);
+window.D9DU={fix:fix};
 })();
 
 </script>

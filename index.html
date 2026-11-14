@@ -36,9 +36,9 @@
 html.gfx-low #ldr .lsun,html.gfx-low #ldr .ldw,html.gfx-low #ldr .lgr,html.gfx-low #ldr .lem,html.gfx-low #ldr .lr1,html.gfx-low #ldr .lr2{animation:none}
 html.gfx-low #ldr .lem{display:none}
 @media (prefers-reduced-motion:reduce){#ldr *{animation:none!important}}
-</style><meta charset="UTF-8"><meta name="ver" content="377">
+</style><meta charset="UTF-8"><meta name="ver" content="378">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<script>var VER=377;(function(){try{fetch(location.pathname+"?c="+Date.now(),{headers:{Range:"bytes=0-600"},cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="ver" content="(\d+)"/);if(m&&+m[1]>VER&&sessionStorage.getItem("upd")!==m[1]){sessionStorage.setItem("upd",m[1]);location.replace(location.pathname+"?v="+m[1]+"&r="+Date.now())}}).catch(function(){})}catch(e){}})()</script>
+<script>var VER=378;(function(){try{fetch(location.pathname+"?c="+Date.now(),{headers:{Range:"bytes=0-600"},cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="ver" content="(\d+)"/);if(m&&+m[1]>VER&&sessionStorage.getItem("upd")!==m[1]){sessionStorage.setItem("upd",m[1]);location.replace(location.pathname+"?v="+m[1]+"&r="+Date.now())}}).catch(function(){})}catch(e){}})()</script>
 <script id="gfxhead">(function(){var L="high";try{var v=localStorage.getItem("gfx");if(v==="mid"||v==="low")L=v}catch(e){}
 var PR={high:{fps:60,dpr:99,strip:3,hI:30,hA:30,pq:1},mid:{fps:45,dpr:1.5,strip:4,hI:45,hA:36,pq:.75},low:{fps:30,dpr:1,strip:6,hI:60,hA:45,pq:.65}}[L];
 window.GFX={lvl:L,low:L==="low",mid:L==="mid",hres:L==="low"?.5:L==="mid"?.65:1,fps:PR.fps,iv:1000/PR.fps,strip:PR.strip,heroI:PR.hI,heroA:PR.hA,pq:PR.pq,real:0,min:0};
@@ -786,7 +786,7 @@ setTimeout(function(){if(L.boot)L.done()},20000)})();
 <div id="hud2"><div id="hbar"><div class="lau"></div><div id="hlv"><b id="lv"></b></div><div id="hname"><span id="nm"></span></div>
 <div class="hr"><i>⚡</i><span class="ho hv" id="en"></span><button class="hp" onclick="soon()" aria-label="Поповнити">+</button></div><div class="hr"><i class="cs"></i><span class="ho hv" id="sv"></span><button class="hp" onclick="soon()" aria-label="Поповнити">+</button></div><div class="hr"><i>💰</i><span class="ho hv" id="tl"></span><button class="hp" onclick="testTalers()" aria-label="Поповнити">+</button></div><div class="hr"><i>💪</i><span class="ho hv" id="pw"></span><button class="hp" onclick="soon()" aria-label="Поповнити">+</button></div>
 <div class="xpt"><i id="xp"></i></div></div>
-<button id="hgear" onclick="gearTap()" aria-label="Налаштування" aria-expanded="false">⚙</button><div class="ho" id="el"></div><div class="ho" id="hver">v377</div></div>
+<button id="hgear" onclick="gearTap()" aria-label="Налаштування" aria-expanded="false">⚙</button><div class="ho" id="el"></div><div class="ho" id="hver">v378</div></div>
 <div id="scene">
 
 <div id="hut"><img id="campbg" draggable="false" alt="" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 50%;z-index:0" src="data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=">
@@ -2243,7 +2243,7 @@ var AFR=0,toastQ=[],toastOn=0;
 function toast(t){toastQ.push(t);if(!toastOn)nextToast()}
 function nextToast(){if($("vfx")&&$("vfx").classList.contains("on")){toastOn=1;setTimeout(nextToast,500);return}var t=toastQ.shift();if(!t){toastOn=0;return}toastOn=1;var e=$("gtoast");var h=t.indexOf("<div")==0;var html=h?t:'<div class="gta txt">'+t+'</div>';e.innerHTML=html;e.classList.add("show");var tmp=document.createElement("div");tmp.innerHTML=html;try{say((tmp.textContent||"").replace(/\s+/g," ").trim())}catch(x){}setTimeout(function(){e.classList.remove("show");setTimeout(nextToast,450)},h?3400:2600)}window.toast=toast;window.ACH=ACH;window.ST=ST;
 function chk(){var s=ST();if(!S.acl){S.acl={};for(var q in S.ach)S.acl[q]=1}ACH.forEach(function(a){if(!S.ach[a[0]]&&a[5](s)){S.ach[a[0]]=1;toast(achHTML(a,"Досягнення таверни — забери нагороду"))}});try{nsCheck(toast)}catch(e){}draw();gameUI()}
-window.achOpen=function(){ST();var n=0,h="";ACH.forEach(function(a){var cl=S.acl&&S.acl[a[0]],on=S.ach[a[0]];if(on)n++;h+='<div class="ac'+(on?" on":"")+'"><i>'+a[1]+'</i><div><b>'+a[2]+'</b><small>'+a[3]+'</small></div>'+(on?(cl?'<u class="ck">✔</u>':'<button class="ack" data-c="a" data-id="'+a[0]+'">Забрати +'+a[4]+' 💰</button>'):'<u>+'+a[4]+' <span class="tl">💰</span></u>')+'</div>'});$("acnt").textContent="Отримано: "+n+" з "+ACH.length;$("dal").innerHTML=h;$("dal").scrollTop=0;AFR=$("dice").style.display!="flex";$("dice").style.display="flex";fitArena();$("dach").classList.add("on")};
+window.achOpen=function(){ST();var n=0,h="";(ACH.slice().map(function(a,i){return [a,i,(S.ach[a[0]]&&!(S.acl&&S.acl[a[0]]))?0:1]}).sort(function(x,y){return x[2]-y[2]||x[1]-y[1]}).map(function(x){return x[0]})).forEach(function(a){var cl=S.acl&&S.acl[a[0]],on=S.ach[a[0]];if(on)n++;h+='<div class="ac'+(on?" on":"")+'"><i>'+a[1]+'</i><div><b>'+a[2]+'</b><small>'+a[3]+'</small></div>'+(on?(cl?'<u class="ck">✔</u>':'<button class="ack" data-c="a" data-id="'+a[0]+'">Забрати +'+a[4]+' 💰</button>'):'<u>+'+a[4]+' <span class="tl">💰</span></u>')+'</div>'});$("acnt").textContent="Отримано: "+n+" з "+ACH.length;$("dal").innerHTML=h;$("dal").scrollTop=0;AFR=$("dice").style.display!="flex";$("dice").style.display="flex";fitArena();$("dach").classList.add("on")};
 window.achClose=function(){$("dach").classList.remove("on");if(AFR){AFR=0;$("dice").style.display="none"}};
 
 var M=null;
@@ -3907,7 +3907,7 @@ function gchk(){if(busy)return;busy=1;try{if(!S.gach)S.gach={};if(!S.gcl){S.gcl=
 draw=function(){_dr();gchk()};
 var _bw=bossWin;bossWin=function(g){var cb=S.cb;_bw(g);if(!S.bk)S.bk={};if(!window._devWin)S.bk[cb]=(S.bk[cb]||0)+1;gchk()};
 setInterval(gchk,2500);setTimeout(gchk,1200);
-window.gachOpen=function(){if(!S.gach)S.gach={};var n=0,h="";GA.forEach(function(a){var cl=S.gcl&&S.gcl[a[0]],on=S.gach[a[0]];if(on)n++;h+='<div class="ac'+(on?" on":"")+'"><i>'+a[1]+'</i><div><b>'+a[2]+'</b><small>'+a[3]+'</small></div>'+(on?(cl?'<u class="ck">✔</u>':'<button class="ack" data-c="g" data-id="'+a[0]+'">Забрати +'+a[4]+' 💰</button>'):'<u>+'+a[4]+' <span class="tl">💰</span></u>')+'</div>'});
+window.gachOpen=function(){if(!S.gach)S.gach={};var n=0,h="";(GA.slice().map(function(a,i){return [a,i,(S.gach[a[0]]&&!(S.gcl&&S.gcl[a[0]]))?0:1]}).sort(function(x,y){return x[2]-y[2]||x[1]-y[1]}).map(function(x){return x[0]})).forEach(function(a){var cl=S.gcl&&S.gcl[a[0]],on=S.gach[a[0]];if(on)n++;h+='<div class="ac'+(on?" on":"")+'"><i>'+a[1]+'</i><div><b>'+a[2]+'</b><small>'+a[3]+'</small></div>'+(on?(cl?'<u class="ck">✔</u>':'<button class="ack" data-c="g" data-id="'+a[0]+'">Забрати +'+a[4]+' 💰</button>'):'<u>+'+a[4]+' <span class="tl">💰</span></u>')+'</div>'});
 $("gcnt").textContent="Отримано: "+n+" з "+GA.length+" · нагорода в талерах 💰";$("gal").innerHTML=h;$("gal").scrollTop=0;$("gach").classList.add("on")};
 window.gachClose=function(){$("gach").classList.remove("on")};
 var g=document.createElement("div");g.id="gach";g.innerHTML='<div class="afb"><div id="ghd"><span class="at">🏆</span><div><h3>Досягнення козака</h3><small id="gcnt"></small></div><button class="ax" onclick="gachClose()">Закрити ✕</button></div><div id="gal"></div></div>';document.body.appendChild(g);
@@ -11438,6 +11438,54 @@ function init(){
 }
 window.D9V={mumble:mumble,speak:speak};
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
+})();
+
+</script>
+<script id="d9np">
+/* d9np v378: проценты ВЕРОЯТНОСТИ нигде не показываются (шанс выпадения, ковки, заточки, побега, крита).
+   Числа остаются в логике; в тексте вместо них слова. Бонусы (+% шкоди, срібла, сили) не трогаем. */
+(function(){
+function wd(v){return v>=50?"часто":v>=15?"нерідко":v>=3?"рідко":"дуже рідко"}
+var N="\\d+(?:[.,]\\d+)?";
+var TRI=new RegExp(N+"\\s*%\\s*\\/\\s*"+N+"\\s*%\\s*\\/\\s*"+N+"\\s*%","g");
+var SEQ=new RegExp("("+N+")%(?:\\s*\\/\\s*"+N+"%)*","g");
+var CH=new RegExp("([Шш]анс[^%\\d<]{0,90}?[:—-]?\\s*(?:[А-Яа-яІіЇїЄє’' ]{0,12})?)\\+?("+N+"%(?:\\s*\\/\\s*"+N+"%)*)","g");
+function mx(s){var m=s.match(/\d+(?:[.,]\d+)?/g)||[],b=0;m.forEach(function(x){x=parseFloat(x.replace(",","."));if(x>b)b=x});return b}
+function clean(t){
+ if(t.indexOf("%")<0&&t.indexOf("в.п.")<0)return t;
+ var o=t;
+ t=t.replace(TRI,function(m){return wd(mx(m))});
+ t=t.replace(CH,function(m,a,b){return a+wd(mx(b))});
+ t=t.replace(/\+?[\d.,]+\s*в\.п\.\s*шансу/g,"більше шансу");
+ return t}
+var busy=0;
+function node(n){
+ var v=n.nodeValue;if(!v)return;
+ var c=clean(v);if(c!==v){n.nodeValue=c;return}
+ /* «шанс <b>16%</b>» и пары «Шанс» + элемент с процентом */
+ if(/[Шш]анс[^%\d]{0,40}$/.test(v)){var s=n.nextSibling;
+  if(s&&s.nodeType==1&&/^\s*\+?\d+(?:[.,]\d+)?%\s*$/.test(s.textContent))s.textContent=wd(parseFloat(s.textContent.replace(",",".").replace(/[^\d.]/g,"")))}
+}
+/* таблица наград: значения строк вида «12,5%» */
+function rows(root){
+ var l=root.querySelectorAll?root.querySelectorAll(".k em"):[];
+ for(var i=0;i<l.length;i++){var e=l[i],tx=e.textContent;
+  if(/^\s*\d+(?:[.,]\d+)?%\s*$/.test(tx)){e.textContent=wd(parseFloat(tx.replace(",",".").replace(/[^\d.]/g,"")))}}}
+function scan(root){
+ var w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode:function(n){var p=n.parentNode&&n.parentNode.nodeName;return p=="SCRIPT"||p=="STYLE"||p=="TEXTAREA"?NodeFilter.FILTER_REJECT:NodeFilter.FILTER_ACCEPT}}),n,a=[];
+ while(n=w.nextNode())a.push(n);
+ a.forEach(node);rows(root)}
+var q=[],sch=0;
+function flush(){sch=0;var l=q;q=[];l.forEach(function(r){if(r&&r.isConnected)scan(r)})}
+var mo=new MutationObserver(function(ms){
+ ms.forEach(function(m){
+  if(m.type=="characterData"){var p=m.target.parentNode;if(p)q.push(p)}
+  else m.addedNodes.forEach(function(a){q.push(a.nodeType==1?a:a.parentNode)})});
+ if(!sch){sch=1;requestAnimationFrame(flush)}});
+function boot(){if(!document.body)return;mo.observe(document.body,{childList:true,subtree:true,characterData:true});scan(document.body);
+ setInterval(function(){scan(document.body)},3000)}
+if(document.readyState=="loading")document.addEventListener("DOMContentLoaded",boot);else boot();
+window.D9NP={scan:function(){scan(document.body)},clean:clean};
 })();
 
 </script>

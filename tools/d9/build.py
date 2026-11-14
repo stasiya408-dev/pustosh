@@ -42,6 +42,11 @@ for var,flag,c in [('var on=S.gach[a[0]];if(on)n++;','S.gcl','g'),('var on=S.ach
     j=s.find(tail,i)
     assert 0<j-i<400,(var,j-i)
     s=s[:j]+"""+(on?(cl?'<u class="ck">✔</u>':'<button class="ack" data-c="%s" data-id="'+a[0]+'">Забрати +'+a[4]+' 💰</button>'):'<u>+'+a[4]+' <span class="tl">💰</span></u>')+'</div>'});"""%c+s[j+len(tail):]
+for L,fl,gv in [('GA','S.gcl','S.gach'),('ACH','S.acl','S.ach')]:
+    old=L+".forEach(function(a){var cl="+fl+"&&"+fl+"[a[0]],on="+gv+"[a[0]];if(on)n++;"
+    assert s.count(old)==1,old
+    new=("("+L+".slice().map(function(a,i){return [a,i,("+gv+"[a[0]]&&!("+fl+"&&"+fl+"[a[0]]))?0:1]}).sort(function(x,y){return x[2]-y[2]||x[1]-y[1]}).map(function(x){return x[0]})).forEach(function(a){var cl="+fl+"&&"+fl+"[a[0]],on="+gv+"[a[0]];if(on)n++;")
+    s=s.replace(old,new)
 # 2. версия
 for pat,rep in [(r'name="ver" content="358"','name="ver" content="%d"'%VER),(r'var VER=358','var VER=%d'%VER),(r'id="hver">v358<','id="hver">v%d<'%VER)]:
     assert len(re.findall(pat,s))==1,pat
@@ -49,7 +54,7 @@ for pat,rep in [(r'name="ver" content="358"','name="ver" content="%d"'%VER),(r'v
 # 3. блоки
 css=open(D+'css.css',encoding='utf-8').read()
 blocks='<style id="d9css">'+css+'</style>\n'
-for n,f in [('d9core','core.js'),('d9lk','locks.js'),('d9hub','hub.js'),('d9skr','skr.js'),('d9ar','arena.js'),('d9pet','pet.js'),('d9wh','wheel.js'),('d9sg','siege.js'),('d9rd','raid.js'),('d9x','extra.js'),('d9tp','tips.js'),('d9ic','icons.js'),('d9gv','voice.js'),('d9ld','loader.js')]:
+for n,f in [('d9core','core.js'),('d9lk','locks.js'),('d9hub','hub.js'),('d9skr','skr.js'),('d9ar','arena.js'),('d9pet','pet.js'),('d9wh','wheel.js'),('d9sg','siege.js'),('d9rd','raid.js'),('d9x','extra.js'),('d9tp','tips.js'),('d9ic','icons.js'),('d9gv','voice.js'),('d9np','nopct.js'),('d9ld','loader.js')]:
     blocks+='<script id="%s">\n%s\n</script>\n'%(n,open(D+f,encoding='utf-8').read())
 o='var IDS=["hike","gach","rtx","stx","rdx","ward","dice","gtoast","hdg","jwx","nbmd","nbmp","talentModal","mkt2","vfx"];'
 assert s.count(o)==1
